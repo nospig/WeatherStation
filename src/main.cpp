@@ -8,9 +8,12 @@
 #include <WifiManager.h>
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapForecast.h"
+#include "Settings.h"
 
 // globals
 Scheduler taskScheduler;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
 // task callbacks
 void connectWifiCallback();
@@ -20,9 +23,9 @@ void getWeatherForecastCallback();
 
 // task prototypes
 Task connectWifi(0, TASK_ONCE, &connectWifiCallback);
+Task getTime(TIME_FETCH_INTERVAL, TASK_FOREVER, &getTimeCallback);
 
-
-// tasks
+// task callbacks
 
 void connectWifiCallback()
 {
@@ -36,8 +39,18 @@ void connectWifiCallback()
     Serial.println("Connected");
     Serial.println(WiFi.localIP());
 
-    //runner.addTask(getTime);
-    //getTime.enable();
+    // start all tasks
+    taskScheduler.addTask(getTime);
+    getTime.enable();
+}
+
+void getTimeCallback()
+{
+    timeClient.update();
+
+    Serial.print(daysOfTheWeek[timeClient.getDay()]);
+    Serial.print(", ");
+    Serial.println(timeClient.getFormattedTime());
 }
 
 
