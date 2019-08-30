@@ -115,7 +115,7 @@ void OpenWeatherMapForecast::value(String value) {
         if (currentHour == allowedHours[i]) {
           isCurrentForecastAllowed = true;           
 
-                  Serial.printf("dt : %s, day %d, month %d, hour %d\n", value.c_str(), timeInfo->tm_mday, timeInfo->tm_mon, timeInfo->tm_hour);
+                  //Serial.printf("dt : %s, day %d, month %d, hour %d\n", value.c_str(), timeInfo->tm_mday, timeInfo->tm_mon, timeInfo->tm_hour);
 
           return;
         }
@@ -140,7 +140,7 @@ void OpenWeatherMapForecast::value(String value) {
   }
   //   "temp_max":17.35,float tempMax;
   if (currentKey == "temp_max") {
-      Serial.printf("temp_max : %s\n", value.c_str());
+      //Serial.printf("temp_max : %s\n", value.c_str());
     data[currentForecast].tempMax = value.toFloat();
   }
   //   "pressure":970.8,float pressure;

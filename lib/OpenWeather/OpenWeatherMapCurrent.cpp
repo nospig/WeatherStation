@@ -64,7 +64,7 @@ void OpenWeatherMapCurrent::doUpdate(OpenWeatherMapCurrentData *data, String url
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) 
         {
             String payload = http.getString();
-            Serial.println(payload);
+            //Serial.println(payload);
             for(unsigned int i=0; i<payload.length(); i++)
             {
                 parser.parse(payload.charAt(i));
