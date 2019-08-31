@@ -56,7 +56,7 @@ void getCurrentWeatherCallback()
     //Serial.println("Get current weather");
 
     currentWeatherClient.updateCurrentById(&currentWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
-    display->drawCurrentWeather(&currentWeather);
+    display->drawCurrentWeather(currentWeather);
 }
 
 void getWeatherForecastCallback()

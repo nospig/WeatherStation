@@ -12,7 +12,7 @@ class DisplayBase
         
         virtual void drawSensorReadings(float temp, float humidity) = 0;
 
-        virtual void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather) = 0;
+        virtual void drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather) = 0;
         virtual void drawForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts) = 0;
 };
 

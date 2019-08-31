@@ -25,11 +25,11 @@ void DisplayLCD::drawSensorReadings(float temp, float humidity)
 
 }
 
-void DisplayLCD::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
+void DisplayLCD::drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
 {
     Serial.println("Current weather");
 
-    Serial.printf("temp %f, humidity %d\n", currentWeather->temp, currentWeather->humidity);
+    Serial.printf("temp %f, humidity %d\n", currentWeather.temp, currentWeather.humidity);
 
 }
 
