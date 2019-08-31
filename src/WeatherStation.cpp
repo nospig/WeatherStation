@@ -26,6 +26,7 @@ OpenWeatherMapForecastData forecastWeather[NUM_FORECASTS];
 // tasks
 Task connectWifi(0, TASK_ONCE, &connectWifiCallback);
 Task getTime(TIME_FETCH_INTERVAL, TASK_FOREVER, &getTimeCallback);
+Task readSensors(SENSOR_READING_INTERVAL, TASK_FOREVER, &readSensorsCallback);
 Task getCurrentWeather(CURRENT_WEATHER_INTERVAL, TASK_FOREVER, &getCurrentWeatherCallback);
 Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherForecastCallback);
 
@@ -37,6 +38,12 @@ void getTimeCallback()
 {
     timeClient.update();
     display->drawCurrentTime(timeClient.getDay(), timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds());
+}
+
+// sensors
+void readSensorsCallback()
+{
+    Serial.println("Read sensors now");
 }
 
 // weather
@@ -73,10 +80,12 @@ void connectWifiCallback()
     taskScheduler.addTask(getTime);
     taskScheduler.addTask(getCurrentWeather);
     taskScheduler.addTask(getForecastWeather);
+    taskScheduler.addTask(readSensors);
     
     getTime.enable();
     getCurrentWeather.enable();
     getForecastWeather.enable();
+    readSensors.enable();
 }
 
 // basic setup and loop
