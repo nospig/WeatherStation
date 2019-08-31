@@ -12,11 +12,14 @@
 #include "WeatherStation.h"
 #include "Secrets.h"
 #include "DisplaySerial.h"
+#include "WebServer.h"
+#include <FS.h>
 
 // globals
 Scheduler taskScheduler;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
+WebServer webServer;
 DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
 OpenWeatherMapCurrentData currentWeather;
@@ -76,6 +79,8 @@ void connectWifiCallback()
     //Serial.println("Connected");
     Serial.println(WiFi.localIP());
 
+    webServer.init();
+
     // start all tasks
     taskScheduler.addTask(getTime);
     taskScheduler.addTask(getCurrentWeather);
@@ -93,6 +98,8 @@ void connectWifiCallback()
 void setup() 
 {
     Serial.begin(115200);
+
+    SPIFFS.begin();
 
     display = new DisplaySerial();
 
