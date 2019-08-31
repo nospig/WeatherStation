@@ -10,12 +10,14 @@
 #include "OpenWeatherMapForecast.h"
 #include "Settings.h"
 #include "WeatherStation.h"
+#include "Secrets.h"
+#include "DisplaySerial.h"
 
 // globals
 Scheduler taskScheduler;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
-
+DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
 OpenWeatherMapCurrentData currentWeather;
 OpenWeatherMapForecast forecastWeatherClient;
@@ -34,33 +36,33 @@ Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherFore
 void getTimeCallback()
 {
     timeClient.update();
-    displayTime();
+    display->drawCurrentTime(timeClient.getDay(), timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds());
 }
 
 // weather
 
 void getCurrentWeatherCallback()
 {
-    Serial.println("Get current weather");
+    //Serial.println("Get current weather");
 
     currentWeatherClient.updateCurrentById(&currentWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
-    displayCurrentWeather();
+    display->drawCurrentWeather(&currentWeather);
 }
 
 void getWeatherForecastCallback()
 {
-    Serial.println("Get forecast weather");
+    int numForecasts;
 
-    forecastWeatherClient.updateForecastsById(forecastWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID, NUM_FORECASTS);
-    displayForecastWeather();
+    //Serial.println("Get forecast weather");
+
+    numForecasts = forecastWeatherClient.updateForecastsById(forecastWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID, NUM_FORECASTS);
+    display->drawForecastWeather(forecastWeather, numForecasts);
 }
 
 void connectWifiCallback()
 {
     WiFiManager wifiManager;
 
-    //Serial.println("Connecting to WiFi");
-    
     //wifiManager.resetSettings();
     wifiManager.autoConnect("NospigWeather");
 
@@ -77,40 +79,13 @@ void connectWifiCallback()
     getForecastWeather.enable();
 }
 
-// display functions
-
-void displayTime()
-{
-    Serial.print(daysOfTheWeek[timeClient.getDay()]);
-    Serial.print(", ");
-    Serial.println(timeClient.getFormattedTime());
-}
-
-void displayCurrentWeather()
-{
-    Serial.println("Current weather");
-
-    Serial.printf("temp %f, humidity %d\n", currentWeather.temp, currentWeather.humidity);
-}
-
-void displayForecastWeather()
-{
-    Serial.println("Forecast weather");
-
-    OpenWeatherMapForecastData* data = &forecastWeather[0];
-
-    time_t time = data->observationTime;
-    struct tm* timeInfo;
-    timeInfo = gmtime(&time);
-
-    Serial.printf("Day %d, month %d: max temp %f\n", timeInfo->tm_mday, timeInfo->tm_mon, data->tempMax);
-}
-
 // basic setup and loop
 
 void setup() 
 {
     Serial.begin(115200);
+
+    display = new DisplaySerial();
 
     currentWeatherClient.setMetric(true);
     currentWeatherClient.setLanguage("en");

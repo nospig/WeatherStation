@@ -6,7 +6,6 @@
 #define HOURS_MULT 60 * SECONDS_MULT
 
 const long utcOffsetInSeconds = 25200;
-const char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 #define TIME_FETCH_INTERVAL 5 * SECONDS_MULT
 
 // weather

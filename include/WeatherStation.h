@@ -5,7 +5,3 @@ void getTimeCallback();
 void getCurrentWeatherCallback();
 void getWeatherForecastCallback();
 
-// display functions
-void displayTime();
-void displayCurrentWeather();
-void displayForecastWeather();
