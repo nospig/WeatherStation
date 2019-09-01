@@ -5,7 +5,7 @@
 #include <NTPClient.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-#include <WifiManager.h>
+#include <ESPAsyncWifiManager.h>
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapForecast.h"
 #include "Settings.h"
@@ -25,6 +25,7 @@ OpenWeatherMapCurrent currentWeatherClient;
 OpenWeatherMapCurrentData currentWeather;
 OpenWeatherMapForecast forecastWeatherClient;
 OpenWeatherMapForecastData forecastWeather[NUM_FORECASTS];
+DNSServer dns;
 
 // tasks
 Task connectWifi(0, TASK_ONCE, &connectWifiCallback);
@@ -71,7 +72,7 @@ void getWeatherForecastCallback()
 
 void connectWifiCallback()
 {
-    WiFiManager wifiManager;
+    AsyncWiFiManager wifiManager(webServer.getServer(), &dns);
 
     //wifiManager.resetSettings();
     wifiManager.autoConnect("NospigWeather");
