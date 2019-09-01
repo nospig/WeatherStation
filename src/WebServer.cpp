@@ -15,6 +15,11 @@ void WebServer::init()
         request->send(SPIFFS, "/test_file.html");
     });
 
+    server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/js/station.js");
+    });
+
     server.begin();
 }
 
