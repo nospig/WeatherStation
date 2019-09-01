@@ -9,7 +9,51 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <title>Nospig Weather Station</title>
+
+    <script type="text/javascript">
+        var websocket;
+  
+        function init()
+        {
+            openWebSocket();
+        }
+
+        function openWebSocket() 
+        {
+            websocket = new WebSocket('ws://' + document.location.host + '/ws');
+            websocket.onopen = function(evt) { onOpen(evt) };
+            websocket.onclose = function(evt) { onClose(evt) };
+            websocket.onmessage = function(evt) { onMessage(evt) };
+            websocket.onerror = function(evt) { onError(evt) };
+        }
+
+        function onOpen(evt)
+        {
+            doSend("WebSocket rocks");
+        }
+
+        function onClose(evt)
+        {
+        }
+
+        function onMessage(evt)
+        {
+        }
+
+        function onError(evt)
+        {
+        }
+
+        function doSend(message)
+        {
+            websocket.send(message);
+        }
+        
+        window.addEventListener("load", init, false);
+
+    </script>
   </head>
+
   <body>
     <h1>Hello, world!</h1>
 
