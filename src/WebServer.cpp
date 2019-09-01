@@ -12,7 +12,7 @@ void WebServer::init()
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/test_file.html");
+        request->send(SPIFFS, "/index.html");
     });
 
     server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
