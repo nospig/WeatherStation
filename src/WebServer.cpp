@@ -20,6 +20,8 @@ void WebServer::init()
         request->send(SPIFFS, "/js/station.js");
     });
 
+    server.serveStatic("/img", SPIFFS, "/img/");
+
     server.begin();
 }
 
