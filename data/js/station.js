@@ -1,5 +1,5 @@
 var websocket;
-  
+
 function init()
 {
     openWebSocket();
@@ -25,6 +25,7 @@ function onClose(evt)
 
 function onMessage(evt)
 {
+    console.log(evt.data);
 }
 
 function onError(evt)

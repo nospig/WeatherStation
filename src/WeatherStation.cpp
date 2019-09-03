@@ -48,6 +48,9 @@ void getTimeCallback()
 void readSensorsCallback()
 {
     Serial.println("Read sensors now");
+
+    // testing
+    webServer.updateSensorReadings(28.34f, 85.0f, 1009.0f);
 }
 
 // weather

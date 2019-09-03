@@ -1,8 +1,12 @@
+#include <ArduinoJson.h>
 #include "WebServer.h"
 
+// globals
 AsyncWebServer server(80);
 AsyncWebSocket webSocket("/ws");
 AsyncEventSource events("/events");
+
+// methods
 
 void WebServer::init()
 {
@@ -28,6 +32,32 @@ void WebServer::init()
 AsyncWebServer* WebServer::getServer()
 {
     return &server;
+}
+
+void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
+{
+    if(webSocket.count() > 0)
+    {
+        String output;
+
+        Serial.println("Client connected, sending sensor readings");
+
+        const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
+        DynamicJsonDocument jsonDoc(capacity);
+
+        jsonDoc["type"] = "sensorReadings";
+
+        JsonObject readings = jsonDoc.createNestedObject("readings");
+        readings["temp"] = temp;
+        readings["humidity"] = humidity;
+        readings["pressure"] = pressure;
+
+        serializeJson(jsonDoc, Serial);
+        Serial.println();
+        
+        serializeJson(jsonDoc, output);
+        webSocket.textAll(output);
+    }
 }
 
 void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len)

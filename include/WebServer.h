@@ -10,6 +10,8 @@ class WebServer
         void init();
         AsyncWebServer* getServer();
 
+        void updateSensorReadings(float temp, float humidity, float pressure);
+        
     private:
         static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 };
