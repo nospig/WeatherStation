@@ -20,7 +20,7 @@ void DisplayLCD::drawCurrentTime(int day, int hours, int minutes, int seconds)
     Serial.printf("%02d:%02d:%02d\n", hours, minutes, seconds);
 }
 
-void DisplayLCD::drawSensorReadings(float temp, float humidity)
+void DisplayLCD::drawSensorReadings(float temp, float humidity, float pressure)
 {
 
 }

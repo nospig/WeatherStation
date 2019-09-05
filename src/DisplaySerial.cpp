@@ -20,9 +20,9 @@ void DisplaySerial::drawCurrentTime(int day, int hours, int minutes, int seconds
     Serial.printf("%02d:%02d:%02d\n", hours, minutes, seconds);
 }
 
-void DisplaySerial::drawSensorReadings(float temp, float humidity)
+void DisplaySerial::drawSensorReadings(float temp, float humidity, float pressure)
 {
-
+    Serial.printf("Sensor readings: Temp:%f, humidity:%f, pressure:%f\n", temp, humidity, pressure);
 }
 
 void DisplaySerial::drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather)

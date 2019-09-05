@@ -9,7 +9,7 @@ class DisplaySerial : public DisplayBase
 
         void drawCurrentTime(int day, int hours, int minutes, int seconds);
 
-        void drawSensorReadings(float temp, float humidity);
+        void drawSensorReadings(float temp, float humidity, float pressure);
 
         void drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather);
         void drawForecastWeather(OpenWeatherMapForecastData forecastWeather[], int numForecasts);

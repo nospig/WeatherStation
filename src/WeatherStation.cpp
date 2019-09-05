@@ -49,7 +49,8 @@ void readSensorsCallback()
 {
     Serial.println("Read sensors now");
 
-    // testing
+    // testing data
+    display->drawSensorReadings(28.34f, 85.0f, 1009.0f);
     webServer.updateSensorReadings(28.34f, 85.0f, 1009.0f);
 }
 

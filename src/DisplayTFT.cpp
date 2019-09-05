@@ -20,7 +20,7 @@ void DisplayTFT::drawCurrentTime(int day, int hours, int minutes, int seconds)
     Serial.printf("%02d:%02d:%02d\n", hours, minutes, seconds);
 }
 
-void DisplayTFT::drawSensorReadings(float temp, float humidity)
+void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
 {
 
 }
