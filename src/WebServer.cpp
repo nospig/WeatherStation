@@ -6,6 +6,10 @@ AsyncWebServer server(80);
 AsyncWebSocket webSocket("/ws");
 AsyncEventSource events("/events");
 
+String WebServer::currentSensorJson = "";
+String WebServer::currentWeatherJson = "";
+String WebServer::forecastWeatherJson ="";     
+
 // methods
 
 void WebServer::init()
@@ -41,26 +45,24 @@ AsyncWebServer* WebServer::getServer()
 
 void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
 {
+    String output;
+
+    const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
+    DynamicJsonDocument jsonDoc(capacity);
+
+    jsonDoc["type"] = "sensorReadings";
+
+    JsonObject readings = jsonDoc.createNestedObject("readings");
+    readings["temp"] = temp;
+    readings["humidity"] = humidity;
+    readings["pressure"] = pressure;
+
+    serializeJson(jsonDoc, output);
+    currentSensorJson = output;
+
     if(webSocket.count() > 0)
     {
-        String output;
-
-        Serial.println("Client connected, sending sensor readings");
-
-        const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
-        DynamicJsonDocument jsonDoc(capacity);
-
-        jsonDoc["type"] = "sensorReadings";
-
-        JsonObject readings = jsonDoc.createNestedObject("readings");
-        readings["temp"] = temp;
-        readings["humidity"] = humidity;
-        readings["pressure"] = pressure;
-
-        //serializeJson(jsonDoc, Serial);
-        //Serial.println();
-        
-        serializeJson(jsonDoc, output);
+        Serial.println("Sending sensor readings to cilent");
         webSocket.textAll(output);
     }
 }
@@ -75,11 +77,30 @@ void WebServer::updateForecastWeather(OpenWeatherMapForecastData* forecastWeathe
     
 }
 
+void WebServer::updateClientOnConnect()
+{
+    Serial.println("Client connected, sending any available data.");
+
+    if(currentSensorJson.length() != 0)
+    {
+        webSocket.textAll(currentSensorJson);
+    }
+    if(currentWeatherJson.length() != 0)
+    {
+        webSocket.textAll(currentWeatherJson);
+    }
+    if(forecastWeatherJson.length() != 0)
+    {
+        webSocket.textAll(forecastWeatherJson);
+    }
+}
+
 void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len)
 {
     if(type == WS_EVT_CONNECT)
     {
         Serial.println("Websocket connect");
+        updateClientOnConnect();
     }
     if(type == WS_EVT_DISCONNECT)
     {
