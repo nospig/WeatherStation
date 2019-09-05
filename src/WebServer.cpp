@@ -60,6 +60,16 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
     }
 }
 
+void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
+{
+
+}
+    
+void WebServer::updateForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts)
+{
+    
+}
+
 void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len)
 {
     if(type == WS_EVT_CONNECT)

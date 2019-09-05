@@ -61,6 +61,7 @@ void getCurrentWeatherCallback()
 
     currentWeatherClient.updateCurrentById(&currentWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
     display->drawCurrentWeather(currentWeather);
+    webServer.updateCurrentWeather(currentWeather);
 }
 
 void getWeatherForecastCallback()
@@ -71,6 +72,7 @@ void getWeatherForecastCallback()
 
     numForecasts = forecastWeatherClient.updateForecastsById(forecastWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID, NUM_FORECASTS);
     display->drawForecastWeather(forecastWeather, numForecasts);
+    webServer.updateForecastWeather(forecastWeather, numForecasts);
 }
 
 void connectWifiCallback()
@@ -80,7 +82,6 @@ void connectWifiCallback()
     //wifiManager.resetSettings();
     wifiManager.autoConnect("NospigWeather");
 
-    //Serial.println("Connected");
     Serial.println(WiFi.localIP());
 
     webServer.init();
