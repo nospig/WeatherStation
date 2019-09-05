@@ -26,6 +26,16 @@ function onClose(evt)
 function onMessage(evt)
 {
     console.log(evt.data);
+
+    var messageData = JSON.parse(evt.data);
+
+    if(messageData.type == "sensorReadings")
+    {
+        var readings = messageData.readings;
+        document.getElementById("sensorTemp").innerHTML = readings.temp.toFixed(1) + "C";
+        document.getElementById("sensorHumidity").innerHTML = readings.humidity.toFixed(1) + "%";
+        document.getElementById("sensorPressure").innerHTML = readings.pressure + "mb";
+    }
 }
 
 function onError(evt)
