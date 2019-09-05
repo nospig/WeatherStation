@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/station.css">
 
     <title>Nospig Weather Station</title>
   </head>
@@ -18,7 +19,7 @@
 
     <div class="container-fluid" style="margin-top:80px">
         <h3>Dashboard</h3>
-        <table class="table">
+        <table class="table" style="background-color: white">
             <thead class="thead-light">
                 <tr>
                     <th>Sensor readings</th>
@@ -29,13 +30,13 @@
             <tbody>
                 <tr>
                     <td>
-                        <div class="row p-2 no-gutters">
-                            <div class="col-2 bg-secondary">
+                        <div class="row p-2 no-gutters bg-light">
+                            <div class="col-2">
                                 <div class="d-flex align-items-center justify-content-center h-100">
                                     <img style="width:64px; height:64px" src="img/thermometer.png" >
                                 </div>
                             </div>
-                            <div class="col bg-secondary text-white">
+                            <div class="col">
                                     <div class="d-flex flex-column">
                                         <div class="p-2">Temperature</div>
                                         <div class="p-2" id="sensorTemp">Waiting...</div>                                                    
@@ -44,13 +45,13 @@
                         </div>
                     </td>
                     <td>
-                        <div class="row p-2 no-gutters">
-                            <div class="col-2 bg-secondary">
+                        <div class="row p-2 no-gutters bg-light">
+                            <div class="col-2">
                                 <div class="d-flex align-items-center justify-content-center h-100">
                                     <img style="width:64px; height:64px" src="img/humidity.png" >
                                 </div>
                             </div>
-                            <div class="col bg-secondary text-white">
+                            <div class="col">
                                     <div class="d-flex flex-column">
                                         <div class="p-2">Humidty</div>
                                         <div class="p-2" id="sensorHumidity">Waiting...</div>                                                    
@@ -59,13 +60,13 @@
                         </div>
                     </td>
                     <td>
-                        <div class="row p-2 no-gutters">
-                            <div class="col-2 bg-secondary">
+                        <div class="row p-2 no-gutters bg-light">
+                            <div class="col-2">
                                 <div class="d-flex align-items-center justify-content-center h-100">
                                     <img style="width:64px; height:64px" src="img/gauge.png" >
                                 </div>
                             </div>
-                            <div class="col bg-secondary text-white">
+                            <div class="col">
                                     <div class="d-flex flex-column">
                                         <div class="p-2">Pressure</div>
                                         <div class="p-2" id="sensorPressure">Waiting...</div>                                                    
@@ -77,6 +78,25 @@
             </tbody>
         </table>
 
+        <table class="table" style="background-color: white">
+            <thead class="thead-light">
+                <tr>
+                    <th>Internet current weather</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <ul class="list-group">
+                            <li class="list-group-item">First item</li>
+                            <li class="list-group-item">Second item</li>
+                            <li class="list-group-item">Third item</li>
+                          </ul> 
+                    </td>                                      
+                </tr>
+            </tbody>
+        </table>
+        
     </div>
 
     <!-- Optional JavaScript -->

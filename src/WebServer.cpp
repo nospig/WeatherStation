@@ -24,6 +24,11 @@ void WebServer::init()
         request->send(SPIFFS, "/js/station.js");
     });
 
+    server.on("/css/station.css", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/css/station.css");
+    });
+
     server.serveStatic("/img", SPIFFS, "/img/");
 
     server.begin();
@@ -52,8 +57,8 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
         readings["humidity"] = humidity;
         readings["pressure"] = pressure;
 
-        serializeJson(jsonDoc, Serial);
-        Serial.println();
+        //serializeJson(jsonDoc, Serial);
+        //Serial.println();
         
         serializeJson(jsonDoc, output);
         webSocket.textAll(output);
