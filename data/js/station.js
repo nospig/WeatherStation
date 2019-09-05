@@ -15,12 +15,13 @@ function openWebSocket()
 }
 
 function onOpen(evt)
-{
-    doSend("WebSocket rocks");
+{    
+    document.getElementById("dashboardTitle").innerHTML = "Dashboard - connected";
 }
 
 function onClose(evt)
 {
+    document.getElementById("dashboardTitle").innerHTML = "Dashboard - not connected";
 }
 
 function onMessage(evt)
