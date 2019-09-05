@@ -16,12 +16,12 @@ function openWebSocket()
 
 function onOpen(evt)
 {    
-    document.getElementById("dashboardTitle").innerHTML = "Dashboard - connected";
+    $("#dashboardTitle").html("Dashboard - connected");
 }
 
 function onClose(evt)
 {
-    document.getElementById("dashboardTitle").innerHTML = "Dashboard - not connected";
+    $("#dashboardTitle").html("Dashboard - not connected");
 }
 
 function onMessage(evt)
@@ -33,9 +33,9 @@ function onMessage(evt)
     if(messageData.type == "sensorReadings")
     {
         var readings = messageData.readings;
-        document.getElementById("sensorTemp").innerHTML = readings.temp.toFixed(1) + "C";
-        document.getElementById("sensorHumidity").innerHTML = readings.humidity.toFixed(1) + "%";
-        document.getElementById("sensorPressure").innerHTML = readings.pressure + "mb";
+        $("#sensorTemp").html(readings.temp.toFixed(1) + "C");
+        $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
+        $("#sensorPressure").html(readings.pressure + "mb");
     }
 }
 
