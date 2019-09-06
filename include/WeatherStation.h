@@ -5,3 +5,4 @@ void getTimeCallback();
 void getCurrentWeatherCallback();
 void getWeatherForecastCallback();
 void readSensorsCallback();
+void updateThingSpeakCallback();

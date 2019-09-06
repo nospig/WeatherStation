@@ -13,6 +13,7 @@
 #include "Secrets.h"
 #include "DisplaySerial.h"
 #include "WebServer.h"
+#include "ThingSpeakReporter.h"
 #include <FS.h>
 
 // globals
@@ -20,12 +21,14 @@ Scheduler taskScheduler;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 WebServer webServer;
+ThingSpeakReporter thingSpeakReporter;
 DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
 OpenWeatherMapCurrentData currentWeather;
 OpenWeatherMapForecast forecastWeatherClient;
 OpenWeatherMapForecastData forecastWeather[NUM_FORECASTS];
 DNSServer dns;
+float sensorTemp, sensorHumidity, sensorPressure;
 
 // tasks
 Task connectWifi(0, TASK_ONCE, &connectWifiCallback);
@@ -33,6 +36,7 @@ Task getTime(TIME_FETCH_INTERVAL, TASK_FOREVER, &getTimeCallback);
 Task readSensors(SENSOR_READING_INTERVAL, TASK_FOREVER, &readSensorsCallback);
 Task getCurrentWeather(CURRENT_WEATHER_INTERVAL, TASK_FOREVER, &getCurrentWeatherCallback);
 Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherForecastCallback);
+Task updateThingSpeak(THINGSPEAK_REPORTING_INTERVAL, TASK_FOREVER, &updateThingSpeakCallback);
 
 // task callbacks
 
@@ -50,8 +54,24 @@ void readSensorsCallback()
     Serial.println("Read sensors now");
 
     // testing data
-    display->drawSensorReadings(28.34f, 85.0f, 1009.0f);
-    webServer.updateSensorReadings(28.34f, 85.0f, 1009.0f);
+    sensorTemp = 32.3;
+    sensorHumidity = 88;
+    sensorPressure = 1010;
+
+    display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+    webServer.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+
+    // only enable thing speak after some data recorded
+    updateThingSpeak.enableIfNot();
+}
+
+// ThingSpeak
+
+void updateThingSpeakCallback()
+{
+    // just send the latest sensor saved readings, no need to update again, avoid chances of updating the sensor too soon
+    // testing thingspeak
+    thingSpeakReporter.sendSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
 }
 
 // weather
@@ -86,12 +106,15 @@ void connectWifiCallback()
     Serial.println(WiFi.localIP());
 
     webServer.init();
+    thingSpeakReporter.init();
 
     // start all tasks
     taskScheduler.addTask(getTime);
     taskScheduler.addTask(getCurrentWeather);
     taskScheduler.addTask(getForecastWeather);
     taskScheduler.addTask(readSensors);
+    taskScheduler.addTask(updateThingSpeak);
+    updateThingSpeak.disable();
     
     getTime.enable();
     getCurrentWeather.enable();
