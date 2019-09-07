@@ -1,8 +1,38 @@
 var websocket;
 
 function init()
-{
+{   
     openWebSocket();
+}
+
+function updateSensorReadings(messageData)
+{
+    var readings = messageData.readings;
+    $("#sensorTemp").html(readings.temp.toFixed(1) + "&#8451");
+    $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
+    $("#sensorPressure").html(readings.pressure + "mb");
+}
+
+function updateInternetCurrent(messageData)
+{
+    var current = messageData.currentReadings;
+    var currentValue;
+    var observedTime;
+   
+    $("#internetWeatherList").empty();
+
+    currentValue = current.temp.toFixed(1) + "C - " + current.description;
+    $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
+    
+    currentValue = "Humidity: " + current.humidity + "%";
+    $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
+    
+    currentValue = "Wind speed: " + current.windSpeed + "m/s from " + current.windDirection + "&#8451";
+    $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
+
+    observedTime = new Date(current.time * 1000);
+    currentValue = "Observed at: " + observedTime.toLocaleTimeString("en-GB") + " on " + observedTime.toLocaleDateString("en-GB");
+    $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
 }
 
 function openWebSocket() 
@@ -30,13 +60,16 @@ function onMessage(evt)
 
     var messageData = JSON.parse(evt.data);
 
-    if(messageData.type == "sensorReadings")
+    switch(messageData.type)
     {
-        var readings = messageData.readings;
-        $("#sensorTemp").html(readings.temp.toFixed(1) + "C");
-        $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
-        $("#sensorPressure").html(readings.pressure + "mb");
+        case "sensorReadings":
+            updateSensorReadings(messageData);
+            break;
+        case "currentWeather":
+            updateInternetCurrent(messageData);
+            break;
     }
+
 }
 
 function onError(evt)

@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include "WebServer.h"
 
@@ -69,7 +70,29 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
 
 void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
 {
+    String output;
 
+    const size_t capacity = 1024;   // TODO
+    DynamicJsonDocument jsonDoc(capacity);
+
+    jsonDoc["type"] = "currentWeather";
+
+    JsonObject weather = jsonDoc.createNestedObject("currentReadings");
+    weather["temp"] = currentWeather.tempMax;
+    weather["humidity"] = currentWeather.humidity;
+    weather["windSpeed"] = currentWeather.windSpeed;
+    weather["windDirection"] = currentWeather.windDeg;
+    weather["description"] = currentWeather.description;
+    weather["time"] = currentWeather.observationTime;
+
+    serializeJson(jsonDoc, output);
+    currentWeatherJson = output;
+
+    if(webSocket.count() > 0)
+    {
+        Serial.println("Sending current internet weather to cilent");
+        webSocket.textAll(output);
+    }
 }
     
 void WebServer::updateForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts)
