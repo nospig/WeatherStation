@@ -14,6 +14,7 @@
 #include "DisplaySerial.h"
 #include "WebServer.h"
 #include "ThingSpeakReporter.h"
+#include "BMEReader.h"
 #include <FS.h>
 
 // globals
@@ -28,7 +29,8 @@ OpenWeatherMapCurrentData currentWeather;
 OpenWeatherMapForecast forecastWeatherClient;
 OpenWeatherMapForecastData forecastWeather[NUM_FORECASTS];
 DNSServer dns;
-float sensorTemp, sensorHumidity, sensorPressure;
+BMEReader bmeReader;
+float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
 
 // tasks
 Task connectWifi(0, TASK_ONCE, &connectWifiCallback);
@@ -49,28 +51,32 @@ void getTimeCallback()
 }
 
 // sensors
+
 void readSensorsCallback()
 {
     Serial.println("Read sensors now");
 
-    // testing data
-    sensorTemp = 32.3;
-    sensorHumidity = 88;
-    sensorPressure = 1010;
+    if(bmeReader.isActive())
+    {
+        sensorTemp = bmeReader.readTemp();
+        sensorHumidity = bmeReader.readHumidity();
+        sensorPressure = bmeReader.readPressurehPA();
 
-    display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
-    webServer.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+        display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+        webServer.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
 
-    // only enable thing speak after some data recorded
-    updateThingSpeak.enableIfNot();
+        // only enable thing speak after some data recorded
+        updateThingSpeak.enableIfNot();
+    }
 }
 
 // ThingSpeak
 
 void updateThingSpeakCallback()
 {
+    Serial.println("Update ThingSpeak");
+
     // just send the latest sensor saved readings, no need to update again, avoid chances of updating the sensor too soon
-    // testing thingspeak
     thingSpeakReporter.sendSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
 }
 
@@ -107,6 +113,7 @@ void connectWifiCallback()
 
     webServer.init();
     thingSpeakReporter.init();
+    bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
 
     // start all tasks
     taskScheduler.addTask(getTime);

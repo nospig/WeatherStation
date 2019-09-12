@@ -10,7 +10,7 @@ function updateSensorReadings(messageData)
     var readings = messageData.readings;
     $("#sensorTemp").html(readings.temp.toFixed(1) + "&#8451");
     $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
-    $("#sensorPressure").html(readings.pressure + "mb");
+    $("#sensorPressure").html(readings.pressure.toFixed(1) + " hPA");
 }
 
 function updateInternetCurrent(messageData)

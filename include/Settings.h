@@ -18,3 +18,7 @@ uint8_t forecastHours[] = {12};
 #define FORECAST_WEATHER_INTERVAL 5 * MINUTES_MULT   // for testing, increase for final or config through webserver
 #define SENSOR_READING_INTERVAL 30 * SECONDS_MULT
 #define THINGSPEAK_REPORTING_INTERVAL 30 * MINUTES_MULT
+
+const int BME_SDA = D2;
+const int BME_SCL = D1;
+const uint8_t BME_ADDRESS = 0x76;
