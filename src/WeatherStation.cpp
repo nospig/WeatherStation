@@ -107,6 +107,8 @@ void connectWifiCallback()
 {
     AsyncWiFiManager wifiManager(webServer.getServer(), &dns);
 
+    display->drawStartupDisplay();
+
     //wifiManager.resetSettings();
     wifiManager.autoConnect("NospigWeather");
 
@@ -115,6 +117,9 @@ void connectWifiCallback()
     webServer.init();
     thingSpeakReporter.init();
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
+
+    delay(WIFI_CONNECTING_DELAY);
+    display->startMainDisplay();
 
     // start all tasks
     taskScheduler.addTask(getTime);

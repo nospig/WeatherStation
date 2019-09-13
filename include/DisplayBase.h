@@ -4,19 +4,31 @@
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapForecast.h"
 
+enum CurrentDisplayMode
+{
+    DisplayMode_1,
+    DisplayMode_2,
+    DisplayMode_3,
+};
+
 class DisplayBase
 {
     public:
         DisplayBase() {};
 
-        virtual void drawConnectingDisplay() = 0;
+        virtual void drawStartupDisplay() {};
+        virtual void startMainDisplay() {};
 
-        virtual void drawCurrentTime(int day, int hours, int minutes, int seconds) = 0;
-        
-        virtual void drawSensorReadings(float temp, float humidity, float pressure) = 0;
+        virtual void drawCurrentTime(int day, int hours, int minutes, int seconds);        
+        virtual void drawSensorReadings(float temp, float humidity, float pressure);
+        virtual void drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather);
+        virtual void drawForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts);
 
-        virtual void drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather) = 0;
-        virtual void drawForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts) = 0;
+        void setDisplayMode(CurrentDisplayMode mode);
+        CurrentDisplayMode getDisplayMode();
+
+    private:
+        CurrentDisplayMode displayMode = DisplayMode_1;
 };
 
 

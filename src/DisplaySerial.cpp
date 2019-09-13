@@ -8,11 +8,6 @@ DisplaySerial::DisplaySerial()
 
 }
 
-void DisplaySerial::drawConnectingDisplay()
-{
-
-}
-
 void DisplaySerial::drawCurrentTime(int day, int hours, int minutes, int seconds)
 {
     Serial.print(daysOfTheWeek[day]);

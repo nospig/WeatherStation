@@ -2,12 +2,16 @@
 #include "SPI.h"
 #include "TFT_eSPI.h"
 
+#define BACKGROUND_COLOUR TFT_BLACK
+#define SECTION_HEADER_COLOUR TFT_YELLOW
+
 class DisplayTFT : public DisplayBase
 {
     public:
         DisplayTFT();
 
-        void drawConnectingDisplay();
+        void drawStartupDisplay();
+        void startMainDisplay();
 
         void drawCurrentTime(int day, int hours, int minutes, int seconds);
 
@@ -17,5 +21,7 @@ class DisplayTFT : public DisplayBase
         void drawForecastWeather(OpenWeatherMapForecastData forecastWeather[], int numForecasts);
 
     private:
+        void drawStaticElements();
+
         TFT_eSPI *tft;
 };
