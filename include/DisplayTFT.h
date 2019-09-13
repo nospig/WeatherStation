@@ -1,4 +1,6 @@
 #include "DisplayBase.h"
+#include "SPI.h"
+#include "TFT_eSPI.h"
 
 class DisplayTFT : public DisplayBase
 {
@@ -13,4 +15,7 @@ class DisplayTFT : public DisplayBase
 
         void drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather);
         void drawForecastWeather(OpenWeatherMapForecastData forecastWeather[], int numForecasts);
+
+    private:
+        TFT_eSPI *tft;
 };

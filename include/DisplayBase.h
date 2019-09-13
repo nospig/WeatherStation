@@ -1,3 +1,6 @@
+#ifndef _DisplayBase_h
+#define _DisplayBase_h
+
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapForecast.h"
 
@@ -16,3 +19,5 @@ class DisplayBase
         virtual void drawForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts) = 0;
 };
 
+
+#endif // _DisplayBase_h

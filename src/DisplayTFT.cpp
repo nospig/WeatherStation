@@ -1,11 +1,18 @@
 #include <Arduino.h>
 #include "DisplayTFT.h"
+#include "SPI.h"
+#include "TFT_eSPI.h"
 
 const char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 DisplayTFT::DisplayTFT()
 {
+    tft = new TFT_eSPI();
 
+    tft->begin();
+    tft->setRotation(0);
+
+    tft->fillRect(0, 0, 240, 320, TFT_RED);
 }
 
 void DisplayTFT::drawConnectingDisplay()

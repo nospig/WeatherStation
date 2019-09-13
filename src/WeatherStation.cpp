@@ -12,6 +12,7 @@
 #include "WeatherStation.h"
 #include "Secrets.h"
 #include "DisplaySerial.h"
+#include "DisplayTFT.h"
 #include "WebServer.h"
 #include "ThingSpeakReporter.h"
 #include "BMEReader.h"
@@ -137,7 +138,8 @@ void setup()
 
     SPIFFS.begin();
 
-    display = new DisplaySerial();
+    //display = new DisplaySerial();
+    display = new DisplayTFT();
 
     currentWeatherClient.setMetric(true);
     currentWeatherClient.setLanguage("en");
