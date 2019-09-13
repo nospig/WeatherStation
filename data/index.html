@@ -19,64 +19,66 @@
 
     <div class="container-fluid" style="margin-top:80px">
         <h3 id="dashboardTitle">Dashboard - not connected</h3>
-        <table class="table" style="background-color: white">
-            <thead class="thead-light">
-                <tr>
-                    <th>Sensor readings</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="row p-2 no-gutters bg-light">
-                            <div class="col-2">
-                                <div class="d-flex align-items-center justify-content-center h-100">
-                                    <img style="width:64px; height:64px" src="img/thermometer.png" >
+        <div class="table-responsive-md">
+            <table class="table" style="background-color: white">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Sensor readings</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="row p-2 no-gutters bg-light">
+                                <div class="col-2">
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <img style="width:64px; height:64px" src="img/thermometer.png" >
+                                    </div>
+                                </div>
+                                <div class="col">
+                                        <div class="d-flex flex-column">
+                                            <div class="p-2">Temperature</div>
+                                            <div class="p-2" id="sensorTemp">Waiting...</div>                                                    
+                                        </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                    <div class="d-flex flex-column">
-                                        <div class="p-2">Temperature</div>
-                                        <div class="p-2" id="sensorTemp">Waiting...</div>                                                    
+                        </td>
+                        <td>
+                            <div class="row p-2 no-gutters bg-light">
+                                <div class="col-2">
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <img style="width:64px; height:64px" src="img/humidity.png" >
                                     </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="row p-2 no-gutters bg-light">
-                            <div class="col-2">
-                                <div class="d-flex align-items-center justify-content-center h-100">
-                                    <img style="width:64px; height:64px" src="img/humidity.png" >
+                                </div>
+                                <div class="col">
+                                        <div class="d-flex flex-column">
+                                            <div class="p-2">Humidty</div>
+                                            <div class="p-2" id="sensorHumidity">Waiting...</div>                                                    
+                                        </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                    <div class="d-flex flex-column">
-                                        <div class="p-2">Humidty</div>
-                                        <div class="p-2" id="sensorHumidity">Waiting...</div>                                                    
+                        </td>
+                        <td>
+                            <div class="row p-2 no-gutters bg-light">
+                                <div class="col-2">
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <img style="width:64px; height:64px" src="img/gauge.png" >
                                     </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="row p-2 no-gutters bg-light">
-                            <div class="col-2">
-                                <div class="d-flex align-items-center justify-content-center h-100">
-                                    <img style="width:64px; height:64px" src="img/gauge.png" >
+                                </div>
+                                <div class="col">
+                                        <div class="d-flex flex-column">
+                                            <div class="p-2">Pressure</div>
+                                            <div class="p-2" id="sensorPressure">Waiting...</div>                                                    
+                                        </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                    <div class="d-flex flex-column">
-                                        <div class="p-2">Pressure</div>
-                                        <div class="p-2" id="sensorPressure">Waiting...</div>                                                    
-                                    </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <table class="table" style="background-color: white">
             <thead class="thead-light">
