@@ -9,7 +9,6 @@ const long utcOffsetInSeconds = 25200;
 #define TIME_FETCH_INTERVAL 5 * SECONDS_MULT
 
 // weather
-const String OPEN_WEATHER_MAP_APP_ID = "6ab13e460fb4109fea6810327ec66ff1";
 const String OPEN_WEATHER_MAP_LOCATION_ID = "6845590";
 #define NUM_FORECASTS 5
 uint8_t forecastHours[] = {12};

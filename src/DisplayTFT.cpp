@@ -10,9 +10,9 @@ DisplayTFT::DisplayTFT()
     tft = new TFT_eSPI();
 
     tft->begin();
-    tft->setRotation(0);
+    tft->setRotation(2);
 
-    tft->fillRect(0, 0, 240, 320, TFT_RED);
+    tft->fillRect(0, 0, 240, 320, TFT_BLACK);
 }
 
 void DisplayTFT::drawConnectingDisplay()
