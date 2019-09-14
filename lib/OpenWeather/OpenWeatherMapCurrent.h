@@ -54,8 +54,6 @@ class OpenWeatherMapCurrent
         void setLanguage(String language) { this->language = language; }
         String getLanguage() { return language; }
 
-        String getMeteoconIcon(String icon);
-
         boolean isValidData() { return validData; }
         void setValidData(boolean valid) { validData = valid; }
 

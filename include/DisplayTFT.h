@@ -33,6 +33,7 @@ class DisplayTFT : public DisplayBase
     private:
         void drawStaticElements();
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
-
+        const unsigned short* getIconData(String iconId);
+        
         TFT_eSPI *tft;
 };

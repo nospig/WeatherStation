@@ -3,6 +3,7 @@
 #include "SPI.h"
 #include "TFT_eSPI.h"
 #include <time.h>
+#include "icons/weatherIcons.h"
 
 const char daysOfTheWeek[7][12] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
@@ -12,6 +13,9 @@ DisplayTFT::DisplayTFT()
 
     tft->begin();
     tft->setRotation(2);
+
+    // Swap the colour byte order when rendering for images
+    tft->setSwapBytes(true);
 }
  
 void DisplayTFT::drawStartupDisplay()
@@ -22,7 +26,6 @@ void DisplayTFT::drawStartupDisplay()
     tft->setTextDatum(MC_DATUM);
     tft->setTextColor(TFT_WHITE, BACKGROUND_COLOUR); 
     tft->drawString("Connecting.", tft->width()/2, tft->height()/2);
-    tft->unloadFont();
 }
 
 void DisplayTFT::startMainDisplay()
@@ -94,7 +97,7 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y)
 {
     // testing, maybe best just to wipe as not updated often
-    tft->fillRect(0, y,tft->width(), 75, TFT_LIGHTGREY);
+    tft->fillRect(0, y,tft->width(), 75, BACKGROUND_COLOUR);
 
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
@@ -117,6 +120,7 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, i
     tft->setTextDatum(TL_DATUM);
     tft->drawString(currentWeather->description, x - widthTemp, y + 50);    
 
+    tft->pushImage(160, y+24, 48, 48, getIconData(currentWeather->icon));
 }
 
 
@@ -165,3 +169,83 @@ void DisplayTFT::drawWiFiStrength(long dBm)
     }
 }
 
+const unsigned short* DisplayTFT::getIconData(String iconId)
+{    
+    // convert icon code from weather to our image, not all handled
+    if(iconId == "01d")
+    {
+        return icon_01d;
+    }
+    if(iconId == "02d")
+    {
+        return icon_02d;
+    }
+    if(iconId == "03d")
+    {
+        return icon_03d;
+    }
+    if(iconId == "04d")
+    {
+        return icon_03d;
+    }
+    if(iconId == "09d")
+    {
+        return icon_09d;
+    }
+    if(iconId == "10d")
+    {
+        return icon_10d;
+    }
+    if(iconId == "11d")
+    {
+        return icon_11d;
+    }
+    if(iconId == "13d")
+    {
+        return icon_13d;
+    }
+    if(iconId == "50d")
+    {
+        return icon_50d;
+    }
+    if(iconId == "01n")
+    {
+        return icon_01n;
+    }
+    if(iconId == "02n")
+    {
+        return icon_02n;
+    }
+    if(iconId == "03n")
+    {
+        return icon_03d;
+    }
+    if(iconId == "04n")
+    {
+        return icon_03d;
+    }
+    if(iconId == "09n")
+    {
+        return icon_09n;
+    }
+    if(iconId == "10n")
+    {
+        return icon_09n;
+    }
+    if(iconId == "11n")
+    {
+        return icon_11n;
+    }
+    if(iconId == "13n")
+    {
+        return icon_13n;
+    }
+    if(iconId == "50n")
+    {
+        return icon_50d;
+    }
+
+    Serial.println("Icon: " + iconId + " not handled.");
+
+    return icon_01d;
+}
