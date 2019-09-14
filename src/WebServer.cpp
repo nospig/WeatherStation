@@ -78,7 +78,7 @@ void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
     jsonDoc["type"] = "currentWeather";
 
     JsonObject weather = jsonDoc.createNestedObject("currentReadings");
-    weather["temp"] = currentWeather.tempMax;
+    weather["temp"] = currentWeather.temp;
     weather["humidity"] = currentWeather.humidity;
     weather["windSpeed"] = currentWeather.windSpeed;
     weather["windDirection"] = currentWeather.windDeg;

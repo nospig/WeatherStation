@@ -22,97 +22,48 @@
  */
 
 #pragma once
-#include <JsonListener.h>
-#include <JsonStreamingParser.h>
 
-typedef struct OpenWeatherMapCurrentData {
-  // "lon": 8.54,
-  float lon;
-  // "lat": 47.37
-  float lat;
-  // "id": 521,
-  uint16_t weatherId;
-  // "main": "Rain",
-  String main;
-  // "description": "shower rain",
-  String description;
-  // "icon": "09d"
-  String icon;
-  String iconMeteoCon;
-  // "temp": 290.56,
-  float temp;
-  // "pressure": 1013,
-  uint16_t pressure;
-  // "humidity": 87,
-  uint8_t humidity;
-  // "temp_min": 289.15,
-  float tempMin;
-  // "temp_max": 292.15
-  float tempMax;
-  // visibility: 10000,
-  uint16_t visibility;
-  // "wind": {"speed": 1.5},
-  float windSpeed;
-  // "wind": {deg: 226.505},
-  float windDeg;
-  // "clouds": {"all": 90},
-  uint8_t clouds;
-  // "dt": 1527015000,
-  uint32_t observationTime;
-  // "country": "CH",
-  String country;
-  // "sunrise": 1526960448,
-  uint32_t sunrise;
-  // "sunset": 1527015901
-  uint32_t sunset;
-  // "name": "Zurich",
-  String cityName;
+#include <Arduino.h>
+
+typedef struct OpenWeatherMapCurrentData
+{
+    uint16_t weatherId;
+    String main;
+    String description;
+    String icon;
+    float temp;
+    uint16_t pressure;
+    uint8_t humidity;
+    float windSpeed;
+    float windDeg;
+    uint32_t observationTime;
 } OpenWeatherMapCurrentData;
 
-class OpenWeatherMapCurrent: public JsonListener {
-  private:
-    String currentKey;
-    String currentParent;
-    OpenWeatherMapCurrentData *data;
-    uint8_t weatherItemCounter = 0;
-    boolean metric = true;
-    String language;
-    boolean validData;
 
-    void doUpdate(OpenWeatherMapCurrentData *data, String url);
-    String buildUrl(String appId, String locationParameter);
+class OpenWeatherMapCurrent
+{
+    public:
+        OpenWeatherMapCurrent();
+        void updateCurrent(OpenWeatherMapCurrentData *data, String appId, String location);
+        void updateCurrentById(OpenWeatherMapCurrentData *data, String appId, String locationId);
 
-  public:
-    OpenWeatherMapCurrent();
-    void updateCurrent(OpenWeatherMapCurrentData *data, String appId, String location);
-    void updateCurrentById(OpenWeatherMapCurrentData *data, String appId, String locationId);
+        void setMetric(boolean metric) { this->metric = metric; }
+        boolean isMetric() { return metric; }
 
-    void setMetric(boolean metric) {this->metric = metric;}
-    boolean isMetric() { return metric; }
-    
-    void setLanguage(String language) { this->language = language; }
-    String getLanguage() { return language; }
-    
-    String getMeteoconIcon(String icon);
+        void setLanguage(String language) { this->language = language; }
+        String getLanguage() { return language; }
 
-    boolean isValidData() { return validData; }
-    void setValidData(boolean valid) { validData = valid; }
+        String getMeteoconIcon(String icon);
 
-    virtual void whitespace(char c);
+        boolean isValidData() { return validData; }
+        void setValidData(boolean valid) { validData = valid; }
 
-    virtual void startDocument();
+    private:
+        boolean metric = true;
+        String language;
+        boolean validData;
 
-    virtual void key(String key);
-
-    virtual void value(String value);
-
-    virtual void endArray();
-
-    virtual void endObject();
-
-    virtual void endDocument();
-
-    virtual void startArray();
-
-    virtual void startObject();
+        void doUpdate(OpenWeatherMapCurrentData *data, String url);
+        String buildUrl(String appId, String locationParameter);
+        void deserializeWeather(OpenWeatherMapCurrentData *data, String json);
 };

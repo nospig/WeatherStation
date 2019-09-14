@@ -19,274 +19,180 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+ 
+ File modified from the ThingPulse project to change json decoding and data saved
  */
 
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include "OpenWeatherMapCurrent.h"
+#include <ArduinoJson.h>
 
-OpenWeatherMapCurrent::OpenWeatherMapCurrent() {
-
+OpenWeatherMapCurrent::OpenWeatherMapCurrent()
+{
 }
 
-void OpenWeatherMapCurrent::updateCurrent(OpenWeatherMapCurrentData *data, String appId, String location) {
-  doUpdate(data, buildUrl(appId, "q=" + location));
+void OpenWeatherMapCurrent::updateCurrent(OpenWeatherMapCurrentData *data, String appId, String location)
+{
+    doUpdate(data, buildUrl(appId, "q=" + location));
 }
 
-void OpenWeatherMapCurrent::updateCurrentById(OpenWeatherMapCurrentData *data, String appId, String locationId) {
-  doUpdate(data, buildUrl(appId, "id=" + locationId));
+void OpenWeatherMapCurrent::updateCurrentById(OpenWeatherMapCurrentData *data, String appId, String locationId)
+{
+    doUpdate(data, buildUrl(appId, "id=" + locationId));
 }
 
-String OpenWeatherMapCurrent::buildUrl(String appId, String locationParameter) {
-  String units = metric ? "metric" : "imperial";
-  return "http://api.openweathermap.org/data/2.5/weather?" + locationParameter + "&appid=" + appId + "&units=" + units + "&lang=" + language;
+String OpenWeatherMapCurrent::buildUrl(String appId, String locationParameter)
+{
+    String units = metric ? "metric" : "imperial";
+    return "http://api.openweathermap.org/data/2.5/weather?" + locationParameter + "&appid=" + appId + "&units=" + units + "&lang=" + language;
 }
 
-void OpenWeatherMapCurrent::doUpdate(OpenWeatherMapCurrentData *data, String url) {
-  this->weatherItemCounter = 0;
-  this->data = data;
-  this->setValidData(false);
-  
-  JsonStreamingParser parser;
-  parser.setListener(this);
-  
-  // must be in this order
-  WiFiClient client;
-  HTTPClient http;
+void OpenWeatherMapCurrent::doUpdate(OpenWeatherMapCurrentData *data, String url)
+{
+    this->setValidData(false);
 
-  http.begin(client, url);
-  int httpCode = http.GET();
+    // must be in this order
+    WiFiClient client;
+    HTTPClient http;
 
-  //Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+    http.begin(client, url);
+    int httpCode = http.GET();
 
-  if (httpCode > 0) {
-        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) 
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
         {
-            String payload = http.getString();
-            //Serial.println(payload);
-            for(unsigned int i=0; i<payload.length(); i++)
-            {
-                parser.parse(payload.charAt(i));
-                yield();
-            }
-            this->setValidData(true);
+            deserializeWeather(data, http.getString());
         }
-  }
-  http.end();
-
-  this->data = nullptr;
-}
-
-void OpenWeatherMapCurrent::whitespace(char c) {
-  //Serial.println("whitespace");
-}
-
-void OpenWeatherMapCurrent::startDocument() {
-  //Serial.println("start document");
-}
-
-void OpenWeatherMapCurrent::key(String key) {
-  currentKey = String(key);
-}
-
-void OpenWeatherMapCurrent::value(String value) {
-  // "lon": 8.54, float lon;
-  if (currentKey == "lon") {
-    this->data->lon = value.toFloat();
-  }
-  // "lat": 47.37 float lat;
-  if (currentKey == "lat") {
-    this->data->lat = value.toFloat();
-  }
-  // weatherItemCounter: only get the first item if more than one is available
-  if (currentParent == "weather" && weatherItemCounter == 0) {
-    // "id": 521, weatherId weatherId;
-    if (currentKey == "id") {
-      this->data->weatherId = value.toInt();
     }
-    // "main": "Rain", String main;
-    if (currentKey == "main") {
-      this->data->main = value;
+    http.end();
+}
+
+void OpenWeatherMapCurrent::deserializeWeather(OpenWeatherMapCurrentData *data, String json)
+{
+    //Serial.println(json);
+
+    DynamicJsonDocument doc(1024); // size calculated with ArduinoJson assistant
+    deserializeJson(doc, json);
+
+    JsonObject weather_0 = doc["weather"][0];
+    data->main = (const char*)weather_0["main"];
+    data->description = (const char*)weather_0["description"];
+    data->icon = (const char*)weather_0["icon"];
+
+    data->windSpeed = doc["wind"]["speed"];
+    data->windDeg = doc["wind"]["deg"]; 
+    data->observationTime = doc["dt"];
+
+    JsonObject main = doc["main"];
+    data->temp = main["temp"];
+    data->pressure = main["pressure"];
+    data->humidity = main["humidity"];   
+}
+
+String OpenWeatherMapCurrent::getMeteoconIcon(String icon)
+{
+    // clear sky
+    // 01d
+    if (icon == "01d")
+    {
+        return "B";
     }
-    // "description": "shower rain", String description;
-    if (currentKey == "description") {
-      this->data->description = value;
+    // 01n
+    if (icon == "01n")
+    {
+        return "C";
     }
-    // "icon": "09d" String icon;
-   //String iconMeteoCon;
-    if (currentKey == "icon") {
-      this->data->icon = value;
-      this->data->iconMeteoCon = getMeteoconIcon(value);
+    // few clouds
+    // 02d
+    if (icon == "02d")
+    {
+        return "H";
     }
-
-  }
-
-  // "temp": 290.56, float temp;
-  if (currentKey == "temp") {
-    this->data->temp = value.toFloat();
-  }
-  // "pressure": 1013, uint16_t pressure;
-  if (currentKey == "pressure") {
-    this->data->pressure = value.toInt();
-  }
-  // "humidity": 87, uint8_t humidity;
-  if (currentKey == "humidity") {
-    this->data->humidity = value.toInt();
-  }
-  // "temp_min": 289.15, float tempMin;
-  if (currentKey == "temp_min") {
-    this->data->tempMin = value.toFloat();
-  }
-  // "temp_max": 292.15 float tempMax;
-  if (currentKey == "temp_max") {
-    this->data->tempMax = value.toFloat();
-  }
-  // visibility: 10000, uint16_t visibility;
-  if (currentKey == "visibility") {
-    this->data->visibility = value.toInt();
-  }
-  // "wind": {"speed": 1.5}, float windSpeed;
-  if (currentKey == "speed") {
-    this->data->windSpeed = value.toFloat();
-  }
-  // "wind": {deg: 226.505}, float windDeg;
-  if (currentKey == "deg") {
-    this->data->windDeg = value.toFloat();
-  }
-  // "clouds": {"all": 90}, uint8_t clouds;
-  if (currentKey == "all") {
-    this->data->clouds = value.toInt();
-  }
-  // "dt": 1527015000, uint64_t observationTime;
-  if (currentKey == "dt") {
-    this->data->observationTime = value.toInt();
-  }
-  // "country": "CH", String country;
-  if (currentKey == "country") {
-    this->data->country = value;
-  }
-  // "sunrise": 1526960448, uint32_t sunrise;
-  if (currentKey == "sunrise") {
-    this->data->sunrise = value.toInt();
-  }
-  // "sunset": 1527015901 uint32_t sunset;
-  if (currentKey == "sunset") {
-    this->data->sunset = value.toInt();
-  }
-  // "name": "Zurich", String cityName;
-  if (currentKey == "name") {
-    this->data->cityName = value;
-  }
-}
-
-void OpenWeatherMapCurrent::endArray() {
-
-}
-
-
-void OpenWeatherMapCurrent::startObject() {
-  currentParent = currentKey;
-}
-
-void OpenWeatherMapCurrent::endObject() {
-  if (currentParent == "weather") {
-    weatherItemCounter++;
-  }
-  currentParent = "";
-}
-
-void OpenWeatherMapCurrent::endDocument() {
-}
-
-void OpenWeatherMapCurrent::startArray() {
-
-}
-
-
-String OpenWeatherMapCurrent::getMeteoconIcon(String icon) {
- 	// clear sky
-  // 01d
-  if (icon == "01d") 	{
-    return "B";
-  }
-  // 01n
-  if (icon == "01n") 	{
-    return "C";
-  }
-  // few clouds
-  // 02d
-  if (icon == "02d") 	{
-    return "H";
-  }
-  // 02n
-  if (icon == "02n") 	{
-    return "4";
-  }
-  // scattered clouds
-  // 03d
-  if (icon == "03d") 	{
-    return "N";
-  }
-  // 03n
-  if (icon == "03n") 	{
-    return "5";
-  }
-  // broken clouds
-  // 04d
-  if (icon == "04d") 	{
-    return "Y";
-  }
-  // 04n
-  if (icon == "04n") 	{
-    return "%";
-  }
-  // shower rain
-  // 09d
-  if (icon == "09d") 	{
-    return "R";
-  }
-  // 09n
-  if (icon == "09n") 	{
-    return "8";
-  }
-  // rain
-  // 10d
-  if (icon == "10d") 	{
-    return "Q";
-  }
-  // 10n
-  if (icon == "10n") 	{
-    return "7";
-  }
-  // thunderstorm
-  // 11d
-  if (icon == "11d") 	{
-    return "P";
-  }
-  // 11n
-  if (icon == "11n") 	{
-    return "6";
-  }
-  // snow
-  // 13d
-  if (icon == "13d") 	{
-    return "W";
-  }
-  // 13n
-  if (icon == "13n") 	{
-    return "#";
-  }
-  // mist
-  // 50d
-  if (icon == "50d") 	{
-    return "M";
-  }
-  // 50n
-  if (icon == "50n") 	{
-    return "M";
-  }
-  // Nothing matched: N/A
-  return ")";
-
+    // 02n
+    if (icon == "02n")
+    {
+        return "4";
+    }
+    // scattered clouds
+    // 03d
+    if (icon == "03d")
+    {
+        return "N";
+    }
+    // 03n
+    if (icon == "03n")
+    {
+        return "5";
+    }
+    // broken clouds
+    // 04d
+    if (icon == "04d")
+    {
+        return "Y";
+    }
+    // 04n
+    if (icon == "04n")
+    {
+        return "%";
+    }
+    // shower rain
+    // 09d
+    if (icon == "09d")
+    {
+        return "R";
+    }
+    // 09n
+    if (icon == "09n")
+    {
+        return "8";
+    }
+    // rain
+    // 10d
+    if (icon == "10d")
+    {
+        return "Q";
+    }
+    // 10n
+    if (icon == "10n")
+    {
+        return "7";
+    }
+    // thunderstorm
+    // 11d
+    if (icon == "11d")
+    {
+        return "P";
+    }
+    // 11n
+    if (icon == "11n")
+    {
+        return "6";
+    }
+    // snow
+    // 13d
+    if (icon == "13d")
+    {
+        return "W";
+    }
+    // 13n
+    if (icon == "13n")
+    {
+        return "#";
+    }
+    // mist
+    // 50d
+    if (icon == "50d")
+    {
+        return "M";
+    }
+    // 50n
+    if (icon == "50n")
+    {
+        return "M";
+    }
+    // Nothing matched: N/A
+    return ")";
 }
