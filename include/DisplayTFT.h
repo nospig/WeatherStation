@@ -11,6 +11,8 @@
 #define SENSOR_READINGS_COLOUR TFT_YELLOW
 #define TIME_TEXT_COLOUR 0x75DF
 
+#define WIFI_STRENGTH_COLOUR 0x75DF
+
 class DisplayTFT : public DisplayBase
 {
     public:
@@ -26,7 +28,7 @@ class DisplayTFT : public DisplayBase
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
         void drawForecastWeather(OpenWeatherMapDailyData forecastWeather[]);
         void drawWiFiStrength(long dBm);
-        
+
     private:
         void drawStaticElements();
 

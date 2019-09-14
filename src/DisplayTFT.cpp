@@ -53,17 +53,19 @@ void DisplayTFT::drawCurrentTime(unsigned long epochTime)
     timeInfo = gmtime(&time);
     char buffer[16];
 
+    int y = tft->height();
+
     tft->setTextDatum(BR_DATUM);
     sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
-    tft->drawString(buffer, tft->width()/2-30, tft->height()-2); 
+    tft->drawString(buffer, tft->width()/2-30, y); 
 
     tft->setTextDatum(BC_DATUM);
     int day = (timeInfo->tm_mday-1) % 7;
-    tft->drawString(daysOfTheWeek[day], tft->width()/2, tft->height()-2); 
+    tft->drawString(daysOfTheWeek[day], tft->width()/2, y); 
 
     tft->setTextDatum(BL_DATUM);
     sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
-    tft->drawString(buffer, tft->width()/2+30, tft->height()-2); 
+    tft->drawString(buffer, tft->width()/2+30, y); 
 }
 
 void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
@@ -108,5 +110,28 @@ void DisplayTFT::drawWiFiStrength(long dBm)
 {
     int percentage = min(max(2 * ((int)dBm + 100), 0), 100); // how Microsoft convert, linear in the range -100 to -50
 
-    Serial.printf("wifi: dBm: %ld percent: %d\n", dBm, percentage);
+    //Serial.printf("wifi: dBm: %ld percent: %d\n", dBm, percentage);
+
+    int x = 4;
+    int y = tft->height()-2;
+    uint32_t barColour;
+    int barValue = 0;
+    int barHeight = 2;
+
+    for(int i=0; i<5; i++)
+    {
+        if(percentage >= barValue)
+        {
+            barColour = WIFI_STRENGTH_COLOUR;
+        }
+        else
+        {
+            barColour = BACKGROUND_COLOUR;
+        }
+        tft->drawLine(x, y, x, y-barHeight, barColour);
+        
+        barHeight += 2;
+        barValue += 20;
+        x += 2;
+    }
 }
