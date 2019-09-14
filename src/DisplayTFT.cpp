@@ -98,11 +98,11 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, i
 
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
-    tft->setTextColor(SECTION_HEADER_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
+    tft->setTextColor(SECTION_HEADER_COLOUR); 
     tft->drawString(currentWeather->location, tft->width()/2, y); 
 
     tft->setTextFont(4);
-    tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR); 
 
     String tempString = String(currentWeather->temp, 1);
     int x = tft->width()/2 - 40;
@@ -113,9 +113,9 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, i
     widthTemp = tft->textWidth(tempString + "C");
 
     tft->setTextFont(2);
-    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
     tft->setTextDatum(TL_DATUM);
-    tft->drawString(currentWeather->description, x - widthTemp, y + 48);    
+    tft->drawString(currentWeather->description, x - widthTemp, y + 50);    
 
 }
 

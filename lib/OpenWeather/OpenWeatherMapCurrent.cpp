@@ -104,11 +104,12 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
 
 String OpenWeatherMapCurrent::captaliseString(String input)
 {
+    char last = ' ';
+
     input.toLowerCase();
 
     for(unsigned int i=0; i<input.length(); i++)
     {
-        static char last = ' ';
         char c = input.charAt(i);
         if(last == ' ' && c != ' ' && isAlpha(c))
         {
