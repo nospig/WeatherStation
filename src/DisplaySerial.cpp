@@ -28,15 +28,17 @@ void DisplaySerial::drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather
 
 }
 
-void DisplaySerial::drawForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts)
+void DisplaySerial::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather)
 {
-    Serial.printf("Forecast weather for %d forecasts\n", numForecasts);
+    //Serial.printf("Forecast weather for %d forecasts\n", numForecasts);
 
-    OpenWeatherMapForecastData* data = &forecastWeather[0];
+/*
+    OpenWeatherMapDailyData* data = &forecastWeather[0];
 
     time_t time = data->observationTime;
     struct tm* timeInfo;
     timeInfo = gmtime(&time);
 
     Serial.printf("Day %d, month %d: max temp %f\n", timeInfo->tm_mday, timeInfo->tm_mon, data->tempMax);
+    */
 }

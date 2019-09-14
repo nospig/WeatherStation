@@ -68,10 +68,11 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
 
 }
 
-void DisplayTFT::drawForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts)
+void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather)
 {
-    Serial.printf("Forecast weather for %d forecasts\n", numForecasts);
+    //Serial.printf("Forecast weather for %d forecasts\n", numForecasts);
 
+/*
     OpenWeatherMapForecastData* data = &forecastWeather[0];
 
     time_t time = data->observationTime;
@@ -79,5 +80,6 @@ void DisplayTFT::drawForecastWeather(OpenWeatherMapForecastData* forecastWeather
     timeInfo = gmtime(&time);
 
     Serial.printf("Day %d, month %d: max temp %f\n", timeInfo->tm_mday, timeInfo->tm_mon, data->tempMax);
+    */
 }
 

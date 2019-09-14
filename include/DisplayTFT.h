@@ -18,7 +18,7 @@ class DisplayTFT : public DisplayBase
         void drawSensorReadings(float temp, float humidity, float pressure);
 
         void drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather);
-        void drawForecastWeather(OpenWeatherMapForecastData forecastWeather[], int numForecasts);
+        void drawForecastWeather(OpenWeatherMapDailyData forecastWeather[]);
 
     private:
         void drawStaticElements();

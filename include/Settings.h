@@ -1,5 +1,8 @@
 #include <Arduino.h>
 
+// task scheduler
+#define _TASK_SLEEP_ON_IDLE_RUN
+
 // time
 #define SECONDS_MULT 1000
 #define MINUTES_MULT 60 * SECONDS_MULT
@@ -10,8 +13,7 @@ const long utcOffsetInSeconds = 25200;
 
 // weather
 const String OPEN_WEATHER_MAP_LOCATION_ID = "6845590";
-#define NUM_FORECASTS 5
-uint8_t forecastHours[] = {12};
+#define NUM_FORECASTS 6
 
 #define CURRENT_WEATHER_INTERVAL 1 * MINUTES_MULT   // for testing, increase for final or config through webserver
 #define FORECAST_WEATHER_INTERVAL 5 * MINUTES_MULT   // for testing, increase for final or config through webserver

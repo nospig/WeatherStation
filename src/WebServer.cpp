@@ -95,7 +95,7 @@ void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
     }
 }
     
-void WebServer::updateForecastWeather(OpenWeatherMapForecastData* forecastWeather, int numForecasts)
+void WebServer::updateForecastWeather(OpenWeatherMapDailyData* forecastWeather)
 {
     
 }

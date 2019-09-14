@@ -1,5 +1,3 @@
-#define _TASK_SLEEP_ON_IDLE_RUN
-
 #include <Arduino.h>
 #include <TaskScheduler.h>
 #include <NTPClient.h>
@@ -7,7 +5,7 @@
 #include <WiFiUdp.h>
 #include <ESPAsyncWifiManager.h>
 #include "OpenWeatherMapCurrent.h"
-#include "OpenWeatherMapForecast.h"
+ #include "OpenWeatherMapDaily.h"
 #include "Settings.h"
 #include "WeatherStation.h"
 #include "Secrets.h"
@@ -27,8 +25,8 @@ ThingSpeakReporter thingSpeakReporter;
 DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
 OpenWeatherMapCurrentData currentWeather;
-OpenWeatherMapForecast forecastWeatherClient;
-OpenWeatherMapForecastData forecastWeather[NUM_FORECASTS];
+OpenWeatherMapDaily forecastWeatherClient;
+OpenWeatherMapDailyData forecastWeather[NUM_FORECASTS];
 DNSServer dns;
 BMEReader bmeReader;
 float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
@@ -94,13 +92,11 @@ void getCurrentWeatherCallback()
 
 void getWeatherForecastCallback()
 {
-    int numForecasts;
-
     //Serial.println("Get forecast weather");
 
-    numForecasts = forecastWeatherClient.updateForecastsById(forecastWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID, NUM_FORECASTS);
-    display->drawForecastWeather(forecastWeather, numForecasts);
-    webServer.updateForecastWeather(forecastWeather, numForecasts);
+    forecastWeatherClient.updateById(forecastWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID, NUM_FORECASTS);
+    display->drawForecastWeather(forecastWeather);
+    webServer.updateForecastWeather(forecastWeather);
 }
 
 void connectWifiCallback()
@@ -151,7 +147,6 @@ void setup()
 
     forecastWeatherClient.setMetric(true);
     forecastWeatherClient.setLanguage("en");
-    forecastWeatherClient.setAllowedHours(forecastHours, sizeof(forecastHours));
 
     taskScheduler.startNow(); 
     taskScheduler.addTask(connectWifi);
