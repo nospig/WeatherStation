@@ -37,6 +37,7 @@ Task readSensors(SENSOR_READING_INTERVAL, TASK_FOREVER, &readSensorsCallback);
 Task getCurrentWeather(CURRENT_WEATHER_INTERVAL, TASK_FOREVER, &getCurrentWeatherCallback);
 Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherForecastCallback);
 Task updateThingSpeak(THINGSPEAK_REPORTING_INTERVAL, TASK_FOREVER, &updateThingSpeakCallback);
+Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengthCallback);
 
 // task callbacks
 
@@ -87,6 +88,8 @@ void getCurrentWeatherCallback()
     currentWeatherClient.updateById(OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
     display->drawCurrentWeather(currentWeatherClient.getCurrentData());
     webServer.updateCurrentWeather(currentWeatherClient.getCurrentData());
+
+    WiFi.RSSI();
 }
 
 void getWeatherForecastCallback()
@@ -97,6 +100,8 @@ void getWeatherForecastCallback()
     display->drawForecastWeather(forecastWeather);
     webServer.updateForecastWeather(forecastWeather);
 }
+
+// wifi
 
 void connectWifiCallback()
 {
@@ -122,12 +127,20 @@ void connectWifiCallback()
     taskScheduler.addTask(getForecastWeather);
     taskScheduler.addTask(readSensors);
     taskScheduler.addTask(updateThingSpeak);
+    taskScheduler.addTask(updateWiFiStrength);
     updateThingSpeak.disable();
     
     getTime.enable();
     getCurrentWeather.enable();
     getForecastWeather.enable();
     readSensors.enable();
+    updateWiFiStrength.enable();
+}
+
+void updateWifiStrengthCallback()
+{
+    long wifiStrength = WiFi.RSSI();
+    display->drawWiFiStrength(wifiStrength);
 }
 
 // basic setup and loop

@@ -104,3 +104,9 @@ void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather)
     */
 }
 
+void DisplayTFT::drawWiFiStrength(long dBm)
+{
+    int percentage = min(max(2 * ((int)dBm + 100), 0), 100); // how Microsoft convert, linear in the range -100 to -50
+
+    Serial.printf("wifi: dBm: %ld percent: %d\n", dBm, percentage);
+}

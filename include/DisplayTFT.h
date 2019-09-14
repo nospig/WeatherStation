@@ -25,7 +25,8 @@ class DisplayTFT : public DisplayBase
 
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
         void drawForecastWeather(OpenWeatherMapDailyData forecastWeather[]);
-
+        void drawWiFiStrength(long dBm);
+        
     private:
         void drawStaticElements();
 
