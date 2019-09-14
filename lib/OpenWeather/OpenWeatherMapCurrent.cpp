@@ -51,7 +51,9 @@ void OpenWeatherMapCurrent::updateById(String appId, String locationId)
 String OpenWeatherMapCurrent::buildUrl(String appId, String locationParameter)
 {
     String units = metric ? "metric" : "imperial";
-    return "http://api.openweathermap.org/data/2.5/weather?" + locationParameter + "&appid=" + appId + "&units=" + units + "&lang=" + language;
+    // something is caching data, don't know where, try a random param
+    int randomForCache = random(2147483647);
+    return "http://api.openweathermap.org/data/2.5/weather?" + locationParameter + "&appid=" + appId + "&units=" + units + "&lang=" + language + "&nospig=" + randomForCache;
 }
 
 void OpenWeatherMapCurrent::doUpdate(String url)
