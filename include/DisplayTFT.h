@@ -2,8 +2,14 @@
 #include "SPI.h"
 #include "TFT_eSPI.h"
 
+// http://rinkydinkelectronics.com/calc_rgb565.php
+
 #define BACKGROUND_COLOUR TFT_BLACK
 #define SECTION_HEADER_COLOUR TFT_YELLOW
+#define SECTION_HEADER_LINE_COLOUR 0x75DF
+
+#define SENSOR_READINGS_COLOUR TFT_YELLOW
+#define TIME_TEXT_COLOUR 0x75DF
 
 class DisplayTFT : public DisplayBase
 {
@@ -13,7 +19,7 @@ class DisplayTFT : public DisplayBase
         void drawStartupDisplay();
         void startMainDisplay();
 
-        void drawCurrentTime(int day, int hours, int minutes, int seconds);
+        void drawCurrentTime(unsigned long epochTime);
 
         void drawSensorReadings(float temp, float humidity, float pressure);
 

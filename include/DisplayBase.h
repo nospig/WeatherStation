@@ -19,7 +19,7 @@ class DisplayBase
         virtual void drawStartupDisplay() {};
         virtual void startMainDisplay() {};
 
-        virtual void drawCurrentTime(int day, int hours, int minutes, int seconds);        
+        virtual void drawCurrentTime(unsigned long epochTime);        
         virtual void drawSensorReadings(float temp, float humidity, float pressure);
         virtual void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
         virtual void drawForecastWeather(OpenWeatherMapDailyData* forecastWeather);

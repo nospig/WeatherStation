@@ -45,7 +45,7 @@ Task updateThingSpeak(THINGSPEAK_REPORTING_INTERVAL, TASK_FOREVER, &updateThingS
 void getTimeCallback()
 {
     timeClient.update();
-    display->drawCurrentTime(timeClient.getDay(), timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds());
+    display->drawCurrentTime(timeClient.getEpochTime());
 }
 
 // sensors

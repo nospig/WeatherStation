@@ -8,11 +8,8 @@ DisplaySerial::DisplaySerial()
 
 }
 
-void DisplaySerial::drawCurrentTime(int day, int hours, int minutes, int seconds)
+void DisplaySerial::drawCurrentTime(unsigned long epochTime)
 {
-    Serial.print(daysOfTheWeek[day]);
-    Serial.print(", ");
-    Serial.printf("%02d:%02d:%02d\n", hours, minutes, seconds);
 }
 
 void DisplaySerial::drawSensorReadings(float temp, float humidity, float pressure)

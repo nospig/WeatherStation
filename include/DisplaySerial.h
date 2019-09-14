@@ -5,7 +5,7 @@ class DisplaySerial : public DisplayBase
     public:
         DisplaySerial();
 
-        void drawCurrentTime(int day, int hours, int minutes, int seconds);
+        void drawCurrentTime(unsigned long epochTime);
 
         void drawSensorReadings(float temp, float humidity, float pressure);
 
