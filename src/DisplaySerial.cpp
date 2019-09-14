@@ -20,11 +20,11 @@ void DisplaySerial::drawSensorReadings(float temp, float humidity, float pressur
     Serial.printf("Sensor readings: Temp:%f, humidity:%f, pressure:%f\n", temp, humidity, pressure);
 }
 
-void DisplaySerial::drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
+void DisplaySerial::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
     Serial.println("Current weather");
 
-    Serial.printf("temp %f, humidity %d\n", currentWeather.temp, currentWeather.humidity);
+    Serial.printf("temp %f, humidity %d\n", currentWeather->temp, currentWeather->humidity);
 
 }
 

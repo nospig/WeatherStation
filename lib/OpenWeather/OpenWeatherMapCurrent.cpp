@@ -33,14 +33,19 @@ OpenWeatherMapCurrent::OpenWeatherMapCurrent()
 {
 }
 
-void OpenWeatherMapCurrent::updateCurrent(OpenWeatherMapCurrentData *data, String appId, String location)
+OpenWeatherMapCurrentData* OpenWeatherMapCurrent::getCurrentData()
 {
-    doUpdate(data, buildUrl(appId, "q=" + location));
+    return &data;
 }
 
-void OpenWeatherMapCurrent::updateCurrentById(OpenWeatherMapCurrentData *data, String appId, String locationId)
+void OpenWeatherMapCurrent::update(String appId, String location)
 {
-    doUpdate(data, buildUrl(appId, "id=" + locationId));
+    doUpdate(buildUrl(appId, "q=" + location));
+}
+
+void OpenWeatherMapCurrent::updateById(String appId, String locationId)
+{
+    doUpdate(buildUrl(appId, "id=" + locationId));
 }
 
 String OpenWeatherMapCurrent::buildUrl(String appId, String locationParameter)
@@ -49,7 +54,7 @@ String OpenWeatherMapCurrent::buildUrl(String appId, String locationParameter)
     return "http://api.openweathermap.org/data/2.5/weather?" + locationParameter + "&appid=" + appId + "&units=" + units + "&lang=" + language;
 }
 
-void OpenWeatherMapCurrent::doUpdate(OpenWeatherMapCurrentData *data, String url)
+void OpenWeatherMapCurrent::doUpdate(String url)
 {
     this->setValidData(false);
 
@@ -64,13 +69,13 @@ void OpenWeatherMapCurrent::doUpdate(OpenWeatherMapCurrentData *data, String url
     {
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
         {
-            deserializeWeather(data, http.getString());
+            deserializeWeather(http.getString());
         }
     }
     http.end();
 }
 
-void OpenWeatherMapCurrent::deserializeWeather(OpenWeatherMapCurrentData *data, String json)
+void OpenWeatherMapCurrent::deserializeWeather(String json)
 {
     //Serial.println(json);
 
@@ -78,18 +83,18 @@ void OpenWeatherMapCurrent::deserializeWeather(OpenWeatherMapCurrentData *data, 
     deserializeJson(doc, json);
 
     JsonObject weather_0 = doc["weather"][0];
-    data->main = (const char*)weather_0["main"];
-    data->description = (const char*)weather_0["description"];
-    data->icon = (const char*)weather_0["icon"];
+    data.main = (const char*)weather_0["main"];
+    data.description = (const char*)weather_0["description"];
+    data.icon = (const char*)weather_0["icon"];
 
-    data->windSpeed = doc["wind"]["speed"];
-    data->windDeg = doc["wind"]["deg"]; 
-    data->observationTime = doc["dt"];
+    data.windSpeed = doc["wind"]["speed"];
+    data.windDeg = doc["wind"]["deg"]; 
+    data.observationTime = doc["dt"];
 
     JsonObject main = doc["main"];
-    data->temp = main["temp"];
-    data->pressure = main["pressure"];
-    data->humidity = main["humidity"];   
+    data.temp = main["temp"];
+    data.pressure = main["pressure"];
+    data.humidity = main["humidity"];   
 }
 
 String OpenWeatherMapCurrent::getMeteoconIcon(String icon)

@@ -14,7 +14,7 @@ class WebServer
         AsyncWebServer* getServer();
 
         void updateSensorReadings(float temp, float humidity, float pressure);
-        void updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather);
+        void updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
         void updateForecastWeather(OpenWeatherMapDailyData* forecastWeather);
 
     private:

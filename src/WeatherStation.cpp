@@ -24,7 +24,6 @@ WebServer webServer;
 ThingSpeakReporter thingSpeakReporter;
 DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
-OpenWeatherMapCurrentData currentWeather;
 OpenWeatherMapDaily forecastWeatherClient;
 OpenWeatherMapDailyData forecastWeather[NUM_FORECASTS];
 DNSServer dns;
@@ -85,9 +84,9 @@ void getCurrentWeatherCallback()
 {
     //Serial.println("Get current weather");
 
-    currentWeatherClient.updateCurrentById(&currentWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
-    display->drawCurrentWeather(currentWeather);
-    webServer.updateCurrentWeather(currentWeather);
+    currentWeatherClient.updateById(OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
+    display->drawCurrentWeather(currentWeatherClient.getCurrentData());
+    webServer.updateCurrentWeather(currentWeatherClient.getCurrentData());
 }
 
 void getWeatherForecastCallback()

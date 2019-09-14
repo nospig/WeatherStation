@@ -44,8 +44,8 @@ class OpenWeatherMapCurrent
 {
     public:
         OpenWeatherMapCurrent();
-        void updateCurrent(OpenWeatherMapCurrentData *data, String appId, String location);
-        void updateCurrentById(OpenWeatherMapCurrentData *data, String appId, String locationId);
+        void update(String appId, String location);
+        void updateById(String appId, String locationId);
 
         void setMetric(boolean metric) { this->metric = metric; }
         boolean isMetric() { return metric; }
@@ -58,12 +58,15 @@ class OpenWeatherMapCurrent
         boolean isValidData() { return validData; }
         void setValidData(boolean valid) { validData = valid; }
 
+        OpenWeatherMapCurrentData* getCurrentData();
+
     private:
         boolean metric = true;
         String language;
         boolean validData;
+        OpenWeatherMapCurrentData data;
 
-        void doUpdate(OpenWeatherMapCurrentData *data, String url);
+        void doUpdate(String url);
         String buildUrl(String appId, String locationParameter);
-        void deserializeWeather(OpenWeatherMapCurrentData *data, String json);
+        void deserializeWeather(String json);
 };

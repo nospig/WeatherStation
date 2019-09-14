@@ -60,11 +60,11 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
 
 }
 
-void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
+void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
     Serial.println("Current weather");
 
-    Serial.printf("temp %f, humidity %d\n", currentWeather.temp, currentWeather.humidity);
+    Serial.printf("temp %f, humidity %d\n", currentWeather->temp, currentWeather->humidity);
 
 }
 

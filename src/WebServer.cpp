@@ -68,7 +68,7 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
     }
 }
 
-void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
+void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
     String output;
 
@@ -78,12 +78,12 @@ void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData& currentWeather)
     jsonDoc["type"] = "currentWeather";
 
     JsonObject weather = jsonDoc.createNestedObject("currentReadings");
-    weather["temp"] = currentWeather.temp;
-    weather["humidity"] = currentWeather.humidity;
-    weather["windSpeed"] = currentWeather.windSpeed;
-    weather["windDirection"] = currentWeather.windDeg;
-    weather["description"] = currentWeather.description;
-    weather["time"] = currentWeather.observationTime;
+    weather["temp"] = currentWeather->temp;
+    weather["humidity"] = currentWeather->humidity;
+    weather["windSpeed"] = currentWeather->windSpeed;
+    weather["windDirection"] = currentWeather->windDeg;
+    weather["description"] = currentWeather->description;
+    weather["time"] = currentWeather->observationTime;
 
     serializeJson(jsonDoc, output);
     currentWeatherJson = output;
