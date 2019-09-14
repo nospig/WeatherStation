@@ -71,25 +71,54 @@ void DisplayTFT::drawCurrentTime(unsigned long epochTime)
 void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
 {
     tft->setTextFont(4);
-    tft->setTextDatum(TL_DATUM);
     tft->setTextColor(SENSOR_READINGS_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextPadding(10);
 
     String tempString = String(temp, 1);
-    tft->drawString(tempString + "C", 22, 24);
+    int center = tft->width()/2;
 
     tft->setTextDatum(TR_DATUM);
+    tft->drawString(tempString + "C", center - 40 , 24);
+
+    tft->setTextDatum(TL_DATUM);
     String humidityString = String(humidity, 0);
-    tft->drawString(humidityString + "%", 240-22, 24);
+    tft->drawString(humidityString + "%", center + 40, 24);
 }
 
 void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
-    Serial.println("Current weather");
+    // TODO, depends on mode?
+    drawCurrentWeather(currentWeather, 58);
+}
 
-    Serial.printf("temp %f, humidity %d\n", currentWeather->temp, currentWeather->humidity);
+void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y)
+{
+    // testing, maybe best just to wipe as not updated often
+    tft->fillRect(0, y,tft->width(), 75, TFT_LIGHTGREY);
+
+    tft->setTextFont(2);
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(SECTION_HEADER_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
+    tft->drawString(currentWeather->location, tft->width()/2, y); 
+
+    tft->setTextFont(4);
+    tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR, BACKGROUND_COLOUR); 
+
+    String tempString = String(currentWeather->temp, 1);
+    int x = tft->width()/2 - 40;
+    int widthTemp;
+
+    tft->setTextDatum(TR_DATUM);
+    tft->drawString(tempString + "C", x , y + 24);    
+    widthTemp = tft->textWidth(tempString + "C");
+
+    tft->setTextFont(2);
+    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextDatum(TL_DATUM);
+    tft->drawString(currentWeather->description, x - widthTemp, y + 48);    
 
 }
+
 
 void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather)
 {
@@ -135,3 +164,4 @@ void DisplayTFT::drawWiFiStrength(long dBm)
         x += 2;
     }
 }
+

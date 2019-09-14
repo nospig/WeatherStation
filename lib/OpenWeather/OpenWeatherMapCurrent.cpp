@@ -90,11 +90,34 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
     data.windSpeed = doc["wind"]["speed"];
     data.windDeg = doc["wind"]["deg"]; 
     data.observationTime = doc["dt"];
+    data.location = (const char*)doc["name"];
 
     JsonObject main = doc["main"];
     data.temp = main["temp"];
     data.pressure = main["pressure"];
     data.humidity = main["humidity"];   
+    
+    data.description = captaliseString(data.description);
+
+    Serial.println("Conditions: " + data.description);
+}
+
+String OpenWeatherMapCurrent::captaliseString(String input)
+{
+    input.toLowerCase();
+
+    for(unsigned int i=0; i<input.length(); i++)
+    {
+        static char last = ' ';
+        char c = input.charAt(i);
+        if(last == ' ' && c != ' ' && isAlpha(c))
+        {
+            input.setCharAt(i, toUpperCase(c));            
+        }
+        last = c;
+    }
+
+    return input;
 }
 
 String OpenWeatherMapCurrent::getMeteoconIcon(String icon)

@@ -4,14 +4,15 @@
 
 // http://rinkydinkelectronics.com/calc_rgb565.php
 
-#define BACKGROUND_COLOUR TFT_BLACK
-#define SECTION_HEADER_COLOUR TFT_YELLOW
-#define SECTION_HEADER_LINE_COLOUR 0x75DF
+#define BACKGROUND_COLOUR                   TFT_BLACK
+#define SECTION_HEADER_COLOUR               TFT_YELLOW
+#define SECTION_HEADER_LINE_COLOUR          0x75DF
+#define SENSOR_READINGS_COLOUR              TFT_YELLOW
+#define TIME_TEXT_COLOUR                    0x75DF
+#define WIFI_STRENGTH_COLOUR                0x75DF
+#define CURRENT_WEATHER_TEMP_COLOUR         TFT_YELLOW
+#define CURRENT_WEATHER_CONDITIONS_COLOUR   TFT_YELLOW
 
-#define SENSOR_READINGS_COLOUR TFT_YELLOW
-#define TIME_TEXT_COLOUR 0x75DF
-
-#define WIFI_STRENGTH_COLOUR 0x75DF
 
 class DisplayTFT : public DisplayBase
 {
@@ -31,6 +32,7 @@ class DisplayTFT : public DisplayBase
 
     private:
         void drawStaticElements();
+        void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
 
         TFT_eSPI *tft;
 };

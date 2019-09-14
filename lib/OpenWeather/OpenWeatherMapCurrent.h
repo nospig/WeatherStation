@@ -31,6 +31,7 @@ typedef struct OpenWeatherMapCurrentData
     String main;
     String description;
     String icon;
+    String location;
     float temp;
     uint16_t pressure;
     uint8_t humidity;
@@ -69,4 +70,5 @@ class OpenWeatherMapCurrent
         void doUpdate(String url);
         String buildUrl(String appId, String locationParameter);
         void deserializeWeather(String json);
+        String captaliseString(String input);
 };
