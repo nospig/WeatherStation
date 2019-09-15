@@ -34,131 +34,82 @@ void DisplayTFT::startMainDisplay()
     drawStaticElements();
 }
 
-void DisplayTFT::drawStaticElements()
-{
-    // TODO, modes
-    tft->setTextFont(2);
-    tft->setTextDatum(TC_DATUM);
-    tft->setTextColor(SECTION_HEADER_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
-    tft->drawString("Indoor", tft->width()/2, 2); 
-
-    tft->drawLine(0, 55, tft->width(), 55, SECTION_HEADER_LINE_COLOUR); // below indoor readings
-    tft->drawLine(0, tft->height()-20, tft->width(), tft->height()-20, SECTION_HEADER_LINE_COLOUR); // above time section
-
-    tft->drawLine(0, 150, tft->width(), 150, SECTION_HEADER_LINE_COLOUR); // below internet weather
-    tft->drawString("Forecast", tft->width()/2, 155); 
-}
-
 void DisplayTFT::drawCurrentTime(unsigned long epochTime)
 {
-    tft->setTextFont(2);
-    tft->setTextPadding(10);
-    tft->setTextColor(TIME_TEXT_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
-   
-    time_t time = epochTime;
-    struct tm* timeInfo;
-    timeInfo = gmtime(&time);
-    char buffer[16];
-
-    int y = tft->height();
-
-    tft->setTextDatum(BR_DATUM);
-    sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
-    tft->drawString(buffer, tft->width()/2-30, y); 
-
-    tft->setTextDatum(BC_DATUM);
-    int day = (timeInfo->tm_mday-1) % 7;
-    tft->drawString(daysOfTheWeek[day], tft->width()/2, y); 
-
-    tft->setTextDatum(BL_DATUM);
-    sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
-    tft->drawString(buffer, tft->width()/2+30, y); 
+    drawTimeDisplay(epochTime, MODE_1_TIME_Y);
 }
 
 void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
 {
-    tft->setTextFont(4);
-    tft->setTextColor(SENSOR_READINGS_COLOUR, BACKGROUND_COLOUR); 
-    tft->setTextPadding(10);
-
-    String tempString = String(temp, 1);
-    int center = tft->width()/2;
-
-    tft->setTextDatum(TR_DATUM);
-    tft->drawString(tempString + "C", center - 40 , 24);
-
-    tft->setTextDatum(TL_DATUM);
-    String humidityString = String(humidity, 0);
-    tft->drawString(humidityString + "%", center + 40, 24);
+    drawSensorReadings(temp, humidity, pressure, MODE_1_INDOOR_Y);
 }
 
 void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
     // TODO, depends on mode?
-    drawCurrentWeather(currentWeather, 58);
+    drawCurrentWeather(currentWeather, MODE_1_CURRENT_Y);
 }
-
-void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y)
-{
-    // maybe best just to wipe as not updated often
-    tft->fillRect(0, y,tft->width(), 75, BACKGROUND_COLOUR);
-
-    tft->setTextFont(2);
-    tft->setTextDatum(TC_DATUM);
-    tft->setTextColor(SECTION_HEADER_COLOUR); 
-    tft->drawString(currentWeather->location, tft->width()/2, y); 
-
-    tft->setTextFont(4);
-    tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR); 
-
-    String tempString = String(currentWeather->temp, 1);
-    int x = tft->width()/2 - 40;
-    int widthTemp;
-
-    tft->setTextDatum(TR_DATUM);
-    tft->drawString(tempString + "C", x , y + 24);    
-    widthTemp = tft->textWidth(tempString + "C");
-
-    tft->setTextFont(2);
-    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
-    tft->setTextDatum(TL_DATUM);
-    tft->drawString(currentWeather->description, x - widthTemp, y + 50);    
-
-    tft->pushImage(160, y+24, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(currentWeather->icon));
-}
-
 
 void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
     // TODO, depending on screen mode
     if(forecastCount >= 3)
     {
-        drawHorizontalForecast(forecastWeather, 190, 3);
+        drawHorizontalForecast(forecastWeather, MODE_1_FORECAST_Y, 3);
     }
-
-    /*
-    Serial.printf("Forecast weather for %d forecasts\n", forecastCount);
-
-    for(int i=0; i<forecastCount; i++)
-    {
-        OpenWeatherMapDailyData* data = &forecastWeather[i];
-
-        Serial.printf("Day: %d, min %f, max %f\n", i, data->tempMin, data->tempMax);
-    }
-    */
 }
+
+void DisplayTFT::drawWiFiStrength(long dBm)
+{
+    int percentage = min(max(2 * ((int)dBm + 100), 0), 100); // how Microsoft convert, linear in the range -100 to -50
+
+    int x = 4;
+    int y = tft->height()-2;
+    uint32_t barColour;
+    int barValue = 0;
+    int barHeight = 2;
+
+    for(int i=0; i<5; i++)
+    {
+        if(percentage >= barValue)
+        {
+            barColour = WIFI_STRENGTH_COLOUR;
+        }
+        else
+        {
+            barColour = BACKGROUND_COLOUR;
+        }
+        tft->drawLine(x, y, x, y-barHeight, barColour);
+        
+        barHeight += 2;
+        barValue += 20;
+        x += 2;
+    }
+}
+
+/****************************************************************************************
+ * 
+ * 
+ * 
+ * 
+****************************************************************************************/
 
 void DisplayTFT::drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count)
 {
+    tft->setTextFont(2);
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(SECTION_HEADER_COLOUR); 
+    tft->drawString("Forecast", tft->width()/2, y+2); 
+
     // maybe best just to wipe as not updated often
-    tft->fillRect(0, y, tft->width(), 90, BACKGROUND_COLOUR);
+    tft->fillRect(0, y+30, tft->width(), 90, BACKGROUND_COLOUR);
 
     int width = tft->width() / (count+1);
     int x = width;
 
     for(int i=0; i<count; i++)
     {
-        drawSmallForecast(&forecastWeather[i], y, x);
+        drawSmallForecast(&forecastWeather[i], y+30, x);
         x += width;
     }
 }
@@ -187,34 +138,91 @@ void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int
     tft->drawString(buffer, x, y); 
 }
 
-void DisplayTFT::drawWiFiStrength(long dBm)
+void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y)
 {
-    int percentage = min(max(2 * ((int)dBm + 100), 0), 100); // how Microsoft convert, linear in the range -100 to -50
+    // maybe best just to wipe as not updated often
+    tft->fillRect(0, y+20, tft->width(), 60, BACKGROUND_COLOUR);
 
-    //Serial.printf("wifi: dBm: %ld percent: %d\n", dBm, percentage);
+    tft->setTextFont(2);
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(SECTION_HEADER_COLOUR); 
+    tft->drawString(currentWeather->location, tft->width()/2, y+2); 
 
-    int x = 4;
-    int y = tft->height()-2;
-    uint32_t barColour;
-    int barValue = 0;
-    int barHeight = 2;
+    tft->setTextFont(4);
+    tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR); 
 
-    for(int i=0; i<5; i++)
+    String tempString = String(currentWeather->temp, 1);
+    int x = tft->width()/2 - 40;
+    int widthTemp;
+
+    tft->setTextDatum(TR_DATUM);
+    tft->drawString(tempString + "C", x , y + 32);    
+    widthTemp = tft->textWidth(tempString + "C");
+
+    tft->setTextFont(2);
+    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
+    tft->setTextDatum(TL_DATUM);
+    tft->drawString(currentWeather->description, x - widthTemp, y + 58);    
+
+    tft->pushImage(160, y+30, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(currentWeather->icon));
+}
+
+void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, int y)
+{
+    tft->setTextFont(2);
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(SECTION_HEADER_COLOUR, BACKGROUND_COLOUR);
+    tft->drawString("Indoor", tft->width()/2, y+2); 
+
+    tft->setTextFont(4);
+    tft->setTextColor(SENSOR_READINGS_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextPadding(10);
+
+    String tempString = String(temp, 1);
+    int center = tft->width()/2;
+
+    tft->setTextDatum(TR_DATUM);
+    tft->drawString(tempString + "C", center - 40 , y+26);
+
+    tft->setTextDatum(TL_DATUM);
+    String humidityString = String(humidity, 0);
+    tft->drawString(humidityString + "%", center + 40, y+26);
+}
+
+void DisplayTFT::drawStaticElements()
+{
+    if(getDisplayMode() == DisplayMode_1)
     {
-        if(percentage >= barValue)
-        {
-            barColour = WIFI_STRENGTH_COLOUR;
-        }
-        else
-        {
-            barColour = BACKGROUND_COLOUR;
-        }
-        tft->drawLine(x, y, x, y-barHeight, barColour);
-        
-        barHeight += 2;
-        barValue += 20;
-        x += 2;
+        tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
+        tft->drawLine(0, MODE_1_FORECAST_Y, tft->width(), MODE_1_FORECAST_Y, SECTION_HEADER_LINE_COLOUR); 
+        tft->drawLine(0, MODE_1_TIME_Y, tft->width(), MODE_1_TIME_Y, SECTION_HEADER_LINE_COLOUR); 
     }
+}
+
+void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
+{
+    tft->setTextFont(2);
+    tft->setTextPadding(10);
+    tft->setTextColor(TIME_TEXT_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
+   
+    time_t time = epochTime;
+    struct tm* timeInfo;
+    timeInfo = gmtime(&time);
+    char buffer[16];
+
+    y += MODE_1_TIME_HEIGHT;
+
+    tft->setTextDatum(BR_DATUM);
+    sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
+    tft->drawString(buffer, tft->width()/2-30, y); 
+
+    tft->setTextDatum(BC_DATUM);
+    int day = (timeInfo->tm_mday-1) % 7;
+    tft->drawString(daysOfTheWeek[day], tft->width()/2, y); 
+
+    tft->setTextDatum(BL_DATUM);
+    sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
+    tft->drawString(buffer, tft->width()/2+30, y); 
 }
 
 const unsigned short* DisplayTFT::getIconData(String iconId)
