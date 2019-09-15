@@ -53,7 +53,7 @@ void getTimeCallback()
 
 void readSensorsCallback()
 {
-    Serial.println("Read sensors now");
+    //Serial.println("Read sensors now");
 
     if(bmeReader.isActive())
     {
@@ -73,7 +73,7 @@ void readSensorsCallback()
 
 void updateThingSpeakCallback()
 {
-    Serial.println("Update ThingSpeak");
+    //Serial.println("Update ThingSpeak");
 
     // just send the latest sensor saved readings, no need to update again, avoid chances of updating the sensor too soon
     thingSpeakReporter.sendSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
@@ -99,6 +99,23 @@ void getWeatherForecastCallback()
     forecastWeatherClient.updateById(OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
     display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
     webServer.updateForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+}
+
+// display
+
+// only call if all data is available
+
+void changeDisplayMode(DisplayMode newMode)
+{
+    display->setDisplayMode(newMode);
+
+    if(bmeReader.isActive())
+    {
+        display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+    }
+    display->drawCurrentWeather(currentWeatherClient.getCurrentData());
+    display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+    display->drawCurrentTime(timeClient.getEpochTime());
 }
 
 // wifi

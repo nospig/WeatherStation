@@ -22,6 +22,8 @@
 #define MODE_1_TIME_Y       300
 #define MODE_1_TIME_HEIGHT  20
 
+#define MODE_2_FORECAST_Y   0
+
 #define WEATHER_ICON_WIDTH 48
 #define WEATHER_ICON_HEIGHT 48
 
@@ -41,6 +43,8 @@ class DisplayTFT : public DisplayBase
         void drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount);
         void drawWiFiStrength(long dBm);
 
+        void setDisplayMode(DisplayMode mode);
+
     private:
         void drawStaticElements();
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
@@ -49,6 +53,9 @@ class DisplayTFT : public DisplayBase
         void drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x);
         void drawTimeDisplay(unsigned long epochTime, int y);
         void drawSensorReadings(float temp, float humidity, float pressure, int y);
+
+        void drawVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count);
+        void drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y);
 
         TFT_eSPI *tft;
 };

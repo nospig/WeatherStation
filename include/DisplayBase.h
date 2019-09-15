@@ -4,7 +4,7 @@
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapDaily.h"
 
-enum CurrentDisplayMode
+enum DisplayMode
 {
     DisplayMode_1,
     DisplayMode_2,
@@ -25,11 +25,11 @@ class DisplayBase
         virtual void drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount) {};
         virtual void drawWiFiStrength(long dBm) {};
 
-        void setDisplayMode(CurrentDisplayMode mode);
-        CurrentDisplayMode getDisplayMode();
+        virtual void setDisplayMode(DisplayMode mode);
+        DisplayMode getDisplayMode();
 
     private:
-        CurrentDisplayMode displayMode = DisplayMode_1;
+        DisplayMode displayMode = DisplayMode_1;
 };
 
 

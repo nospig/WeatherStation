@@ -1,6 +1,8 @@
 #ifndef _weatherstation_h
 #define _weatherstation_h
 
+#include "DisplayBase.h"
+
 // task callbacks
 void connectWifiCallback();
 void getTimeCallback();
@@ -9,5 +11,7 @@ void getWeatherForecastCallback();
 void readSensorsCallback();
 void updateThingSpeakCallback();
 void updateWifiStrengthCallback();
+
+void changeDisplayMode(DisplayMode newMode);
 
 #endif // _weatherstation_h

@@ -6,6 +6,7 @@
 #include "icons/weatherIcons.h"
 
 const char daysOfTheWeek[7][12] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+const char daysOfTheWeekLong[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 DisplayTFT::DisplayTFT()
 {
@@ -23,13 +24,23 @@ void DisplayTFT::drawStartupDisplay()
     tft->fillScreen(BACKGROUND_COLOUR);
 
     tft->setTextFont(4);
-    tft->setTextDatum(MC_DATUM);
+    tft->setTextDatum(BC_DATUM);
     tft->setTextColor(TFT_WHITE, BACKGROUND_COLOUR); 
     tft->drawString("Connecting.", tft->width()/2, tft->height()/2);
 }
 
 void DisplayTFT::startMainDisplay()
 {
+    tft->fillScreen(BACKGROUND_COLOUR);
+    drawStaticElements();
+}
+
+void DisplayTFT::setDisplayMode(DisplayMode mode)
+{
+    DisplayBase::setDisplayMode(mode);
+
+    // do display changing logic, going to assume for now in main display mode
+    // caller responsible for updating all elements after making this call
     tft->fillScreen(BACKGROUND_COLOUR);
     drawStaticElements();
 }
@@ -41,22 +52,46 @@ void DisplayTFT::drawCurrentTime(unsigned long epochTime)
 
 void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
 {
-    drawSensorReadings(temp, humidity, pressure, MODE_1_INDOOR_Y);
+    switch(getDisplayMode())
+    {
+        case DisplayMode_1:
+            drawSensorReadings(temp, humidity, pressure, MODE_1_INDOOR_Y);
+            break;
+        default:
+            break;
+    }
 }
 
 void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
-    // TODO, depends on mode?
-    drawCurrentWeather(currentWeather, MODE_1_CURRENT_Y);
+    switch(getDisplayMode())
+    {
+        case DisplayMode_1:
+            drawCurrentWeather(currentWeather, MODE_1_CURRENT_Y);
+            break;
+        default:
+            break;
+
+    }    
 }
 
 void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
-    // TODO, depending on screen mode
-    if(forecastCount >= 3)
+    int count;
+
+    switch(getDisplayMode())
     {
-        drawHorizontalForecast(forecastWeather, MODE_1_FORECAST_Y, 3);
-    }
+        case DisplayMode_1:
+            count = min(3, forecastCount);
+            drawHorizontalForecast(forecastWeather, MODE_1_FORECAST_Y, count);
+            break;
+        case DisplayMode_2:
+            count = min(5, forecastCount);
+            drawVerticalForecast(forecastWeather, MODE_2_FORECAST_Y, count);
+            break;
+        default:
+            break;
+    }    
 }
 
 void DisplayTFT::drawWiFiStrength(long dBm)
@@ -89,7 +124,58 @@ void DisplayTFT::drawWiFiStrength(long dBm)
 
 /****************************************************************************************
  * 
+ *  Mode 1 only
  * 
+ * 
+****************************************************************************************/
+
+/****************************************************************************************
+ * 
+ *  Mode 2 only
+ * 
+ * 
+****************************************************************************************/
+
+void DisplayTFT::drawVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count)
+{
+    tft->setTextFont(2);
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(SECTION_HEADER_COLOUR); 
+    tft->drawString("Forecast", tft->width()/2, y+2); 
+
+    y += 24;
+    tft->fillRect(0, y, tft->width(), 270, BACKGROUND_COLOUR);
+
+    for(int i=0; i<count; i++)
+    {
+        drawSingleVerticalForecast(&forecastWeather[i], y);
+        y += 52;
+    }
+}
+
+void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y)
+{
+    time_t time = forecastWeather->time;
+    struct tm* timeInfo;
+    timeInfo = gmtime(&time);
+    char buffer[32];
+
+    tft->pushImage(2, y, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(forecastWeather->icon));
+
+    tft->setTextFont(2);
+    tft->setTextColor(FORECAST_DAY_COLOUR); 
+    tft->setTextDatum(TL_DATUM);
+    
+    int day = (timeInfo->tm_mday-1) % 7;
+    sprintf(buffer, "%s - %.0fC", daysOfTheWeekLong[day], forecastWeather->tempMax);
+    tft->drawString(buffer, 55, y + 8); 
+    tft->drawString(forecastWeather->description, 55, y + tft->fontHeight() + 8); 
+
+}
+
+/****************************************************************************************
+ * 
+ *  Shared drawing routines
  * 
  * 
 ****************************************************************************************/

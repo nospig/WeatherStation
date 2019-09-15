@@ -1,11 +1,11 @@
 #include "DisplayBase.h"
 
-void DisplayBase::setDisplayMode(CurrentDisplayMode mode)
+void DisplayBase::setDisplayMode(DisplayMode mode)
 {
     displayMode = mode;
 }
 
-CurrentDisplayMode DisplayBase::getDisplayMode()
+DisplayMode DisplayBase::getDisplayMode()
 {
     return displayMode;
 }
