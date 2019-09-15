@@ -134,7 +134,7 @@ void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int
     y += WEATHER_ICON_HEIGHT + 4;
 
     tft->setTextDatum(TC_DATUM);
-    sprintf(buffer, "%.0f|%.0f\n", forecastWeather->tempMin, forecastWeather->tempMax);
+    sprintf(buffer, "%.0f | %.0f\n", forecastWeather->tempMin, forecastWeather->tempMax);
     tft->drawString(buffer, x, y); 
 }
 
