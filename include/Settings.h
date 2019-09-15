@@ -13,10 +13,10 @@ const long utcOffsetInSeconds = 25200;
 
 // weather
 const String OPEN_WEATHER_MAP_LOCATION_ID = "6845590";
-#define NUM_FORECASTS 6
+#define NUM_FORECASTS 5                             // needs to match maximum required by display modes
 
-#define CURRENT_WEATHER_INTERVAL 1 * MINUTES_MULT   // for testing, increase for final or config through webserver
-#define FORECAST_WEATHER_INTERVAL 5 * MINUTES_MULT   // for testing, increase for final or config through webserver
+#define CURRENT_WEATHER_INTERVAL 10 * MINUTES_MULT   
+#define FORECAST_WEATHER_INTERVAL 30 * MINUTES_MULT  
 #define SENSOR_READING_INTERVAL 30 * SECONDS_MULT
 #define THINGSPEAK_REPORTING_INTERVAL 30 * MINUTES_MULT
 #define WIFI_STRENGTH_INTERVAL 10 * SECONDS_MULT

@@ -27,6 +27,9 @@
 #define WEATHER_ICON_WIDTH 48
 #define WEATHER_ICON_HEIGHT 48
 
+#define FORECASTS_MODE_1    3
+#define FORECASTS_MODE_2    5
+
 class DisplayTFT : public DisplayBase
 {
     public:

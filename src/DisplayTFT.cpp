@@ -82,11 +82,11 @@ void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, i
     switch(getDisplayMode())
     {
         case DisplayMode_1:
-            count = min(3, forecastCount);
+            count = min(FORECASTS_MODE_1, forecastCount);
             drawHorizontalForecast(forecastWeather, MODE_1_FORECAST_Y, count);
             break;
         case DisplayMode_2:
-            count = min(5, forecastCount);
+            count = min(FORECASTS_MODE_2, forecastCount);
             drawVerticalForecast(forecastWeather, MODE_2_FORECAST_Y, count);
             break;
         default:
