@@ -12,7 +12,10 @@
 #define WIFI_STRENGTH_COLOUR                0x75DF
 #define CURRENT_WEATHER_TEMP_COLOUR         TFT_YELLOW
 #define CURRENT_WEATHER_CONDITIONS_COLOUR   TFT_YELLOW
+#define FORECAST_DAY_COLOUR                 TFT_YELLOW
 
+#define WEATHER_ICON_WIDTH 48
+#define WEATHER_ICON_HEIGHT 48
 
 class DisplayTFT : public DisplayBase
 {
@@ -34,6 +37,8 @@ class DisplayTFT : public DisplayBase
         void drawStaticElements();
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
         const unsigned short* getIconData(String iconId);
-        
+        void drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count);
+        void drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x);
+
         TFT_eSPI *tft;
 };

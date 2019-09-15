@@ -67,6 +67,9 @@ void OpenWeatherMapDaily::deserializeWeather(String json)
     {
         OpenWeatherMapDailyData* data = &forecastWeather[i];
         JsonObject day = list[i];
+
+        data->time = day["dt"];
+
         JsonObject temp = day["temp"];
 
         data->tempMin = temp["min"];

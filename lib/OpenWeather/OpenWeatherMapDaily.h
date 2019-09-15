@@ -9,6 +9,7 @@ typedef struct OpenWeatherMapDaliyData
     float tempMax;
     String icon;
     String description;
+    uint32_t time;
 
     //String main;
     //uint16_t pressure;

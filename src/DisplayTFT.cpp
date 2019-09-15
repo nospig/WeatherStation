@@ -36,6 +36,7 @@ void DisplayTFT::startMainDisplay()
 
 void DisplayTFT::drawStaticElements()
 {
+    // TODO, modes
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
     tft->setTextColor(SECTION_HEADER_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
@@ -43,6 +44,9 @@ void DisplayTFT::drawStaticElements()
 
     tft->drawLine(0, 55, tft->width(), 55, SECTION_HEADER_LINE_COLOUR); // below indoor readings
     tft->drawLine(0, tft->height()-20, tft->width(), tft->height()-20, SECTION_HEADER_LINE_COLOUR); // above time section
+
+    tft->drawLine(0, 150, tft->width(), 150, SECTION_HEADER_LINE_COLOUR); // below internet weather
+    tft->drawString("Forecast", tft->width()/2, 155); 
 }
 
 void DisplayTFT::drawCurrentTime(unsigned long epochTime)
@@ -96,8 +100,8 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 
 void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y)
 {
-    // testing, maybe best just to wipe as not updated often
-    tft->fillRect(0, y,tft->width(), 75, TFT_LIGHTGREY);// BACKGROUND_COLOUR);
+    // maybe best just to wipe as not updated often
+    tft->fillRect(0, y,tft->width(), 75, BACKGROUND_COLOUR);
 
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
@@ -120,12 +124,18 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, i
     tft->setTextDatum(TL_DATUM);
     tft->drawString(currentWeather->description, x - widthTemp, y + 50);    
 
-    tft->pushImage(160, y+24, 48, 48, getIconData(currentWeather->icon));
+    tft->pushImage(160, y+24, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(currentWeather->icon));
 }
 
 
 void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
+    // TODO, depending on screen mode
+    if(forecastCount >= 3)
+    {
+        drawHorizontalForecast(forecastWeather, 190, 3);
+    }
+
     /*
     Serial.printf("Forecast weather for %d forecasts\n", forecastCount);
 
@@ -136,6 +146,45 @@ void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, i
         Serial.printf("Day: %d, min %f, max %f\n", i, data->tempMin, data->tempMax);
     }
     */
+}
+
+void DisplayTFT::drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count)
+{
+    // maybe best just to wipe as not updated often
+    tft->fillRect(0, y, tft->width(), 90, BACKGROUND_COLOUR);
+
+    int width = tft->width() / (count+1);
+    int x = width;
+
+    for(int i=0; i<count; i++)
+    {
+        drawSmallForecast(&forecastWeather[i], y, x);
+        x += width;
+    }
+}
+
+void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x)
+{
+    time_t time = forecastWeather->time;
+    struct tm* timeInfo;
+    timeInfo = gmtime(&time);
+    char buffer[16];
+
+    tft->setTextFont(2);
+    tft->setTextColor(FORECAST_DAY_COLOUR); 
+    tft->setTextDatum(TC_DATUM);
+    int day = (timeInfo->tm_mday-1) % 7;
+    tft->drawString(daysOfTheWeek[day], x, y); 
+
+    y += tft->fontHeight();
+
+    tft->pushImage(x - (WEATHER_ICON_WIDTH/2), y, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(forecastWeather->icon));
+
+    y += WEATHER_ICON_HEIGHT + 4;
+
+    tft->setTextDatum(TC_DATUM);
+    sprintf(buffer, "%.0f|%.0f\n", forecastWeather->tempMin, forecastWeather->tempMax);
+    tft->drawString(buffer, x, y); 
 }
 
 void DisplayTFT::drawWiFiStrength(long dBm)
