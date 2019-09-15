@@ -25,7 +25,7 @@ void DisplaySerial::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather
 
 }
 
-void DisplaySerial::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather)
+void DisplaySerial::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
     //Serial.printf("Forecast weather for %d forecasts\n", numForecasts);
 

@@ -10,5 +10,5 @@ class DisplaySerial : public DisplayBase
         void drawSensorReadings(float temp, float humidity, float pressure);
 
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
-        void drawForecastWeather(OpenWeatherMapDailyData forecastWeather[]);
+        void drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount);
 };

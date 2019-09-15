@@ -101,7 +101,7 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
     
     data.description = captaliseString(data.description);
 
-    Serial.println("Conditions: " + data.description);
+    //Serial.println("Conditions: " + data.description);
 }
 
 String OpenWeatherMapCurrent::captaliseString(String input)

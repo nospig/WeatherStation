@@ -97,7 +97,7 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y)
 {
     // testing, maybe best just to wipe as not updated often
-    tft->fillRect(0, y,tft->width(), 75, BACKGROUND_COLOUR);
+    tft->fillRect(0, y,tft->width(), 75, TFT_LIGHTGREY);// BACKGROUND_COLOUR);
 
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
@@ -124,18 +124,17 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, i
 }
 
 
-void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather)
+void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
-    //Serial.printf("Forecast weather for %d forecasts\n", numForecasts);
+    /*
+    Serial.printf("Forecast weather for %d forecasts\n", forecastCount);
 
-/*
-    OpenWeatherMapForecastData* data = &forecastWeather[0];
+    for(int i=0; i<forecastCount; i++)
+    {
+        OpenWeatherMapDailyData* data = &forecastWeather[i];
 
-    time_t time = data->observationTime;
-    struct tm* timeInfo;
-    timeInfo = gmtime(&time);
-
-    Serial.printf("Day %d, month %d: max temp %f\n", timeInfo->tm_mday, timeInfo->tm_mon, data->tempMax);
+        Serial.printf("Day: %d, min %f, max %f\n", i, data->tempMin, data->tempMax);
+    }
     */
 }
 

@@ -5,25 +5,27 @@
 
 typedef struct OpenWeatherMapDaliyData
 {
-    uint16_t weatherId;
-    String main;
-    String description;
+    float tempMin;
+    float tempMax;
     String icon;
-    float temp;
-    uint16_t pressure;
-    uint8_t humidity;
-    float windSpeed;
-    float windDeg;
-    uint32_t observationTime;
+    String description;
+
+    //String main;
+    //uint16_t pressure;
+    //uint8_t humidity;
+    //float windSpeed;
+    //float windDeg;
+    //uint32_t observationTime;
 } OpenWeatherMapDailyData;
 
 
 class OpenWeatherMapDaily
 {
     public:
-        OpenWeatherMapDaily();
-        void update(OpenWeatherMapDailyData *data, String appId, String location, uint8_t maxForecasts);
-        void updateById(OpenWeatherMapDailyData *data, String appId, String locationId, uint8_t maxForecasts);
+        OpenWeatherMapDaily(int maxForecasts);
+
+        void update(String appId, String location);
+        void updateById(String appId, String locationId);
 
         void setMetric(boolean metric) { this->metric = metric; }
         boolean isMetric() { return metric; }
@@ -31,20 +33,24 @@ class OpenWeatherMapDaily
         void setLanguage(String language) { this->language = language; }
         String getLanguage() { return language; }
 
-        String getMeteoconIcon(String icon);
-
         boolean isValidData() { return validData; }
         void setValidData(boolean valid) { validData = valid; }
+
+        OpenWeatherMapDailyData* getDailyForecasts();
+        int getForecastCount();
 
     private:
         boolean metric = true;
         String language;
         boolean validData;
-        uint8_t maxForecasts;
+        int maxForecasts;
+        int numForcasts;
+        OpenWeatherMapDailyData* forecastWeather;
 
-        void doUpdate(OpenWeatherMapDailyData *data, String url);
+        void doUpdate(String url);
         String buildUrl(String appId, String locationParameter);
-        void deserializeWeather(OpenWeatherMapDailyData *data, String json);
+        void deserializeWeather(String json);
+        String captaliseString(String input);
 };
 
 

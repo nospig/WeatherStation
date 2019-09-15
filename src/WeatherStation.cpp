@@ -24,8 +24,8 @@ WebServer webServer;
 ThingSpeakReporter thingSpeakReporter;
 DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
-OpenWeatherMapDaily forecastWeatherClient;
-OpenWeatherMapDailyData forecastWeather[NUM_FORECASTS];
+OpenWeatherMapDaily forecastWeatherClient(NUM_FORECASTS);
+
 DNSServer dns;
 BMEReader bmeReader;
 float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
@@ -96,9 +96,9 @@ void getWeatherForecastCallback()
 {
     //Serial.println("Get forecast weather");
 
-    forecastWeatherClient.updateById(forecastWeather, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID, NUM_FORECASTS);
-    display->drawForecastWeather(forecastWeather);
-    webServer.updateForecastWeather(forecastWeather);
+    forecastWeatherClient.updateById(OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
+    display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+    webServer.updateForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
 }
 
 // wifi

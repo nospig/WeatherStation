@@ -27,7 +27,6 @@
 
 typedef struct OpenWeatherMapCurrentData
 {
-    uint16_t weatherId;
     String main;
     String description;
     String icon;
