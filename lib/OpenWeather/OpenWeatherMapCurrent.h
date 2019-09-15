@@ -37,6 +37,7 @@ typedef struct OpenWeatherMapCurrentData
     float windSpeed;
     float windDeg;
     uint32_t observationTime;
+    uint32_t timeZone;
 } OpenWeatherMapCurrentData;
 
 

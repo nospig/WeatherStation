@@ -155,7 +155,7 @@ void DisplayTFT::drawVerticalForecast(OpenWeatherMapDailyData *forecastWeather, 
 
 void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y)
 {
-    time_t time = forecastWeather->time;
+    time_t time = forecastWeather->time + forecastWeather->timeZone;
     struct tm* timeInfo;
     timeInfo = gmtime(&time);
     char buffer[32];
@@ -202,7 +202,7 @@ void DisplayTFT::drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather
 
 void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x)
 {
-    time_t time = forecastWeather->time;
+    time_t time = forecastWeather->time + forecastWeather->timeZone;
     struct tm* timeInfo;
     timeInfo = gmtime(&time);
     char buffer[16];

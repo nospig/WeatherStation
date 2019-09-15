@@ -10,13 +10,7 @@ typedef struct OpenWeatherMapDaliyData
     String icon;
     String description;
     uint32_t time;
-
-    //String main;
-    //uint16_t pressure;
-    //uint8_t humidity;
-    //float windSpeed;
-    //float windDeg;
-    //uint32_t observationTime;
+    uint32_t timeZone;
 } OpenWeatherMapDailyData;
 
 

@@ -92,6 +92,7 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
     data.windSpeed = doc["wind"]["speed"];
     data.windDeg = doc["wind"]["deg"]; 
     data.observationTime = doc["dt"];
+    data.timeZone = doc["timeZone"];
     data.location = (const char*)doc["name"];
 
     JsonObject main = doc["main"];

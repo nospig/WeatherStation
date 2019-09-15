@@ -60,6 +60,9 @@ void OpenWeatherMapDaily::deserializeWeather(String json)
     deserializeJson(doc, json);
 
     numForcasts = doc["cnt"];
+    uint32_t timeZone = doc["city"]["timezone"];
+
+    Serial.printf("Timezone : %d\n",timeZone);
 
     JsonArray list = doc["list"];
 
@@ -80,6 +83,7 @@ void OpenWeatherMapDaily::deserializeWeather(String json)
         data->icon = (const char*)weather["icon"];
         data->description = (const char*)weather["description"];
         data->description = captaliseString(data->description);
+        data->timeZone = timeZone;
     }
 }
 
