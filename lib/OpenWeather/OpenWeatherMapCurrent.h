@@ -32,12 +32,19 @@ typedef struct OpenWeatherMapCurrentData
     String icon;
     String location;
     float temp;
+    float tempMin;
+    float tempMax;
     uint16_t pressure;
     uint8_t humidity;
     float windSpeed;
     float windDeg;
     uint32_t observationTime;
     uint32_t timeZone;
+
+    // -1 means no data
+    int cloudPercentage;
+    int rainOneHour;
+    int rainThreeHour;
 } OpenWeatherMapCurrentData;
 
 

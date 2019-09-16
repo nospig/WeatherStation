@@ -97,12 +97,39 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
 
     JsonObject main = doc["main"];
     data.temp = main["temp"];
+    data.tempMin = main["temp_min"];
+    data.tempMax = main["temp_max"];
     data.pressure = main["pressure"];
     data.humidity = main["humidity"];   
     
     data.description = captaliseString(data.description);
+    data.main = captaliseString(data.main);
 
-    //Serial.println("Conditions: " + data.description);
+    JsonObject clouds = doc["clouds"];
+    if(clouds.isNull())
+    {
+        data.cloudPercentage = -1;
+        Serial.println("NO clouds");
+    }
+    else
+    {
+        data.cloudPercentage = clouds["all"];
+        Serial.println("Has clouds");
+    }
+
+    JsonObject rain = doc["rain"];
+    if(rain.isNull())
+    {
+        data.rainOneHour = -1;
+        data.rainThreeHour = -1;
+        Serial.println("NO rain");
+    }
+    else
+    {
+        data.rainOneHour = rain["1h"];
+        data.rainThreeHour = rain["3h"];
+        Serial.println("Has rain");
+    }
 }
 
 String OpenWeatherMapCurrent::captaliseString(String input)
