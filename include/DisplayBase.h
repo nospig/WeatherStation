@@ -29,7 +29,7 @@ class DisplayBase
         DisplayMode getDisplayMode();
 
     private:
-        DisplayMode displayMode = DisplayMode_1;
+        DisplayMode displayMode = DisplayMode_3;
 };
 
 

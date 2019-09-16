@@ -92,7 +92,7 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
     data.windSpeed = doc["wind"]["speed"];
     data.windDeg = doc["wind"]["deg"]; 
     data.observationTime = doc["dt"];
-    data.timeZone = doc["timeZone"];
+    data.timeZone = doc["timezone"];
     data.location = (const char*)doc["name"];
 
     JsonObject main = doc["main"];
@@ -130,6 +130,11 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
         data.rainThreeHour = rain["3h"];
         Serial.println("Has rain");
     }
+
+    JsonObject sys = doc["sys"];
+    data.sunRise = sys["sunrise"];
+    data.sunSet = sys["sunset"];
+
 }
 
 String OpenWeatherMapCurrent::captaliseString(String input)

@@ -24,7 +24,9 @@
 
 #define MODE_2_FORECAST_Y   0
 
-#define WEATHER_ICON_WIDTH 48
+#define MODE_3_CURRENT_Y    MODE_1_CURRENT_Y
+
+#define WEATHER_ICON_WIDTH  48
 #define WEATHER_ICON_HEIGHT 48
 
 #define FORECASTS_MODE_1    3
@@ -50,7 +52,8 @@ class DisplayTFT : public DisplayBase
 
     private:
         void drawStaticElements();
-        void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
+        int drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
+        void drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
         const unsigned short* getIconData(String iconId);
         void drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x);

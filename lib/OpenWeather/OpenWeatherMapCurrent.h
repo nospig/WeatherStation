@@ -39,9 +39,11 @@ typedef struct OpenWeatherMapCurrentData
     float windSpeed;
     float windDeg;
     uint32_t observationTime;
+    uint32_t sunRise;
+    uint32_t sunSet;
     uint32_t timeZone;
 
-    // -1 means no data
+    // -1 means no data for rain and clouds
     int cloudPercentage;
     int rainOneHour;
     int rainThreeHour;

@@ -62,7 +62,7 @@ void OpenWeatherMapDaily::deserializeWeather(String json)
     numForcasts = doc["cnt"];
     uint32_t timeZone = doc["city"]["timezone"];
 
-    Serial.printf("Timezone : %d\n",timeZone);
+    //Serial.printf("Timezone : %d\n",timeZone);
 
     JsonArray list = doc["list"];
 
