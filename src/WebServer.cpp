@@ -44,6 +44,18 @@ void WebServer::init(SettingsManager* settingsManager)
         request->redirect("/index.html");
     });
 
+    server.on("/updateThingSpeak.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleUpdateThingSpeakSettings(request);
+        request->redirect("/index.html");
+    });
+
+    server.on("/updateDisplaySettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleUpdateDisplaySettings(request);
+        request->redirect("/index.html");
+    });
+
     server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send(SPIFFS, "/js/station.js");
@@ -194,6 +206,14 @@ String WebServer::settingsProcessor(const String& token)
     {
         return settingsManager->getOpenWeatherApiKey();
     }
+    if(token == "THINGSPEAKCHANNELKEY")    
+    {
+        return String(settingsManager->getThingSpeakChannelID());
+    }
+    if(token == "THINGSPEAKAPIKEY")    
+    {
+        return settingsManager->getThingSpeakApiKey();
+    }
 
     return String();
 }
@@ -211,7 +231,30 @@ void WebServer::handleUpdateWeatherSettings(AsyncWebServerRequest* request)
     {
         AsyncWebParameter* p = request->getParam("openWeatherApiKey");
         settingsManager->setOpenWeatherApiKey(p->value());
-        
+
         Serial.println("Got weather API key of: " + p->value());
     }
+}
+
+void WebServer::handleUpdateThingSpeakSettings(AsyncWebServerRequest* request)
+{
+    if(request->hasParam("thingSpeakApiKey"))
+    {
+        AsyncWebParameter* p = request->getParam("thingSpeakApiKey");
+        settingsManager->setThingSpeakApiKey(p->value());
+
+        Serial.println("Got ThingSpeak API key of: " + p->value());
+    }
+    if(request->hasParam("thingSpeakChannel"))
+    {
+        AsyncWebParameter* p = request->getParam("thingSpeakChannel");
+        settingsManager->setThingSpeakChannelID(p->value().toInt());
+
+        Serial.println("Got ThingSpeak channel ID of: " + p->value());
+    }
+}
+
+void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
+{
+
 }

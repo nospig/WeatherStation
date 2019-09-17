@@ -23,6 +23,8 @@ class WebServer
         static void updateClientOnConnect();
         static String settingsProcessor(const String& token);
         static void handleUpdateWeatherSettings(AsyncWebServerRequest* request);
+        static void handleUpdateThingSpeakSettings(AsyncWebServerRequest* request);
+        static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);        
 
         static String currentSensorJson;
         static String currentWeatherJson;
