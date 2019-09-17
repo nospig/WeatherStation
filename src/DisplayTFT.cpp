@@ -344,13 +344,13 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
 
     x = drawCurrentWeather(currentWeather, y);
 
-    y += 80;
+    y += 85;
 
     tft->drawLine(0, y, tft->width(), y, SECTION_HEADER_LINE_COLOUR); 
 
     y += 5;
 
-    tft->fillRect(0, y, tft->width(), 145, BACKGROUND_COLOUR);
+    tft->fillRect(0, y, tft->width(), 140, BACKGROUND_COLOUR);
 
     tft->setTextFont(2);
     tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
