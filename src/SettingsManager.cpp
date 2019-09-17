@@ -86,6 +86,7 @@ String SettingsManager::getThingSpeakApiKey()
 void SettingsManager::setThingSpeakApiKey(String apiKey)
 {
     data.thingSpeakAPIKey = apiKey;
+    saveSettings();
     settingsChanged = true;
 }
 
@@ -97,6 +98,7 @@ int SettingsManager::getThingSpeakChannelID()
 void SettingsManager::setThingSpeakChannelID(int channelID)
 {
     data.thingSpeakChannelID = channelID;
+    saveSettings();
     settingsChanged = true;
 }
 
@@ -108,6 +110,7 @@ String SettingsManager::getOpenWeatherApiKey()
 void SettingsManager::setOpenWeatherApiKey(String apiKey)
 {
     data.openWeatherMapAPIKey = apiKey;
+    saveSettings();
     settingsChanged = true;
 }
 
@@ -119,6 +122,7 @@ String SettingsManager::getOpenWeatherlocationID()
 void SettingsManager::setOpenWeatherlocationID(String locationID)
 {
     data.openWeatherLocationID = locationID;
+    saveSettings();
     settingsChanged = true;
 }
 

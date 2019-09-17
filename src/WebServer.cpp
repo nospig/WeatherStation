@@ -11,6 +11,8 @@ String WebServer::currentSensorJson = "";
 String WebServer::currentWeatherJson = "";
 String WebServer::forecastWeatherJson ="";     
 
+SettingsManager* WebServer::settingsManager;    
+
 // methods
 
 void WebServer::init(SettingsManager* settingsManager)
@@ -34,6 +36,12 @@ void WebServer::init(SettingsManager* settingsManager)
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send(SPIFFS, "/settings.html", String(), false, settingsProcessor);
+    });
+
+    server.on("/updateWeatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleUpdateWeatherSettings(request);
+        request->redirect("/index.html");
     });
 
     server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -178,10 +186,32 @@ void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, 
 
 String WebServer::settingsProcessor(const String& token)
 {
-    if(token == "SETTINGS_FORM")    
+    if(token == "WEATHERLOCATIONKEY")    
     {
-        return F("Hello World!");
+        return settingsManager->getOpenWeatherlocationID();
+    }
+    if(token == "WEATHERAPIKEY")    
+    {
+        return settingsManager->getOpenWeatherApiKey();
     }
 
     return String();
+}
+
+void WebServer::handleUpdateWeatherSettings(AsyncWebServerRequest* request)
+{
+    if(request->hasParam("openWeatherLocation"))
+    {
+        AsyncWebParameter* p = request->getParam("openWeatherLocation");
+        settingsManager->setOpenWeatherlocationID(p->value());
+
+        Serial.println("Got weather location of: " + p->value());
+    }
+    if(request->hasParam("openWeatherApiKey"))
+    {
+        AsyncWebParameter* p = request->getParam("openWeatherApiKey");
+        settingsManager->setOpenWeatherApiKey(p->value());
+        
+        Serial.println("Got weather API key of: " + p->value());
+    }
 }
