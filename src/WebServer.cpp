@@ -26,6 +26,16 @@ void WebServer::init(SettingsManager* settingsManager)
         request->send(SPIFFS, "/index.html");
     });
 
+    server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/index.html");
+    });
+
+    server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/settings.html", String(), false, settingsProcessor);
+    });
+
     server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send(SPIFFS, "/js/station.js");
@@ -164,4 +174,14 @@ void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, 
 
         Serial.println();
     }    
+}
+
+String WebServer::settingsProcessor(const String& token)
+{
+    if(token == "SETTINGS_FORM")    
+    {
+        return F("Hello World!");
+    }
+
+    return String();
 }
