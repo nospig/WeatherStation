@@ -13,8 +13,10 @@ String WebServer::forecastWeatherJson ="";
 
 // methods
 
-void WebServer::init()
+void WebServer::init(SettingsManager* settingsManager)
 {
+    this->settingsManager = settingsManager;
+    
     webSocket.onEvent(onEvent);
     server.addHandler(&webSocket);
     server.addHandler(&events);

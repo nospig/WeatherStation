@@ -6,11 +6,12 @@
 
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapDaily.h"
+#include "SettingsManager.h"
 
 class WebServer
 {
     public:
-        void init();
+        void init(SettingsManager* settingsManager);
         AsyncWebServer* getServer();
 
         void updateSensorReadings(float temp, float humidity, float pressure);
@@ -23,7 +24,9 @@ class WebServer
 
         static String currentSensorJson;
         static String currentWeatherJson;
-        static String forecastWeatherJson;        
+        static String forecastWeatherJson;    
+
+        SettingsManager* settingsManager;    
 };
 
 #endif

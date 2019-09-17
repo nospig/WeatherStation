@@ -5,7 +5,8 @@
 #include <WiFiUdp.h>
 #include <ESPAsyncWifiManager.h>
 #include "OpenWeatherMapCurrent.h"
- #include "OpenWeatherMapDaily.h"
+#include "OpenWeatherMapDaily.h"
+#include "SettingsManager.h"
 #include "Settings.h"
 #include "WeatherStation.h"
 #include "Secrets.h"
@@ -25,7 +26,7 @@ ThingSpeakReporter thingSpeakReporter;
 DisplayBase* display;
 OpenWeatherMapCurrent currentWeatherClient;
 OpenWeatherMapDaily forecastWeatherClient(NUM_FORECASTS);
-
+SettingsManager settingsManager;
 DNSServer dns;
 BMEReader bmeReader;
 float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
@@ -85,7 +86,7 @@ void getCurrentWeatherCallback()
 {
     //Serial.println("Get current weather");
 
-    currentWeatherClient.updateById(OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
+    currentWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
     display->drawCurrentWeather(currentWeatherClient.getCurrentData());
     webServer.updateCurrentWeather(currentWeatherClient.getCurrentData());
 
@@ -96,7 +97,7 @@ void getWeatherForecastCallback()
 {
     //Serial.println("Get forecast weather");
 
-    forecastWeatherClient.updateById(OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
+    forecastWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
     display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
     webServer.updateForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
 }
@@ -131,8 +132,10 @@ void connectWifiCallback()
 
     Serial.println(WiFi.localIP());
 
-    webServer.init();
-    thingSpeakReporter.init();
+    settingsManager.init();
+
+    webServer.init(&settingsManager);
+    thingSpeakReporter.init(&settingsManager);
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
 
     delay(WIFI_CONNECTING_DELAY);

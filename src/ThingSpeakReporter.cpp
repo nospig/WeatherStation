@@ -5,8 +5,10 @@
 
 WiFiClient client;
 
-void ThingSpeakReporter::init()
+void ThingSpeakReporter::init(SettingsManager* settingsManager)
 {
+    this->settingsManager = settingsManager;
+    
     ThingSpeak.begin(client);
 }
 
@@ -16,5 +18,5 @@ void ThingSpeakReporter::sendSensorReadings(float temp, float humidity, float pr
     ThingSpeak.setField(2, humidity);
     ThingSpeak.setField(3, pressure);
 
-    ThingSpeak.writeFields(THINGSPEAK_SECRET_CH_ID, THINGSPEAK_SECRET_WRITE_APIKEY);
+    ThingSpeak.writeFields(settingsManager->getThingSpeakChannelID(), settingsManager->getThingSpeakApiKey().c_str());
 }

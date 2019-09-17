@@ -1,3 +1,6 @@
+#ifndef _settings_h
+#define _settings_h
+
 #include <Arduino.h>
 
 // task scheduler
@@ -23,6 +26,10 @@ const String OPEN_WEATHER_MAP_LOCATION_ID = "6845590";
 
 #define WIFI_CONNECTING_DELAY 2 * SECONDS_MULT
 
+// BME280 pins
+// TFT pins changed in the library
 const int BME_SDA = D2;
 const int BME_SCL = D1;
 const uint8_t BME_ADDRESS = 0x76;
+
+#endif // _settings_h
