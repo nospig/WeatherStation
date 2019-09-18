@@ -11,6 +11,7 @@ void getWeatherForecastCallback();
 void readSensorsCallback();
 void updateThingSpeakCallback();
 void updateWifiStrengthCallback();
+void checkSettingsChangedCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 

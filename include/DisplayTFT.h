@@ -39,6 +39,7 @@ class DisplayTFT : public DisplayBase
 
         void drawStartupDisplay();
         void startMainDisplay();
+        void restartMainDisplay();
 
         void drawCurrentTime(unsigned long epochTime);
 

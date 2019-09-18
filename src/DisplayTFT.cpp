@@ -35,6 +35,11 @@ void DisplayTFT::startMainDisplay()
     drawStaticElements();
 }
 
+void DisplayTFT::restartMainDisplay()
+{
+    startMainDisplay();
+}
+
 void DisplayTFT::setDisplayMode(DisplayMode mode)
 {
     DisplayBase::setDisplayMode(mode);

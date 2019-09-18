@@ -18,6 +18,7 @@ class DisplayBase
 
         virtual void drawStartupDisplay() {};
         virtual void startMainDisplay() {};
+        virtual void restartMainDisplay() {};
 
         virtual void drawCurrentTime(unsigned long epochTime) {};        
         virtual void drawSensorReadings(float temp, float humidity, float pressure) {};
@@ -29,7 +30,7 @@ class DisplayBase
         DisplayMode getDisplayMode();
 
     private:
-        DisplayMode displayMode = DisplayMode_3;
+        DisplayMode displayMode = DisplayMode_1;
 };
 
 

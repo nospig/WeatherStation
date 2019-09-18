@@ -30,6 +30,7 @@ void SettingsManager::setDefaultSettings()
     data.thingSpeakAPIKey = THINGSPEAK_SECRET_WRITE_APIKEY;
     data.openWeatherMapAPIKey = OPEN_WEATHER_MAP_APP_ID;
     data.openWeatherLocationID = OPEN_WEATHER_MAP_LOCATION_ID;
+    data.dispayMode = DisplayMode_1;
 }
 
 void SettingsManager::loadSettings()
@@ -45,6 +46,9 @@ void SettingsManager::loadSettings()
     data.thingSpeakChannelID = doc["ThingSpeakChannelID"];
     data.thingSpeakAPIKey = (const char*)doc["ThingSpeakAPIKey"];
 
+    int mode = doc["DisplayMode"];
+    data.dispayMode = (DisplayMode)mode;
+
     // testing
     serializeJson(doc, Serial);
     Serial.println();
@@ -59,6 +63,7 @@ void SettingsManager::saveSettings()
     doc["WeatherLLocationID"] = data.openWeatherLocationID;
     doc["ThingSpeakChannelID"] = data.thingSpeakChannelID;
     doc["ThingSpeakAPIKey"] = data.thingSpeakAPIKey;
+    doc["DisplayMode"] = (int)data.dispayMode;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
@@ -85,9 +90,12 @@ String SettingsManager::getThingSpeakApiKey()
 
 void SettingsManager::setThingSpeakApiKey(String apiKey)
 {
-    data.thingSpeakAPIKey = apiKey;
-    saveSettings();
-    settingsChanged = true;
+    if(apiKey != data.thingSpeakAPIKey)
+    {
+        data.thingSpeakAPIKey = apiKey;
+        saveSettings();
+        settingsChanged = true;
+    }
 }
 
 int SettingsManager::getThingSpeakChannelID()
@@ -97,9 +105,12 @@ int SettingsManager::getThingSpeakChannelID()
 
 void SettingsManager::setThingSpeakChannelID(int channelID)
 {
-    data.thingSpeakChannelID = channelID;
-    saveSettings();
-    settingsChanged = true;
+    if(channelID != data.thingSpeakChannelID)
+    {
+        data.thingSpeakChannelID = channelID;
+        saveSettings();
+        settingsChanged = true;
+    }
 }
 
 String SettingsManager::getOpenWeatherApiKey()
@@ -109,9 +120,12 @@ String SettingsManager::getOpenWeatherApiKey()
 
 void SettingsManager::setOpenWeatherApiKey(String apiKey)
 {
-    data.openWeatherMapAPIKey = apiKey;
-    saveSettings();
-    settingsChanged = true;
+    if(apiKey != data.openWeatherMapAPIKey)
+    {
+        data.openWeatherMapAPIKey = apiKey;
+        saveSettings();
+        settingsChanged = true;
+    }
 }
 
 String SettingsManager::getOpenWeatherlocationID()
@@ -121,10 +135,29 @@ String SettingsManager::getOpenWeatherlocationID()
 
 void SettingsManager::setOpenWeatherlocationID(String locationID)
 {
-    data.openWeatherLocationID = locationID;
-    saveSettings();
-    settingsChanged = true;
+    if(locationID != data.openWeatherLocationID)
+    {
+        data.openWeatherLocationID = locationID;
+        saveSettings();
+        settingsChanged = true;
+    }
 }
+
+DisplayMode SettingsManager::getDisplayMode()
+{
+    return data.dispayMode;
+}
+
+void SettingsManager::setDisplayMode(DisplayMode displayMode)
+{
+    if(displayMode != data.dispayMode)
+    {
+        data.dispayMode = displayMode;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
 
 bool SettingsManager::getSettingsChanged()
 {

@@ -2,6 +2,7 @@
 #define _settingsmanager_h
 
 #include <ArduinoJson.h>
+#include "DisplayBase.h"
 
 const String SETTINGS_FILE_NAME = "Settings.json";
 
@@ -12,6 +13,8 @@ typedef struct SettingsData
     
     String openWeatherMapAPIKey;
     String openWeatherLocationID;
+
+    DisplayMode dispayMode;
 } SettingsData;
 
 class SettingsManager
@@ -30,6 +33,9 @@ class SettingsManager
 
         String getOpenWeatherlocationID();
         void setOpenWeatherlocationID(String locationID);
+
+        DisplayMode getDisplayMode();
+        void setDisplayMode(DisplayMode displayMode);
 
         bool getSettingsChanged();
         void resetSettingsChanged();

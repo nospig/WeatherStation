@@ -39,6 +39,7 @@ Task getCurrentWeather(CURRENT_WEATHER_INTERVAL, TASK_FOREVER, &getCurrentWeathe
 Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherForecastCallback);
 Task updateThingSpeak(THINGSPEAK_REPORTING_INTERVAL, TASK_FOREVER, &updateThingSpeakCallback);
 Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengthCallback);
+Task checkSettingsChanged(SETTINGS_CHANGED_INTERVAL, TASK_FOREVER, &checkSettingsChangedCallback);
 
 // task callbacks
 
@@ -148,19 +149,42 @@ void connectWifiCallback()
     taskScheduler.addTask(readSensors);
     taskScheduler.addTask(updateThingSpeak);
     taskScheduler.addTask(updateWiFiStrength);
-    updateThingSpeak.disable();
-    
+    taskScheduler.addTask(checkSettingsChanged);
+
+    updateThingSpeak.disable(); 
     getTime.enable();
     getCurrentWeather.enable();
     getForecastWeather.enable();
     readSensors.enable();
     updateWiFiStrength.enable();
+    checkSettingsChanged.enable();
 }
 
 void updateWifiStrengthCallback()
 {
     long wifiStrength = WiFi.RSSI();
     display->drawWiFiStrength(wifiStrength);
+}
+
+// settings
+
+void checkSettingsChangedCallback()
+{
+    if(settingsManager.getSettingsChanged())
+    {
+        Serial.println("Settings changed.");
+        settingsManager.resetSettingsChanged();
+
+        // best just to force a display clear when changing settings
+        display->setDisplayMode(settingsManager.getDisplayMode());
+        display->restartMainDisplay();
+
+        getTime.forceNextIteration();
+        getCurrentWeather.forceNextIteration();
+        getForecastWeather.forceNextIteration();
+        readSensors.forceNextIteration();
+        updateWiFiStrength.forceNextIteration();
+    }
 }
 
 // basic setup and loop
