@@ -10,10 +10,9 @@ void SettingsManager::init()
     // for testing now as settings not saved to start with
     //SPIFFS.remove(SETTINGS_FILE_NAME);
 
-
     if(!SPIFFS.exists(SETTINGS_FILE_NAME))
     {
-        Serial.println("No settings found, creating.");
+        //Serial.println("No settings found, creating.");
         setDefaultSettings();
         saveSettings();
     }
@@ -50,8 +49,8 @@ void SettingsManager::loadSettings()
     data.dispayMode = (DisplayMode)mode;
 
     // testing
-    serializeJson(doc, Serial);
-    Serial.println();
+    //serializeJson(doc, Serial);
+    //Serial.println();
 }
 
 void SettingsManager::saveSettings()
@@ -69,7 +68,7 @@ void SettingsManager::saveSettings()
     if(jsonSettings)
     {
         serializeJson(doc, jsonSettings);
-        Serial.println("Settings file saved.");
+        //Serial.println("Settings file saved.");
         jsonSettings.close();
     }
     else
@@ -77,9 +76,9 @@ void SettingsManager::saveSettings()
         Serial.println("Unable to save settings file.");
     }
     
-     // testing
-    serializeJson(doc, Serial); 
-    Serial.println();
+    // testing
+    //serializeJson(doc, Serial); 
+    //Serial.println();
 }
 
 

@@ -140,6 +140,7 @@ void connectWifiCallback()
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
 
     delay(WIFI_CONNECTING_DELAY);
+    display->setDisplayMode(settingsManager.getDisplayMode());
     display->startMainDisplay();
 
     // start all tasks
@@ -172,7 +173,7 @@ void checkSettingsChangedCallback()
 {
     if(settingsManager.getSettingsChanged())
     {
-        Serial.println("Settings changed.");
+        //Serial.println("Settings changed.");
         settingsManager.resetSettingsChanged();
 
         // best just to force a display clear when changing settings

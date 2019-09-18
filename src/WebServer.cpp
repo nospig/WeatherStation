@@ -95,7 +95,7 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
 
     if(webSocket.count() > 0)
     {
-        Serial.println("Sending sensor readings to cilent");
+        //Serial.println("Sending sensor readings to cilent");
         webSocket.textAll(output);
     }
 }
@@ -122,7 +122,7 @@ void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 
     if(webSocket.count() > 0)
     {
-        Serial.println("Sending current internet weather to cilent");
+        //Serial.println("Sending current internet weather to cilent");
         webSocket.textAll(output);
     }
 }
@@ -134,7 +134,7 @@ void WebServer::updateForecastWeather(OpenWeatherMapDailyData* forecastWeather, 
 
 void WebServer::updateClientOnConnect()
 {
-    Serial.println("Client connected, sending any available data.");
+    //Serial.println("Client connected, sending any available data.");
 
     if(currentSensorJson.length() != 0)
     {
@@ -154,46 +154,9 @@ void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, 
 {
     if(type == WS_EVT_CONNECT)
     {
-        Serial.println("Websocket connect");
+        //Serial.println("Websocket connect");
         updateClientOnConnect();
     }
-    if(type == WS_EVT_DISCONNECT)
-    {
-        Serial.println("Websocket disconnect");
-    }
-    if(type == WS_EVT_DATA)
-    {
-        Serial.println("Websocket data");
- 
-        AwsFrameInfo * info = (AwsFrameInfo*)arg;
-        String msg = "";
-        
-        if(info->final && info->index == 0 && info->len == len)
-        {
-            //the whole message is in a single frame and we got all of it's data
-            Serial.printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
-
-            if(info->opcode == WS_TEXT)
-            {
-                for(size_t i=0; i < info->len; i++) 
-                {
-                    msg += (char) data[i];
-                }
-            }
-            else 
-            {
-                char buff[3];
-                for(size_t i=0; i < info->len; i++)
-                {
-                    sprintf(buff, "%02x ", (uint8_t) data[i]);
-                    msg += buff ;
-                }
-            }
-        }
-        Serial.printf("%s\n",msg.c_str());
-
-        Serial.println();
-    }    
 }
 
 String WebServer::settingsProcessor(const String& token)
@@ -214,6 +177,28 @@ String WebServer::settingsProcessor(const String& token)
     {
         return settingsManager->getThingSpeakApiKey();
     }
+    if(token == "DISPLAY1CHECKED")
+    {
+        if(settingsManager->getDisplayMode() == DisplayMode_1)
+        {
+            return "Checked";
+        }
+    }
+    if(token == "DISPLAY2CHECKED")
+    {
+        if(settingsManager->getDisplayMode() == DisplayMode_2)
+        {
+            return "Checked";
+        }
+    }
+    if(token == "DISPLAY3CHECKED")
+    {
+        if(settingsManager->getDisplayMode() == DisplayMode_3)
+        {
+            return "Checked";
+        }
+    }
+
 
     return String();
 }
@@ -225,14 +210,14 @@ void WebServer::handleUpdateWeatherSettings(AsyncWebServerRequest* request)
         AsyncWebParameter* p = request->getParam("openWeatherLocation");
         settingsManager->setOpenWeatherlocationID(p->value());
 
-        Serial.println("Got weather location of: " + p->value());
+        //Serial.println("Got weather location of: " + p->value());
     }
     if(request->hasParam("openWeatherApiKey"))
     {
         AsyncWebParameter* p = request->getParam("openWeatherApiKey");
         settingsManager->setOpenWeatherApiKey(p->value());
 
-        Serial.println("Got weather API key of: " + p->value());
+        //Serial.println("Got weather API key of: " + p->value());
     }
 }
 
@@ -243,18 +228,37 @@ void WebServer::handleUpdateThingSpeakSettings(AsyncWebServerRequest* request)
         AsyncWebParameter* p = request->getParam("thingSpeakApiKey");
         settingsManager->setThingSpeakApiKey(p->value());
 
-        Serial.println("Got ThingSpeak API key of: " + p->value());
+        //Serial.println("Got ThingSpeak API key of: " + p->value());
     }
     if(request->hasParam("thingSpeakChannel"))
     {
         AsyncWebParameter* p = request->getParam("thingSpeakChannel");
         settingsManager->setThingSpeakChannelID(p->value().toInt());
 
-        Serial.println("Got ThingSpeak channel ID of: " + p->value());
+        //Serial.println("Got ThingSpeak channel ID of: " + p->value());
     }
 }
 
 void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
 {
+    if(request->hasParam("optdisplay"))
+    {
+        AsyncWebParameter* p = request->getParam("optdisplay");
+        
+        if(p->value() == "display1")
+        {
+            settingsManager->setDisplayMode(DisplayMode_1);
+        }
+        if(p->value() == "display2")
+        {
+            settingsManager->setDisplayMode(DisplayMode_2);
+        }
+        if(p->value() == "display3")
+        {
+            settingsManager->setDisplayMode(DisplayMode_3);
+        }
+
+        //Serial.println("Got display mode of: " + p->value());
+    }
 
 }
