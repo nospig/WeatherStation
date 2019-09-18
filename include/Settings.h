@@ -15,7 +15,6 @@ const long utcOffsetInSeconds = 25200;
 #define TIME_FETCH_INTERVAL 5 * SECONDS_MULT
 
 // weather
-const String OPEN_WEATHER_MAP_LOCATION_ID = "6845590";
 #define NUM_FORECASTS 5                             // needs to match maximum required by display modes
 
 #define CURRENT_WEATHER_INTERVAL 10 * MINUTES_MULT   

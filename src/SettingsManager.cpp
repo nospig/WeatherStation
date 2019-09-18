@@ -2,8 +2,7 @@
 #include <ArduinoJson.h>
 #include <FS.h>
 #include "SettingsManager.h"
-#include "Settings.h"
-#include "Secrets.h"
+
 
 void SettingsManager::init()
 {
@@ -24,11 +23,6 @@ void SettingsManager::init()
 
 void SettingsManager::setDefaultSettings()
 {
-    // TODO, maybe blank these to force setup before use?
-    data.thingSpeakChannelID = THINGSPEAK_SECRET_CH_ID;
-    data.thingSpeakAPIKey = THINGSPEAK_SECRET_WRITE_APIKEY;
-    data.openWeatherMapAPIKey = OPEN_WEATHER_MAP_APP_ID;
-    data.openWeatherLocationID = OPEN_WEATHER_MAP_LOCATION_ID;
     data.dispayMode = DisplayMode_1;
 }
 

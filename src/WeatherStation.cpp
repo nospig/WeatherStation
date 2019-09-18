@@ -9,7 +9,6 @@
 #include "SettingsManager.h"
 #include "Settings.h"
 #include "WeatherStation.h"
-#include "Secrets.h"
 #include "DisplaySerial.h"
 #include "DisplayTFT.h"
 #include "WebServer.h"
@@ -78,7 +77,10 @@ void updateThingSpeakCallback()
     //Serial.println("Update ThingSpeak");
 
     // just send the latest sensor saved readings, no need to update again, avoid chances of updating the sensor too soon
-    thingSpeakReporter.sendSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+    if(settingsManager.getThingSpeakApiKey() != "")
+    {
+        thingSpeakReporter.sendSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+    }
 }
 
 // weather
@@ -86,21 +88,24 @@ void updateThingSpeakCallback()
 void getCurrentWeatherCallback()
 {
     //Serial.println("Get current weather");
-
-    currentWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
-    display->drawCurrentWeather(currentWeatherClient.getCurrentData());
-    webServer.updateCurrentWeather(currentWeatherClient.getCurrentData());
-
-    WiFi.RSSI();
+    if(settingsManager.getOpenWeatherApiKey() != "" && settingsManager.getOpenWeatherlocationID() != "")
+    {
+        currentWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
+        display->drawCurrentWeather(currentWeatherClient.getCurrentData());
+        webServer.updateCurrentWeather(currentWeatherClient.getCurrentData());
+    }
 }
 
 void getWeatherForecastCallback()
 {
     //Serial.println("Get forecast weather");
 
-    forecastWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
-    display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
-    webServer.updateForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+    if(settingsManager.getOpenWeatherApiKey() != "" && settingsManager.getOpenWeatherlocationID() != "")
+    {
+        forecastWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
+        display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+        webServer.updateForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+    }
 }
 
 // display

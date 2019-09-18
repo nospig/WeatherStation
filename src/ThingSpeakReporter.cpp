@@ -1,5 +1,4 @@
 #include "ThingSpeakReporter.h"
-#include "Secrets.h"
 #include <WiFiClient.h>
 #include <ThingSpeak.h>
 
