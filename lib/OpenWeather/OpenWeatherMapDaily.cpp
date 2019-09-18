@@ -1,3 +1,4 @@
+// Based on work by ThingPulse Ltd., https://thingpulse.com
 
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
