@@ -237,30 +237,35 @@ int DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, in
     // maybe best just to wipe as not updated often
     tft->fillRect(0, y+20, tft->width(), 60, BACKGROUND_COLOUR);
 
-    tft->setTextFont(2);
-    tft->setTextDatum(TC_DATUM);
-    tft->setTextColor(SECTION_HEADER_COLOUR); 
-    tft->drawString(currentWeather->location, tft->width()/2, y+2); 
+    if(currentWeather->validData)
+    {
+        tft->setTextFont(2);
+        tft->setTextDatum(TC_DATUM);
+        tft->setTextColor(SECTION_HEADER_COLOUR); 
+        tft->drawString(currentWeather->location, tft->width()/2, y+2); 
 
-    tft->setTextFont(4);
-    tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR); 
+        tft->setTextFont(4);
+        tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR); 
 
-    String tempString = String(currentWeather->temp, 1);
-    int x = tft->width()/2 - 40;
-    int widthTemp;
+        String tempString = String(currentWeather->temp, 1);
+        int x = tft->width()/2 - 40;
+        int widthTemp;
 
-    tft->setTextDatum(TR_DATUM);
-    tft->drawString(tempString + "C", x , y + 32);    
-    widthTemp = tft->textWidth(tempString + "C");
+        tft->setTextDatum(TR_DATUM);
+        tft->drawString(tempString + "C", x , y + 32);    
+        widthTemp = tft->textWidth(tempString + "C");
 
-    tft->setTextFont(2);
-    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
-    tft->setTextDatum(TL_DATUM);
-    tft->drawString(currentWeather->description, x - widthTemp, y + 58);    
+        tft->setTextFont(2);
+        tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
+        tft->setTextDatum(TL_DATUM);
+        tft->drawString(currentWeather->description, x - widthTemp, y + 58);    
 
-    tft->pushImage(160, y+30, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(currentWeather->icon));
+        tft->pushImage(160, y+30, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(currentWeather->icon));
 
-    return x - widthTemp;
+        return x - widthTemp;
+    }
+
+    return 0;
 }
 
 void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, int y)
@@ -357,51 +362,54 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
 
     tft->fillRect(0, y, tft->width(), 140, BACKGROUND_COLOUR);
 
-    tft->setTextFont(2);
-    tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
-    tft->setTextDatum(TL_DATUM);
-
-    sprintf(buffer, "Min: %.1f | Max: %.1f", currentWeather->tempMin, currentWeather->tempMax);
-    tft->drawString(buffer, x, y);    
-    y += tft->fontHeight();
-
-    sprintf(buffer, "Humidity: %d%%", currentWeather->humidity);
-    tft->drawString(buffer, x, y);    
-    y += tft->fontHeight();
-
-    sprintf(buffer, "Pressure: %d hpa", currentWeather->pressure);
-    tft->drawString(buffer, x, y);    
-    y += tft->fontHeight();
-
-    sprintf(buffer, "Wind: %.1fm/s from %.0f degress", currentWeather->windSpeed, currentWeather->windDeg);
-    tft->drawString(buffer, x, y);    
-    y += tft->fontHeight();
-
-    if(currentWeather->cloudPercentage > -1)
+    if(currentWeather->validData)
     {
-        sprintf(buffer, "Clouds: %d%%", currentWeather->cloudPercentage);
+        tft->setTextFont(2);
+        tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
+        tft->setTextDatum(TL_DATUM);
+
+        sprintf(buffer, "Min: %.1f | Max: %.1f", currentWeather->tempMin, currentWeather->tempMax);
+        tft->drawString(buffer, x, y);    
+        y += tft->fontHeight();
+
+        sprintf(buffer, "Humidity: %d%%", currentWeather->humidity);
+        tft->drawString(buffer, x, y);    
+        y += tft->fontHeight();
+
+        sprintf(buffer, "Pressure: %d hpa", currentWeather->pressure);
+        tft->drawString(buffer, x, y);    
+        y += tft->fontHeight();
+
+        sprintf(buffer, "Wind: %.1fm/s from %.0f degress", currentWeather->windSpeed, currentWeather->windDeg);
+        tft->drawString(buffer, x, y);    
+        y += tft->fontHeight();
+
+        if(currentWeather->cloudPercentage > -1)
+        {
+            sprintf(buffer, "Clouds: %d%%", currentWeather->cloudPercentage);
+            tft->drawString(buffer, x, y);    
+            y += tft->fontHeight();
+        }
+
+        if(currentWeather->rainOneHour > -1)
+        {
+            sprintf(buffer, "Rain: 1h %dmm, 3h %dmm", currentWeather->rainOneHour, currentWeather->rainThreeHour);
+            tft->drawString(buffer, x, y);    
+            y += tft->fontHeight();
+        }
+        
+        time = currentWeather->sunRise + currentWeather->timeZone;
+        timeInfo = gmtime(&time);
+        sprintf(buffer, "Sunrise: %02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
+        tft->drawString(buffer, x, y);    
+        y += tft->fontHeight();
+
+        time = currentWeather->sunSet + currentWeather->timeZone;
+        timeInfo = gmtime(&time);
+        sprintf(buffer, "Sunset: %02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
     }
-
-    if(currentWeather->rainOneHour > -1)
-    {
-        sprintf(buffer, "Rain: 1h %dmm, 3h %dmm", currentWeather->rainOneHour, currentWeather->rainThreeHour);
-        tft->drawString(buffer, x, y);    
-        y += tft->fontHeight();
-    }
-    
-    time = currentWeather->sunRise + currentWeather->timeZone;
-    timeInfo = gmtime(&time);
-    sprintf(buffer, "Sunrise: %02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
-    tft->drawString(buffer, x, y);    
-    y += tft->fontHeight();
-
-    time = currentWeather->sunSet + currentWeather->timeZone;
-    timeInfo = gmtime(&time);
-    sprintf(buffer, "Sunset: %02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
-    tft->drawString(buffer, x, y);    
-    y += tft->fontHeight();
 }
 
 

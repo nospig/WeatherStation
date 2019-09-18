@@ -102,6 +102,12 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
 
 void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
+    if(!currentWeather->validData)
+    {
+        currentWeatherJson = "";
+        return;
+    }
+
     String output;
 
     const size_t capacity = 1024;   // TODO

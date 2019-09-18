@@ -47,6 +47,8 @@ typedef struct OpenWeatherMapCurrentData
     int cloudPercentage;
     int rainOneHour;
     int rainThreeHour;
+
+    bool validData;
 } OpenWeatherMapCurrentData;
 
 
@@ -63,15 +65,11 @@ class OpenWeatherMapCurrent
         void setLanguage(String language) { this->language = language; }
         String getLanguage() { return language; }
 
-        boolean isValidData() { return validData; }
-        void setValidData(boolean valid) { validData = valid; }
-
         OpenWeatherMapCurrentData* getCurrentData();
 
     private:
         boolean metric = true;
         String language;
-        boolean validData;
         OpenWeatherMapCurrentData data;
 
         void doUpdate(String url);

@@ -35,7 +35,7 @@ String OpenWeatherMapCurrent::buildUrl(String appId, String locationParameter)
 
 void OpenWeatherMapCurrent::doUpdate(String url)
 {
-    this->setValidData(false);
+    data.validData = false;
 
     // must be in this order
     WiFiClient client;
@@ -49,7 +49,7 @@ void OpenWeatherMapCurrent::doUpdate(String url)
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
         {
             deserializeWeather(http.getString());
-        }
+        }        
     }
     http.end();
 }
@@ -112,6 +112,7 @@ void OpenWeatherMapCurrent::deserializeWeather(String json)
     data.sunRise = sys["sunrise"];
     data.sunSet = sys["sunset"];
 
+    data.validData = true;
 }
 
 String OpenWeatherMapCurrent::captaliseString(String input)
