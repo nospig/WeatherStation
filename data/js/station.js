@@ -35,6 +35,27 @@ function updateInternetCurrent(messageData)
     $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
 }
 
+function updateWeatherForecast(messageData)
+{
+    var list = messageData.list;
+    var currentValue;
+    var forecastTime;
+    var dateString;
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    $("#internetForecastList").empty();
+
+    for(day of list)
+    {
+        forecastTime = new Date(day.time * 1000);
+        dateString = days[forecastTime.getDay()];
+    
+        currentValue = dateString + " - " + day.description + ", min " + day.tempMin.toFixed(1) + "C, max " + day.tempMax.toFixed(1) + "C";
+        $("#internetForecastList").append('<li class="list-group-item">' + currentValue + '</li>');
+    }
+
+}
+
 function openWebSocket() 
 {
     websocket = new WebSocket('ws://' + document.location.host + '/ws');
@@ -67,6 +88,9 @@ function onMessage(evt)
             break;
         case "currentWeather":
             updateInternetCurrent(messageData);
+            break;
+        case "weatherForecast":
+            updateWeatherForecast(messageData);
             break;
     }
 

@@ -147,7 +147,39 @@ void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
     
 void WebServer::updateForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
-    
+    if(!validData)
+    {
+        forecastWeatherJson = "";
+        return;
+    }
+
+    String output;
+
+    const size_t capacity = 1024;   // TODO
+    DynamicJsonDocument jsonDoc(capacity);
+
+    jsonDoc["type"] = "weatherForecast";
+    jsonDoc["count"] = forecastCount;
+
+    JsonArray list = jsonDoc.createNestedArray("list");
+
+    for(int i=0; i<forecastCount; i++)
+    {
+        JsonObject day = list.createNestedObject();
+
+        day["time"] = forecastWeather[i].time;
+        day["description"] = forecastWeather[i].description;
+        day["tempMin"] = forecastWeather[i].tempMin;
+        day["tempMax"] = forecastWeather[i].tempMax;
+    }
+
+    serializeJson(jsonDoc, output);
+    forecastWeatherJson = output;
+
+    if(webSocket.count() > 0)
+    {
+        webSocket.textAll(output);
+    }
 }
 
 void WebServer::updateClientOnConnect()
