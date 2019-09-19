@@ -83,7 +83,7 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
     }    
 }
 
-void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount)
+void DisplayTFT::drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount)
 {
     int count;
 
@@ -91,11 +91,11 @@ void DisplayTFT::drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, i
     {
         case DisplayMode_1:
             count = min(FORECASTS_MODE_1, forecastCount);
-            drawHorizontalForecast(forecastWeather, MODE_1_FORECAST_Y, count);
+            drawHorizontalForecast(validData, forecastWeather, MODE_1_FORECAST_Y, count);
             break;
         case DisplayMode_2:
             count = min(FORECASTS_MODE_2, forecastCount);
-            drawVerticalForecast(forecastWeather, MODE_2_FORECAST_Y, count);
+            drawVerticalForecast(validData, forecastWeather, MODE_2_FORECAST_Y, count);
             break;
         default:
             break;
@@ -144,21 +144,29 @@ void DisplayTFT::drawWiFiStrength(long dBm)
  * 
 ****************************************************************************************/
 
-void DisplayTFT::drawVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count)
+void DisplayTFT::drawVerticalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count)
 {
-    tft->setTextFont(2);
-    tft->setTextDatum(TC_DATUM);
-    tft->setTextColor(SECTION_HEADER_COLOUR); 
-    tft->drawString("Forecast", tft->width()/2, y+2); 
-
-    y += 24;
-    tft->fillRect(0, y, tft->width(), 270, BACKGROUND_COLOUR);
-
-    for(int i=0; i<count; i++)
+    if(validData)
     {
-        drawSingleVerticalForecast(&forecastWeather[i], y);
-        y += 52;
+        tft->setTextFont(2);
+        tft->setTextDatum(TC_DATUM);
+        tft->setTextColor(SECTION_HEADER_COLOUR); 
+        tft->drawString("Forecast", tft->width()/2, y+2); 
+
+        y += 24;
+        tft->fillRect(0, y, tft->width(), 270, BACKGROUND_COLOUR);
+
+        for(int i=0; i<count; i++)
+        {
+            drawSingleVerticalForecast(&forecastWeather[i], y);
+            y += 52;
+        }
     }
+    else
+    {
+        tft->fillRect(0, y, tft->width(), 294, BACKGROUND_COLOUR);
+    }
+    
 }
 
 void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y)
@@ -188,24 +196,31 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
  * 
 ****************************************************************************************/
 
-void DisplayTFT::drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count)
-{
-    tft->setTextFont(2);
-    tft->setTextDatum(TC_DATUM);
-    tft->setTextColor(SECTION_HEADER_COLOUR); 
-    tft->drawString("Forecast", tft->width()/2, y+2); 
-
-    // maybe best just to wipe as not updated often
-    tft->fillRect(0, y+30, tft->width(), 90, BACKGROUND_COLOUR);
-
-    int width = tft->width() / (count+1);
-    int x = width;
-
-    for(int i=0; i<count; i++)
+void DisplayTFT::drawHorizontalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count)
+{    
+    if(validData)
     {
-        drawSmallForecast(&forecastWeather[i], y+30, x);
-        x += width;
+        tft->fillRect(0, y+30, tft->width(), 90, BACKGROUND_COLOUR);
+
+        tft->setTextFont(2);
+        tft->setTextDatum(TC_DATUM);
+        tft->setTextColor(SECTION_HEADER_COLOUR); 
+        tft->drawString("Forecast", tft->width()/2, y+2); 
+
+        int width = tft->width() / (count+1);
+        int x = width;
+
+        for(int i=0; i<count; i++)
+        {
+            drawSmallForecast(&forecastWeather[i], y+30, x);
+            x += width;
+        }
     }
+    else
+    {
+        tft->fillRect(0, y+5, tft->width(), 115, BACKGROUND_COLOUR);
+    }
+    
 }
 
 void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x)

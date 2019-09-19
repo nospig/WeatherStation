@@ -16,7 +16,7 @@ class WebServer
 
         void updateSensorReadings(float temp, float humidity, float pressure);
         void updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
-        void updateForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount);
+        void updateForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount);
 
     private:
         static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);

@@ -46,7 +46,7 @@ class DisplayTFT : public DisplayBase
         void drawSensorReadings(float temp, float humidity, float pressure);
 
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
-        void drawForecastWeather(OpenWeatherMapDailyData* forecastWeather, int forecastCount);
+        void drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount);
         void drawWiFiStrength(long dBm);
 
         void setDisplayMode(DisplayMode mode);
@@ -56,12 +56,12 @@ class DisplayTFT : public DisplayBase
         int drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
         void drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
         const unsigned short* getIconData(String iconId);
-        void drawHorizontalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count);
+        void drawHorizontalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x);
         void drawTimeDisplay(unsigned long epochTime, int y);
         void drawSensorReadings(float temp, float humidity, float pressure, int y);
 
-        void drawVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y, int count);
+        void drawVerticalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y);
 
         TFT_eSPI *tft;

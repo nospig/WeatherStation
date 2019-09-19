@@ -9,7 +9,6 @@
 #include "SettingsManager.h"
 #include "Settings.h"
 #include "WeatherStation.h"
-#include "DisplaySerial.h"
 #include "DisplayTFT.h"
 #include "WebServer.h"
 #include "ThingSpeakReporter.h"
@@ -103,8 +102,8 @@ void getWeatherForecastCallback()
     if(settingsManager.getOpenWeatherApiKey() != "" && settingsManager.getOpenWeatherlocationID() != "")
     {
         forecastWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
-        display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
-        webServer.updateForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+        display->drawForecastWeather(forecastWeatherClient.isValidData(), forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+        webServer.updateForecastWeather(forecastWeatherClient.isValidData(), forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
     }
 }
 
@@ -121,7 +120,7 @@ void changeDisplayMode(DisplayMode newMode)
         display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
     }
     display->drawCurrentWeather(currentWeatherClient.getCurrentData());
-    display->drawForecastWeather(forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
+    display->drawForecastWeather(forecastWeatherClient.isValidData(), forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
     display->drawCurrentTime(timeClient.getEpochTime());
 }
 

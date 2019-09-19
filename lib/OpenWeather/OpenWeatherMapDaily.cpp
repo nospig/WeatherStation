@@ -86,6 +86,9 @@ void OpenWeatherMapDaily::deserializeWeather(String json)
         data->description = captaliseString(data->description);
         data->timeZone = timeZone;
     }
+
+    // not 100% accurate but just covering the case where the API key is incorrect
+    this->setValidData(true);
 }
 
 OpenWeatherMapDailyData* OpenWeatherMapDaily::getDailyForecasts()
