@@ -38,6 +38,8 @@ Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherFore
 Task updateThingSpeak(THINGSPEAK_REPORTING_INTERVAL, TASK_FOREVER, &updateThingSpeakCallback);
 Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengthCallback);
 Task checkSettingsChanged(SETTINGS_CHANGED_INTERVAL, TASK_FOREVER, &checkSettingsChangedCallback);
+Task checkScreenGrabRequested(SCREENGRAB_INTERVAL, TASK_FOREVER, &checkScreenGrabCallback);
+
 
 // task callbacks
 
@@ -155,6 +157,7 @@ void connectWifiCallback()
     taskScheduler.addTask(updateThingSpeak);
     taskScheduler.addTask(updateWiFiStrength);
     taskScheduler.addTask(checkSettingsChanged);
+    taskScheduler.addTask(checkScreenGrabRequested);
 
     updateThingSpeak.disable(); 
     getTime.enable();
@@ -163,6 +166,7 @@ void connectWifiCallback()
     readSensors.enable();
     updateWiFiStrength.enable();
     checkSettingsChanged.enable();
+    checkScreenGrabRequested.enable();
 }
 
 void updateWifiStrengthCallback()
@@ -189,6 +193,17 @@ void checkSettingsChangedCallback()
         getForecastWeather.forceNextIteration();
         readSensors.forceNextIteration();
         updateWiFiStrength.forceNextIteration();
+    }
+}
+
+// screen grabs
+
+void checkScreenGrabCallback()
+{
+    if(webServer.screenGrabRequested())
+    {
+        display->serveScreenShot();
+        webServer.clearScreenGrabRequest();
     }
 }
 

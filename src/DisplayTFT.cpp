@@ -79,7 +79,6 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
             drawDetailedCurrentWeather(currentWeather, MODE_3_CURRENT_Y);
         default:
             break;
-
     }    
 }
 
@@ -427,8 +426,6 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
     }
 }
 
-
-
 const unsigned short* DisplayTFT::getIconData(String iconId)
 {    
     // convert icon code from weather to our image, not all handled
@@ -508,4 +505,156 @@ const unsigned short* DisplayTFT::getIconData(String iconId)
     Serial.println("Icon: " + iconId + " not handled.");
 
     return icon_01d;
+}
+
+/****************************************************************************************
+ * 
+ *  Screen server routines
+ * 
+ * 
+****************************************************************************************/
+
+void DisplayTFT::serveScreenShot()
+{
+    screenServer();
+}
+
+boolean DisplayTFT::screenServer(void)
+{
+    // With no filename the screenshot will be saved with a default name e.g. tft_screen_#.xxx
+    // where # is a number 0-9 and xxx is a file type specified below
+    return screenServer(DEFAULT_FILENAME);
+}
+
+//====================================================================================
+//                           Screen server call with filename
+//====================================================================================
+// Start a screen dump server (serial or network) - filename specified
+boolean DisplayTFT::screenServer(String filename)
+{
+    boolean result = serialScreenServer(filename); // Screenshot serial port server
+    delay(0); // Equivalent to yield() for ESP8266;
+
+    return result;
+}
+
+//====================================================================================
+//                Serial server function that sends the data to the client
+//====================================================================================
+boolean DisplayTFT::serialScreenServer(String filename)
+{
+    // Precautionary receive buffer garbage flush for 50ms
+    uint32_t clearTime = millis() + 50;
+    while (millis() < clearTime && Serial.read() >= 0)
+        delay(0); // Equivalent to yield() for ESP8266;
+
+    boolean wait = true;
+    uint32_t lastCmdTime = millis(); // Initialise start of command time-out
+
+    // Wait for the starting flag with a start time-out
+    while (wait)
+    {
+        delay(0); // Equivalent to yield() for ESP8266;
+        // Check serial buffer
+        if (Serial.available() > 0)
+        {
+            // Read the command byte
+            uint8_t cmd = Serial.read();
+            // If it is 'S' (start command) then clear the serial buffer for 100ms and stop waiting
+            if (cmd == 'S')
+            {
+                // Precautionary receive buffer garbage flush for 50ms
+                clearTime = millis() + 50;
+                while (millis() < clearTime && Serial.read() >= 0)
+                    delay(0); // Equivalent to yield() for ESP8266;
+
+                wait = false;           // No need to wait anymore
+                lastCmdTime = millis(); // Set last received command time
+
+                // Send screen size etc using a simple header with delimiters for client checks
+                sendParameters(filename);
+            }
+        }
+        else
+        {
+            // Check for time-out
+            if (millis() > lastCmdTime + START_TIMEOUT)
+                return false;
+        }
+    }
+
+    uint8_t color[3 * NPIXELS]; // RGB and 565 format color buffer for N pixels
+
+    // Send all the pixels on the whole screen
+    for (int16_t y = 0; y < tft->height(); y++)
+    {
+        // Increment x by NPIXELS as we send NPIXELS for every byte received
+        for (int16_t x = 0; x < tft->width(); x += NPIXELS)
+        {
+            delay(0); // Equivalent to yield() for ESP8266;
+
+            // Wait here for serial data to arrive or a time-out elapses
+            while (Serial.available() == 0)
+            {
+                if (millis() > lastCmdTime + PIXEL_TIMEOUT)
+                    return false;
+                delay(0); // Equivalent to yield() for ESP8266;
+            }
+
+            // Serial data must be available to get here, read 1 byte and
+            // respond with N pixels, i.e. N x 3 RGB bytes or N x 2 565 format bytes
+            if (Serial.read() == 'X')
+            {
+                // X command byte means abort, so clear the buffer and return
+                clearTime = millis() + 50;
+                while (millis() < clearTime && Serial.read() >= 0)
+                    delay(0); // Equivalent to yield() for ESP8266;
+                return false;
+            }
+            // Save arrival time of the read command (for later time-out check)
+            lastCmdTime = millis();
+
+#if defined BITS_PER_PIXEL && BITS_PER_PIXEL >= 24
+            // Fetch N RGB pixels from x,y and put in buffer
+            tft.readRectRGB(x, y, NPIXELS, 1, color);
+            // Send buffer to client
+            Serial.write(color, 3 * NPIXELS); // Write all pixels in the buffer
+#else
+            // Fetch N 565 format pixels from x,y and put in buffer
+            tft->readRect(x, y, NPIXELS, 1, (uint16_t *)color);
+            // Send buffer to client
+            Serial.write(color, 2 * NPIXELS); // Write all pixels in the buffer
+#endif
+        }
+    }
+
+    Serial.flush(); // Make sure all pixel bytes have been despatched
+
+    return true;
+}
+
+//====================================================================================
+//    Send screen size etc using a simple header with delimiters for client checks
+//====================================================================================
+void DisplayTFT::sendParameters(String filename)
+{
+    Serial.write('W'); // Width
+    Serial.write(tft->width() >> 8);
+    Serial.write(tft->width() & 0xFF);
+
+    Serial.write('H'); // Height
+    Serial.write(tft->height() >> 8);
+    Serial.write(tft->height() & 0xFF);
+
+    Serial.write('Y'); // Bits per pixel (16 or 24)
+    Serial.write(BITS_PER_PIXEL);
+
+    Serial.write('?'); // Filename next
+    Serial.print(filename);
+
+    Serial.write('.'); // End of filename marker
+
+    Serial.write(FILE_EXT); // Filename extension identifier
+
+    Serial.write(*FILE_TYPE); // First character defines file type j,b,p,t
 }

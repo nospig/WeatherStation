@@ -12,6 +12,7 @@ void readSensorsCallback();
 void updateThingSpeakCallback();
 void updateWifiStrengthCallback();
 void checkSettingsChangedCallback();
+void checkScreenGrabCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 

@@ -11,6 +11,7 @@ AsyncEventSource events("/events");
 String WebServer::currentSensorJson = "";
 String WebServer::currentWeatherJson = "";
 String WebServer::forecastWeatherJson ="";     
+bool WebServer::screenGrabRequest = false;
 
 SettingsManager* WebServer::settingsManager;    
 
@@ -32,6 +33,11 @@ void WebServer::init(SettingsManager* settingsManager)
     server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send(SPIFFS, "/index.html");
+    });
+
+    server.on("/screenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/screenGrab.html");
     });
 
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -71,6 +77,13 @@ void WebServer::init(SettingsManager* settingsManager)
 
         handleForgetWiFi(request);
     });
+
+    server.on("/takeScreenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleScreenGrab(request);
+        request->redirect("/screenGrab.html");
+    });
+
 
     server.on("/css/station.css", HTTP_GET, [](AsyncWebServerRequest *request)
     {
@@ -323,4 +336,19 @@ void WebServer::handleForgetWiFi(AsyncWebServerRequest* request)
 void WebServer::handleResetSettings(AsyncWebServerRequest* request)
 {
     settingsManager->resetSettings();
+}
+
+void WebServer::handleScreenGrab(AsyncWebServerRequest* request)
+{
+    screenGrabRequest = true;
+}
+
+bool WebServer::screenGrabRequested()
+{
+    return screenGrabRequest;
+}
+
+void WebServer::clearScreenGrabRequest()
+{
+    screenGrabRequest = false;
 }
