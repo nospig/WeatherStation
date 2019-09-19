@@ -12,7 +12,7 @@ class WebServer
 {
     public:
         void init(SettingsManager* settingsManager);
-        AsyncWebServer* getServer();
+        static AsyncWebServer* getServer();
 
         void updateSensorReadings(float temp, float humidity, float pressure);
         void updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
@@ -25,6 +25,8 @@ class WebServer
         static void handleUpdateWeatherSettings(AsyncWebServerRequest* request);
         static void handleUpdateThingSpeakSettings(AsyncWebServerRequest* request);
         static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);        
+        static void handleForgetWiFi(AsyncWebServerRequest* request);
+        static void handleResetSettings(AsyncWebServerRequest* request);
 
         static String currentSensorJson;
         static String currentWeatherJson;

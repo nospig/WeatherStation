@@ -12,7 +12,7 @@ void SettingsManager::init()
     if(!SPIFFS.exists(SETTINGS_FILE_NAME))
     {
         //Serial.println("No settings found, creating.");
-        setDefaultSettings();
+        resetSettings();
         saveSettings();
     }
     
@@ -21,9 +21,15 @@ void SettingsManager::init()
     settingsChanged = false;
 }
 
-void SettingsManager::setDefaultSettings()
+void SettingsManager::resetSettings()
 {
+    data.thingSpeakChannelID = 0;
+    data.thingSpeakAPIKey = "";
+    data.openWeatherMapAPIKey = "";
+    data.openWeatherLocationID = "";
     data.dispayMode = DisplayMode_1;
+    saveSettings();
+    settingsChanged = true;
 }
 
 void SettingsManager::loadSettings()

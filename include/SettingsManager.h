@@ -22,6 +22,8 @@ class SettingsManager
     public:
         void init();
 
+        void resetSettings();
+
         String getThingSpeakApiKey();
         void setThingSpeakApiKey(String apiKey);
 
@@ -44,7 +46,6 @@ class SettingsManager
         SettingsData data;
         bool settingsChanged;
 
-        void setDefaultSettings();
         void loadSettings();
         void saveSettings();
 };

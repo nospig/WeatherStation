@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <ESPAsyncWiFiManager.h>
 #include "WebServer.h"
 
 // globals
@@ -56,9 +57,19 @@ void WebServer::init(SettingsManager* settingsManager)
         request->redirect("/index.html");
     });
 
-    server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/resetSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/js/station.js");
+        handleResetSettings(request);
+        //Serial.println("Reset settings");
+        request->redirect("/index.html");
+    });
+
+    server.on("/forgetWiFi.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        //Serial.println("Forget WiFi");
+        request->redirect("/index.html");
+
+        handleForgetWiFi(request);
     });
 
     server.on("/css/station.css", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -67,6 +78,7 @@ void WebServer::init(SettingsManager* settingsManager)
     });
 
     server.serveStatic("/img", SPIFFS, "/img/");
+    server.serveStatic("/js", SPIFFS, "/js/");
 
     server.begin();
 }
@@ -266,5 +278,17 @@ void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
 
         //Serial.println("Got display mode of: " + p->value());
     }
+}
 
+void WebServer::handleForgetWiFi(AsyncWebServerRequest* request)
+{
+    DNSServer dns;
+    AsyncWiFiManager wifiManager(getServer(), &dns);
+    wifiManager.resetSettings();
+    ESP.restart();
+}
+
+void WebServer::handleResetSettings(AsyncWebServerRequest* request)
+{
+    settingsManager->resetSettings();
 }
