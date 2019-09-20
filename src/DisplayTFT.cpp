@@ -184,7 +184,22 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
     int day = (timeInfo->tm_mday-1) % 7;
     sprintf(buffer, "%s - %.0fC", daysOfTheWeekLong[day], forecastWeather->tempMax);
     tft->drawString(buffer, 55, y + 8); 
-    tft->drawString(forecastWeather->description, 55, y + tft->fontHeight() + 8); 
+
+    String description = forecastWeather->description;
+    bool truncatedDescription = false;
+
+    while(tft->textWidth(description) > (230 -55))
+    {
+        truncatedDescription = true;
+        description = description.substring(0, description.length()-1);
+    }
+
+    if(truncatedDescription)
+    {
+        description = description + "...";
+    }
+
+    tft->drawString(description, 55, y + tft->fontHeight() + 8); 
 
 }
 
@@ -269,10 +284,24 @@ int DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, in
         tft->drawString(tempString + "C", x , y + 32);    
         widthTemp = tft->textWidth(tempString + "C");
 
+        String description = currentWeather->description;
+        bool truncatedDescription = false;
+
         tft->setTextFont(2);
         tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
         tft->setTextDatum(TL_DATUM);
-        tft->drawString(currentWeather->description, x - widthTemp, y + 58);    
+
+        while(tft->textWidth(description) > (150 - (x - widthTemp)))
+        {
+            truncatedDescription = true;
+            description = description.substring(0, description.length()-1);
+        }
+
+        if(truncatedDescription)
+        {
+            description = description + "...";
+        }
+        tft->drawString(description, x - widthTemp, y + 58);    
 
         tft->pushImage(160, y+30, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(currentWeather->icon));
 
