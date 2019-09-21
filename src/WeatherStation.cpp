@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoOTA.h>
 #include <TaskScheduler.h>
 #include <NTPClient.h>
 #include <ESP8266WiFi.h>
@@ -137,6 +138,8 @@ void connectWifiCallback()
     //wifiManager.resetSettings();
     wifiManager.autoConnect("NospigWeather");
 
+    setupOtaUpdates();
+
     Serial.println(WiFi.localIP());
 
     settingsManager.init();
@@ -232,4 +235,66 @@ void setup()
 void loop() 
 {
     taskScheduler.execute();
+    ArduinoOTA.handle();
+}
+
+// OTA, not through webserver for now
+
+void setupOtaUpdates()
+{
+    // set MD5 hash password here
+    // add a file to the project called uploadPassword.ini
+    // make it's contents
+    // [password]
+    // upload_password = password
+    // where password is plain text
+    ArduinoOTA.setPasswordHash("3dd7f02976f79aaeb807bdb6dc1b9ef2");
+
+    ArduinoOTA.onStart([]() {
+        String type;
+        if (ArduinoOTA.getCommand() == U_FLASH)
+        {
+            Serial.println("Start updating firmware.");
+        }
+        else
+        {
+            SPIFFS.end();
+            Serial.println("Start updating file system.");
+        }
+    });
+
+    ArduinoOTA.onEnd([]() 
+    {
+        Serial.println("\nEnd");
+    });
+
+    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+        Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    });
+
+    ArduinoOTA.onError([](ota_error_t error) {
+        Serial.printf("Error[%u]: ", error);
+        if (error == OTA_AUTH_ERROR)
+        {
+            Serial.println("Auth Failed");
+        }
+        else if (error == OTA_BEGIN_ERROR)
+        {
+            Serial.println("Begin Failed");
+        }
+        else if (error == OTA_CONNECT_ERROR)
+        {
+            Serial.println("Connect Failed");
+        }
+        else if (error == OTA_RECEIVE_ERROR)
+        {
+            Serial.println("Receive Failed");
+        }
+        else if (error == OTA_END_ERROR)
+        {
+            Serial.println("End Failed");
+        }
+    });
+
+    ArduinoOTA.begin();
 }

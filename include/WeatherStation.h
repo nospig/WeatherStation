@@ -16,4 +16,6 @@ void checkScreenGrabCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 
+void setupOtaUpdates();
+
 #endif // _weatherstation_h
