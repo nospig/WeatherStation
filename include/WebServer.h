@@ -25,6 +25,7 @@ class WebServer
         static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
         static void updateClientOnConnect();
         static String settingsProcessor(const String& token);
+        static String indexProcessor(const String& token);
         static void handleUpdateWeatherSettings(AsyncWebServerRequest* request);
         static void handleUpdateThingSpeakSettings(AsyncWebServerRequest* request);
         static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);        

@@ -32,7 +32,7 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/index.html");
+        request->send(SPIFFS, "/index.html", String(), false, indexProcessor);
     });
 
     server.on("/screenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -84,14 +84,9 @@ void WebServer::init(SettingsManager* settingsManager)
         request->redirect("/screenGrab.html");
     });
 
-
-    server.on("/css/station.css", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(SPIFFS, "/css/station.css");
-    });
-
     server.serveStatic("/img", SPIFFS, "/img/");
     server.serveStatic("/js", SPIFFS, "/js/");
+    server.serveStatic("/css", SPIFFS, "/css/");
 
     server.begin();
 }
@@ -262,6 +257,19 @@ String WebServer::settingsProcessor(const String& token)
         }
     }
 
+    return String();
+}
+
+String WebServer::indexProcessor(const String& token)
+{
+    if(token == "THINGSPEAKLINK")
+    {
+        if(settingsManager->getThingSpeakChannelID() != 0)
+        {
+            String url = "https://thingspeak.com/channels/" + String(settingsManager->getThingSpeakChannelID());
+            return "<li class='nav-item'><a class='nav-link' href='" + url + "'>ThingSpeak</a></li>";
+        }
+    }
 
     return String();
 }
