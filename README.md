@@ -1,3 +1,3 @@
-# WeatherStation
+# Weather Station
 
-My version of the popular ESP2866 weather station.
+Another version of the popular ESP2866 weather station.
