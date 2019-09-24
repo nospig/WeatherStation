@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 
+// OTA password
+#define OTA_MD5_PASSWORD_HASH "3dd7f02976f79aaeb807bdb6dc1b9ef2"
+
 // task scheduler
 #define _TASK_SLEEP_ON_IDLE_RUN
 

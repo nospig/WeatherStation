@@ -248,7 +248,7 @@ void setupOtaUpdates()
     // [password]
     // upload_password = password
     // where password is plain text
-    ArduinoOTA.setPasswordHash("3dd7f02976f79aaeb807bdb6dc1b9ef2");
+    ArduinoOTA.setPasswordHash(OTA_MD5_PASSWORD_HASH);
 
     ArduinoOTA.onStart([]() {
         String type;
