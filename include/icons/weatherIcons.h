@@ -4,6 +4,9 @@
 // Dimensions    : 48x48 pixels
 // Size          : 4,608 Bytes
 
+// Icons from
+// https://www.deviantart.com/umutavci/art/weather-icon-set-165476034
+
 #include <avr/pgmspace.h>
 
 #include "icon_01d.h"
