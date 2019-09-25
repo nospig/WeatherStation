@@ -3,6 +3,11 @@
 #include <FS.h>
 #include "SettingsManager.h"
 
+const int CURRENT_WEATHER_INTERVAL =      10 * MINUTES_MULT;
+const int FORECAST_WEATHER_INTERVAL =     25 * MINUTES_MULT; 
+const int SENSOR_READING_INTERVAL =       30 * SECONDS_MULT;
+const int THINGSPEAK_REPORTING_INTERVAL = 30 * MINUTES_MULT;
+
 
 void SettingsManager::init()
 {
@@ -28,6 +33,12 @@ void SettingsManager::resetSettings()
     data.openWeatherMapAPIKey = "";
     data.openWeatherLocationID = "";
     data.dispayMode = DisplayMode_1;
+
+    data.currentWeatherInterval = CURRENT_WEATHER_INTERVAL;
+    data.forecastWeatherInterval = FORECAST_WEATHER_INTERVAL;
+    data.sensorReadingInterval = SENSOR_READING_INTERVAL;
+    data.thingSpeakReportingInterval = THINGSPEAK_REPORTING_INTERVAL;
+
     saveSettings();
     settingsChanged = true;
 }
@@ -48,6 +59,11 @@ void SettingsManager::loadSettings()
     int mode = doc["DisplayMode"];
     data.dispayMode = (DisplayMode)mode;
 
+    data.currentWeatherInterval = doc["CurrentWeatherInterval"];
+    data.forecastWeatherInterval = doc["ForecastWeatherInterval"];
+    data.sensorReadingInterval = doc["SensorReadingInterval"];
+    data.thingSpeakReportingInterval = doc["ThingSpeakReportingInterval"];
+
     // testing
     //serializeJson(doc, Serial);
     //Serial.println();
@@ -63,6 +79,10 @@ void SettingsManager::saveSettings()
     doc["ThingSpeakChannelID"] = data.thingSpeakChannelID;
     doc["ThingSpeakAPIKey"] = data.thingSpeakAPIKey;
     doc["DisplayMode"] = (int)data.dispayMode;
+    doc["CurrentWeatherInterval"] = data.currentWeatherInterval;
+    doc["ForecastWeatherInterval"] = data.forecastWeatherInterval;
+    doc["SensorReadingInterval"] = data.sensorReadingInterval;
+    doc["ThingSpeakReportingInterval"] = data.thingSpeakReportingInterval;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
@@ -152,6 +172,66 @@ void SettingsManager::setDisplayMode(DisplayMode displayMode)
     if(displayMode != data.dispayMode)
     {
         data.dispayMode = displayMode;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+int SettingsManager::getCurrentWeatherInterval()
+{
+    return data.currentWeatherInterval;
+}
+
+void SettingsManager::setCurrentWeatherInterval(int interval)
+{
+    if(data.currentWeatherInterval != interval)
+    {
+        data.currentWeatherInterval = interval;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+int SettingsManager::getForecastWeatherInterval()
+{
+    return data.forecastWeatherInterval;
+}
+
+void SettingsManager::setForecastWeatherInterval(int interval)
+{
+    if(data.forecastWeatherInterval != interval)
+    {
+        data.forecastWeatherInterval = interval;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+int SettingsManager::getSensorReadingInterval()
+{
+    return data.sensorReadingInterval;
+}
+
+void SettingsManager::setSensorReadingInterval(int interval)
+{
+    if(data.sensorReadingInterval != interval)
+    {
+        data.sensorReadingInterval = interval;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+int SettingsManager::getThingSpeakReportingInterval()
+{
+    return data.thingSpeakReportingInterval;
+}
+
+void SettingsManager::setThingSpeakReportingInterval(int interval)
+{
+    if(data.thingSpeakReportingInterval != interval)
+    {
+        data.thingSpeakReportingInterval = interval;
         saveSettings();
         settingsChanged = true;
     }

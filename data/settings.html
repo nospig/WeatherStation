@@ -63,6 +63,46 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="table-responsive-md">
+            <table class="table" style="background-color: white">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Timings - enter values in seconds</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <form action="/updateTimings.html">
+                                <div class="form-group">
+                                    <label for="currentWeatherInterval">Current weather update interval:</label>
+                                    <input type="text" class="form-control" id="currentWeatherInterval" value="%CURRENTWEATHERINTERVAL%"
+                                        placeholder="Current weather update interval" name="currentWeatherInterval">
+                                </div>
+                                <div class="form-group">
+                                    <label for="forecastWeatherInterval">Weather forecast update interval:</label>
+                                    <input type="text" class="form-control" id="forecastWeatherInterval" value="%WEATHERFORECASTINTERVAL%"
+                                        placeholder="Weather forecast update interval" name="forecastWeatherInterval">
+                                </div>
+                                <div class="form-group">
+                                    <label for="sensorReadingInterval">Sensor reading interval:</label>
+                                    <input type="text" class="form-control" id="sensorReadingInterval" value="%SENSORREADINGINTERVAL%"
+                                        placeholder="Sensor reading interval" name="sensorReadingInterval">
+                                </div>
+                                <div class="form-group">
+                                    <label for="thingSpeakReportingInterval">Current weather update interval:</label>
+                                    <input type="text" class="form-control" id="thingSpeakReportingInterval" value="%THINGSPEAKREPORTINGINTERVAL%"
+                                        placeholder="ThingSpeak reporting interval" name="thingSpeakReportingInterval">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="table-responsive-md">
             <table class="table" style="background-color: white">
                 <thead class="thead-light">

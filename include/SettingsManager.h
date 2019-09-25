@@ -3,6 +3,7 @@
 
 #include <ArduinoJson.h>
 #include "DisplayBase.h"
+#include "Settings.h"
 
 const String SETTINGS_FILE_NAME = "Settings.json";
 
@@ -15,6 +16,12 @@ typedef struct SettingsData
     String openWeatherLocationID;
 
     DisplayMode dispayMode;
+
+    int currentWeatherInterval;
+    int forecastWeatherInterval;
+    int sensorReadingInterval;
+    int thingSpeakReportingInterval;
+
 } SettingsData;
 
 class SettingsManager
@@ -38,6 +45,18 @@ class SettingsManager
 
         DisplayMode getDisplayMode();
         void setDisplayMode(DisplayMode displayMode);
+
+        int getCurrentWeatherInterval();
+        void setCurrentWeatherInterval(int interval);
+
+        int getForecastWeatherInterval();
+        void setForecastWeatherInterval(int interval);
+
+        int getSensorReadingInterval();
+        void setSensorReadingInterval(int interval);
+
+        int getThingSpeakReportingInterval();
+        void setThingSpeakReportingInterval(int interval);
 
         bool getSettingsChanged();
         void resetSettingsChanged();

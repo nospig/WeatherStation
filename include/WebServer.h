@@ -28,7 +28,8 @@ class WebServer
         static String indexProcessor(const String& token);
         static void handleUpdateWeatherSettings(AsyncWebServerRequest* request);
         static void handleUpdateThingSpeakSettings(AsyncWebServerRequest* request);
-        static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);        
+        static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);       
+        static void handleUpdateTimings(AsyncWebServerRequest* request);        
         static void handleForgetWiFi(AsyncWebServerRequest* request);
         static void handleResetSettings(AsyncWebServerRequest* request);
         static void handleScreenGrab(AsyncWebServerRequest* request);

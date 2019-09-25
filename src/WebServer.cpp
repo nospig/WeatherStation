@@ -63,6 +63,12 @@ void WebServer::init(SettingsManager* settingsManager)
         request->redirect("/index.html");
     });
 
+    server.on("/updateTimings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleUpdateTimings(request);
+        request->redirect("/index.html");
+    });
+
     server.on("/resetSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         handleResetSettings(request);
@@ -256,6 +262,22 @@ String WebServer::settingsProcessor(const String& token)
             return "Checked";
         }
     }
+    if(token == "CURRENTWEATHERINTERVAL")    
+    {
+        return String(settingsManager->getCurrentWeatherInterval() / SECONDS_MULT);
+    }
+    if(token == "WEATHERFORECASTINTERVAL")    
+    {
+        return String(settingsManager->getForecastWeatherInterval() / SECONDS_MULT);
+    }
+    if(token == "SENSORREADINGINTERVAL")    
+    {
+        return String(settingsManager->getSensorReadingInterval() / SECONDS_MULT);
+    }
+    if(token == "THINGSPEAKREPORTINGINTERVAL")    
+    {
+        return String(settingsManager->getThingSpeakReportingInterval() / SECONDS_MULT);
+    }
 
     return String();
 }
@@ -330,6 +352,30 @@ void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
         }
 
         //Serial.println("Got display mode of: " + p->value());
+    }
+}
+
+void WebServer::handleUpdateTimings(AsyncWebServerRequest* request)
+{
+    if(request->hasParam("currentWeatherInterval"))
+    {
+        AsyncWebParameter* p = request->getParam("currentWeatherInterval");
+        settingsManager->setCurrentWeatherInterval(p->value().toInt() * SECONDS_MULT);
+    }
+    if(request->hasParam("forecastWeatherInterval"))
+    {
+        AsyncWebParameter* p = request->getParam("forecastWeatherInterval");
+        settingsManager->setForecastWeatherInterval(p->value().toInt() * SECONDS_MULT);
+    }
+    if(request->hasParam("sensorReadingInterval"))
+    {
+        AsyncWebParameter* p = request->getParam("sensorReadingInterval");
+        settingsManager->setSensorReadingInterval(p->value().toInt() * SECONDS_MULT);
+    }
+    if(request->hasParam("thingSpeakReportingInterval"))
+    {
+        AsyncWebParameter* p = request->getParam("thingSpeakReportingInterval");
+        settingsManager->setThingSpeakReportingInterval(p->value().toInt() * SECONDS_MULT);
     }
 }
 

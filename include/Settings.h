@@ -20,10 +20,6 @@ const long utcOffsetInSeconds = 25200;
 // weather
 #define NUM_FORECASTS 5                             // needs to match maximum required by display modes
 
-#define CURRENT_WEATHER_INTERVAL        10 * MINUTES_MULT   
-#define FORECAST_WEATHER_INTERVAL       25 * MINUTES_MULT  
-#define SENSOR_READING_INTERVAL         30 * SECONDS_MULT
-#define THINGSPEAK_REPORTING_INTERVAL   30 * MINUTES_MULT
 #define WIFI_STRENGTH_INTERVAL          10 * SECONDS_MULT
 #define SETTINGS_CHANGED_INTERVAL       10 * SECONDS_MULT
 #define SCREENGRAB_INTERVAL             10 * SECONDS_MULT

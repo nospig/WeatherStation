@@ -33,10 +33,10 @@ float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
 // tasks
 Task connectWifi(0, TASK_ONCE, &connectWifiCallback);
 Task getTime(TIME_FETCH_INTERVAL, TASK_FOREVER, &getTimeCallback);
-Task readSensors(SENSOR_READING_INTERVAL, TASK_FOREVER, &readSensorsCallback);
-Task getCurrentWeather(CURRENT_WEATHER_INTERVAL, TASK_FOREVER, &getCurrentWeatherCallback);
-Task getForecastWeather(FORECAST_WEATHER_INTERVAL, TASK_FOREVER, &getWeatherForecastCallback);
-Task updateThingSpeak(THINGSPEAK_REPORTING_INTERVAL, TASK_FOREVER, &updateThingSpeakCallback);
+Task readSensors(60*SECONDS_MULT, TASK_FOREVER, &readSensorsCallback);
+Task getCurrentWeather(60*SECONDS_MULT, TASK_FOREVER, &getCurrentWeatherCallback);
+Task getForecastWeather(60*SECONDS_MULT, TASK_FOREVER, &getWeatherForecastCallback);
+Task updateThingSpeak(60*SECONDS_MULT, TASK_FOREVER, &updateThingSpeakCallback);
 Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengthCallback);
 Task checkSettingsChanged(SETTINGS_CHANGED_INTERVAL, TASK_FOREVER, &checkSettingsChangedCallback);
 Task checkScreenGrabRequested(SCREENGRAB_INTERVAL, TASK_FOREVER, &checkScreenGrabCallback);
@@ -152,7 +152,6 @@ void connectWifiCallback()
     display->setDisplayMode(settingsManager.getDisplayMode());
     display->startMainDisplay();
 
-    // start all tasks
     taskScheduler.addTask(getTime);
     taskScheduler.addTask(getCurrentWeather);
     taskScheduler.addTask(getForecastWeather);
@@ -161,6 +160,12 @@ void connectWifiCallback()
     taskScheduler.addTask(updateWiFiStrength);
     taskScheduler.addTask(checkSettingsChanged);
     taskScheduler.addTask(checkScreenGrabRequested);
+
+    // timings
+    getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
+    getForecastWeather.setInterval(settingsManager.getForecastWeatherInterval());
+    readSensors.setInterval(settingsManager.getSensorReadingInterval());
+    updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
 
     updateThingSpeak.disable(); 
     getTime.enable();
@@ -190,6 +195,11 @@ void checkSettingsChangedCallback()
         // best just to force a display clear when changing settings
         display->setDisplayMode(settingsManager.getDisplayMode());
         display->restartMainDisplay();
+
+        getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
+        getForecastWeather.setInterval(settingsManager.getForecastWeatherInterval());
+        readSensors.setInterval(settingsManager.getSensorReadingInterval());
+        updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
 
         getTime.forceNextIteration();
         getCurrentWeather.forceNextIteration();
