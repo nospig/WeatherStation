@@ -76,24 +76,24 @@
                         <td>
                             <form action="/updateTimings.html">
                                 <div class="form-group">
-                                    <label for="currentWeatherInterval">Current weather update interval:</label>
-                                    <input type="text" class="form-control" id="currentWeatherInterval" value="%CURRENTWEATHERINTERVAL%"
-                                        placeholder="Current weather update interval" name="currentWeatherInterval">
+                                    <label for="currentWeatherInterval">Current weather update interval: (min 30 seconds)</label>
+                                    <input type="number" class="form-control" id="currentWeatherInterval" value="%CURRENTWEATHERINTERVAL%"
+                                        placeholder="Current weather update interval" name="currentWeatherInterval" min="30">
                                 </div>
                                 <div class="form-group">
-                                    <label for="forecastWeatherInterval">Weather forecast update interval:</label>
-                                    <input type="text" class="form-control" id="forecastWeatherInterval" value="%WEATHERFORECASTINTERVAL%"
-                                        placeholder="Weather forecast update interval" name="forecastWeatherInterval">
+                                    <label for="forecastWeatherInterval">Weather forecast update interval: (min 60 seconds)</label>
+                                    <input type="number" class="form-control" id="forecastWeatherInterval" value="%WEATHERFORECASTINTERVAL%"
+                                        placeholder="Weather forecast update interval" name="forecastWeatherInterval" min="60">
                                 </div>
                                 <div class="form-group">
-                                    <label for="sensorReadingInterval">Sensor reading interval:</label>
-                                    <input type="text" class="form-control" id="sensorReadingInterval" value="%SENSORREADINGINTERVAL%"
-                                        placeholder="Sensor reading interval" name="sensorReadingInterval">
+                                    <label for="sensorReadingInterval">Sensor reading interval: (min 10 seconds)</label>
+                                    <input type="number" class="form-control" id="sensorReadingInterval" value="%SENSORREADINGINTERVAL%"
+                                        placeholder="Sensor reading interval" name="sensorReadingInterval" min="10">
                                 </div>
                                 <div class="form-group">
-                                    <label for="thingSpeakReportingInterval">Current weather update interval:</label>
-                                    <input type="text" class="form-control" id="thingSpeakReportingInterval" value="%THINGSPEAKREPORTINGINTERVAL%"
-                                        placeholder="ThingSpeak reporting interval" name="thingSpeakReportingInterval">
+                                    <label for="thingSpeakReportingInterval">ThingSpeak reporting interval: (min 60 seconds)</label>
+                                    <input type="number" class="form-control" id="thingSpeakReportingInterval" value="%THINGSPEAKREPORTINGINTERVAL%"
+                                        placeholder="ThingSpeak reporting interval" name="thingSpeakReportingInterval" min="60">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </form>
