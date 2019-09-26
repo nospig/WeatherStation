@@ -14,6 +14,7 @@
 #include "WebServer.h"
 #include "ThingSpeakReporter.h"
 #include "BMEReader.h"
+#include "MQTTManager.h"
 #include <FS.h>
 
 // globals
@@ -28,6 +29,8 @@ OpenWeatherMapDaily forecastWeatherClient(NUM_FORECASTS);
 SettingsManager settingsManager;
 DNSServer dns;
 BMEReader bmeReader;
+MQTTManager mqttManager;
+
 float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
 
 // tasks
@@ -66,7 +69,8 @@ void readSensorsCallback()
 
         display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
         webServer.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
-
+        mqttManager.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+        
         // only enable thing speak after some data recorded
         updateThingSpeak.enableIfNot();
     }
@@ -147,6 +151,7 @@ void connectWifiCallback()
     webServer.init(&settingsManager);
     thingSpeakReporter.init(&settingsManager);
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
+    mqttManager.init(&settingsManager);
 
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
