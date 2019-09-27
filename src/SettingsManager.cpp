@@ -39,6 +39,9 @@ void SettingsManager::resetSettings()
     data.sensorReadingInterval = SENSOR_READING_INTERVAL;
     data.thingSpeakReportingInterval = THINGSPEAK_REPORTING_INTERVAL;
 
+    data.thingSpeakEnabled = false;
+    data.mqttEnabled = false;
+
     saveSettings();
     settingsChanged = true;
 }
@@ -64,6 +67,9 @@ void SettingsManager::loadSettings()
     data.sensorReadingInterval = doc["SensorReadingInterval"];
     data.thingSpeakReportingInterval = doc["ThingSpeakReportingInterval"];
 
+    data.thingSpeakEnabled = doc["ThingSpeakEnabled"];
+    data.mqttEnabled = doc["MqttEnabled"];
+
     // testing
     //serializeJson(doc, Serial);
     //Serial.println();
@@ -83,6 +89,8 @@ void SettingsManager::saveSettings()
     doc["ForecastWeatherInterval"] = data.forecastWeatherInterval;
     doc["SensorReadingInterval"] = data.sensorReadingInterval;
     doc["ThingSpeakReportingInterval"] = data.thingSpeakReportingInterval;
+    doc["ThingSpeakEnabled"] = data.thingSpeakEnabled;
+    doc["MqttEnabled"] = data.mqttEnabled;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
@@ -232,6 +240,37 @@ void SettingsManager::setThingSpeakReportingInterval(int interval)
     if(data.thingSpeakReportingInterval != interval)
     {
         data.thingSpeakReportingInterval = interval;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+bool SettingsManager::getThingSpeakEnabled()
+{
+    return data.thingSpeakEnabled;
+}
+
+void SettingsManager::setThingSpeakEnabled(bool enabled)
+{
+    if(data.thingSpeakEnabled != enabled)
+    {
+        data.thingSpeakEnabled = enabled;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+
+bool SettingsManager::getMQTTEnabled()
+{
+    return data.mqttEnabled;
+}
+
+void SettingsManager::setMQTTEnabled(bool enabled)
+{
+    if(data.mqttEnabled != enabled)
+    {
+        data.mqttEnabled = enabled;
         saveSettings();
         settingsChanged = true;
     }

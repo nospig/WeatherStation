@@ -15,6 +15,23 @@ bool WebServer::screenGrabRequest = false;
 
 SettingsManager* WebServer::settingsManager;    
 
+static const char NAV_BAR[] PROGMEM = 
+    "<nav class='navbar navbar-expand-sm bg-dark navbar-dark fixed-top'>"
+    "<a class='navbar-brand' href='index.html'>Weather Station</a>"
+    "<ul class='navbar-nav'>"
+    "<li class='nav-item'>"
+    "<a class='nav-link' href='settings.html'>Settings</a>"
+    "</li>"
+    "<li class='nav-item'>"
+    "<a class='nav-link' href='weatherSettings.html'>Weather</a>"
+    "</li>"
+    "<li class='nav-item'>"
+    "<a class='nav-link' href='thingSpeakSettings.html'>ThingSpeak</a>"
+    "</li>"
+    "<li class='nav-item'>"
+    "<a class='nav-link' href='screenGrab.html'>Screengrab</a>"
+    "</nav>";
+
 // methods
 
 void WebServer::init(SettingsManager* settingsManager)
@@ -32,7 +49,7 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/index.html", String(), false, indexProcessor);
+        request->send(SPIFFS, "/index.html", String(), false, tokenProcessor);
     });
 
     server.on("/screenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -42,7 +59,22 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/settings.html", String(), false, settingsProcessor);
+        request->send(SPIFFS, "/settings.html", String(), false, tokenProcessor);
+    });
+
+    server.on("/weatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/weatherSettings.html", String(), false, tokenProcessor);
+    });
+
+    server.on("/thingSpeakSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/thingSpeakSettings.html", String(), false, tokenProcessor);
+    });
+
+    server.on("/mqttSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/mqttSettings.html", String(), false, tokenProcessor);
     });
 
     server.on("/updateWeatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -223,8 +255,12 @@ void WebServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, 
     }
 }
 
-String WebServer::settingsProcessor(const String& token)
+String WebServer::tokenProcessor(const String& token)
 {
+    if(token == "NAVBAR")
+    {
+        return FPSTR(NAV_BAR);
+    }
     if(token == "WEATHERLOCATIONKEY")    
     {
         return settingsManager->getOpenWeatherlocationID();
@@ -278,12 +314,22 @@ String WebServer::settingsProcessor(const String& token)
     {
         return String(settingsManager->getThingSpeakReportingInterval() / SECONDS_MULT);
     }
+    if(token == "THINGSPEAKENABLED")
+    {
+        if(settingsManager->getThingSpeakEnabled() == true)
+        {
+            return "Checked";
+        }
+    }
+    if(token == "MQTTENABLED")
+    {
+        if(settingsManager->getMQTTEnabled() == true)
+        {
+            return "Checked";
+        }
+    }
 
-    return String();
-}
-
-String WebServer::indexProcessor(const String& token)
-{
+/*
     if(token == "THINGSPEAKLINK")
     {
         if(settingsManager->getThingSpeakChannelID() != 0)
@@ -292,7 +338,7 @@ String WebServer::indexProcessor(const String& token)
             return "<li class='nav-item'><a class='nav-link' href='" + url + "'>ThingSpeak</a></li>";
         }
     }
-
+*/
     return String();
 }
 
@@ -330,6 +376,15 @@ void WebServer::handleUpdateThingSpeakSettings(AsyncWebServerRequest* request)
 
         //Serial.println("Got ThingSpeak channel ID of: " + p->value());
     }
+    if(request->hasParam("thingSpeakEnabled"))
+    {        
+        settingsManager->setThingSpeakEnabled(true);
+    }
+    else
+    {
+        settingsManager->setThingSpeakEnabled(false);
+    }
+    
 }
 
 void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)

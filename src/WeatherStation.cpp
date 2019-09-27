@@ -83,7 +83,7 @@ void updateThingSpeakCallback()
     //Serial.println("Update ThingSpeak");
 
     // just send the latest sensor saved readings, no need to update again, avoid chances of updating the sensor too soon
-    if(settingsManager.getThingSpeakApiKey() != "")
+    if(settingsManager.getThingSpeakApiKey() != "" && settingsManager.getThingSpeakEnabled())
     {
         thingSpeakReporter.sendSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
     }
@@ -211,6 +211,7 @@ void checkSettingsChangedCallback()
         getForecastWeather.forceNextIteration();
         readSensors.forceNextIteration();
         updateWiFiStrength.forceNextIteration();
+        updateThingSpeak.forceNextIteration();
     }
 }
 

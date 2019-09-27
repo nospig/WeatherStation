@@ -3,6 +3,7 @@
 
 #include <AsyncMqttClient.h>
 #include "SettingsManager.h"
+#include <Ticker.h>
 
 class MQTTManager
 {
@@ -14,10 +15,11 @@ class MQTTManager
     private:
         static void onConnect(bool sessionPresent);
         static void onDisconnect(AsyncMqttClientDisconnectReason reason);
-        
+        static void connectToMqtt();
 
         static AsyncMqttClient mqttClient;
         static SettingsManager* settingsManager;    
+        static Ticker reconnectTimer;
         static bool connected;
 };
 

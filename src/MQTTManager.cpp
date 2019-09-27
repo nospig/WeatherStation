@@ -1,10 +1,12 @@
 #include "MQTTManager.h"
 #include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
 
 #include "Secrets.h"    // TODO, so I can push to github without showing my settings for now
 
 AsyncMqttClient MQTTManager::mqttClient;
 bool MQTTManager::connected = false;
+Ticker MQTTManager::reconnectTimer;
 
 void MQTTManager::updateSensorReadings(float temp, float humidity, float pressure)
 {
@@ -41,6 +43,11 @@ void MQTTManager::init(SettingsManager* settingsManager)
     mqttClient.onConnect(onConnect);
     mqttClient.onDisconnect(onDisconnect);
 
+    connectToMqtt();
+}
+
+void MQTTManager::connectToMqtt()
+{
     mqttClient.connect();
 }
 
@@ -48,15 +55,16 @@ void MQTTManager::onConnect(bool sessionPresent)
 {
     connected = true;
 
-    Serial.println("Connected to MQTT, session present: ");
-    Serial.println(sessionPresent);
+    //Serial.println("Connected to MQTT, session present: ");
+    //Serial.println(sessionPresent);
 }
 
 void MQTTManager::onDisconnect(AsyncMqttClientDisconnectReason reason)
 {
     connected = false;
 
-// TODO, reconnect if WiFi.isConnected
-
-    Serial.println("Disconnected from MQTT.");
+    if(WiFi.isConnected())
+    {
+        reconnectTimer.once(2, connectToMqtt);
+    }
 }

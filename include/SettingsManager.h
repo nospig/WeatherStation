@@ -22,6 +22,9 @@ typedef struct SettingsData
     int sensorReadingInterval;
     int thingSpeakReportingInterval;
 
+    bool thingSpeakEnabled;
+    bool mqttEnabled;
+
 } SettingsData;
 
 class SettingsManager
@@ -57,6 +60,12 @@ class SettingsManager
 
         int getThingSpeakReportingInterval();
         void setThingSpeakReportingInterval(int interval);
+
+        bool getThingSpeakEnabled();
+        void setThingSpeakEnabled(bool enabled);
+
+        bool getMQTTEnabled();
+        void setMQTTEnabled(bool enabled);
 
         bool getSettingsChanged();
         void resetSettingsChanged();

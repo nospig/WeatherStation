@@ -16,18 +16,31 @@
     %NAVBAR%
 
     <div class="container-fluid" style="margin-top:80px">
-        <h3>Screengrab - Allow up to 10 seconds for request to be made.</h3>        
+        <h3>Settings for OpenWeather API</h3>
+
         <div class="table-responsive-md">
             <table class="table" style="background-color: white">
                 <thead class="thead-light">
                     <tr>
-                        <th>Take grab</th>
+                        <th>Weather</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <a class="btn btn-primary" href="/takeScreenGrab.html">Grab</a>
+                            <form action="/updateWeatherSettings.html">
+                                <div class="form-group">
+                                    <label for="locationID">OpenWeather location ID:</label>
+                                    <input type="text" class="form-control" id="locationID" value="%WEATHERLOCATIONKEY%"
+                                        placeholder="OpenWeather location ID" name="openWeatherLocation">
+                                </div>
+                                <div class="form-group">
+                                    <label for="weatherApiKey">OpenWeather Api Key:</label>
+                                    <input type="text" class="form-control" id="weatherApiKey" value="%WEATHERAPIKEY%"
+                                        placeholder="OpenWeather API Key" name="openWeatherApiKey">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>
@@ -46,6 +59,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <!-- Confirm Modal Js -->
+    <script src="js/jquery.confirmModal.min.js"></script>
+    <script src="js/settings.js"></script>
 </body>
 
 </html>
