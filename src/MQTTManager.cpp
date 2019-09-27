@@ -2,11 +2,29 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 
-#include "Secrets.h"    // TODO, so I can push to github without showing my settings for now
-
 AsyncMqttClient MQTTManager::mqttClient;
 bool MQTTManager::connected = false;
 Ticker MQTTManager::reconnectTimer;
+SettingsManager* MQTTManager::settingsManager;
+
+
+void MQTTManager::reconnect()
+{
+    // call after settings change
+    mqttClient.disconnect();
+    setBrokerDetails();
+    connectToMqtt();
+}
+
+void MQTTManager::setBrokerDetails()
+{
+    strcpy(mqqtBroker, settingsManager->getMQTTBroker().c_str());
+    strcpy(mqqtUsername, settingsManager->getMQTTUsername().c_str());
+    strcpy(mqqtPassword, settingsManager->getMQTTPassword().c_str());
+
+    mqttClient.setServer(mqqtBroker, settingsManager->getMQTTPort());
+    mqttClient.setCredentials(mqqtUsername, mqqtPassword);
+}
 
 void MQTTManager::updateSensorReadings(float temp, float humidity, float pressure)
 {
@@ -14,8 +32,9 @@ void MQTTManager::updateSensorReadings(float temp, float humidity, float pressur
     char buffer[32];
     DynamicJsonDocument jsonDoc(128);
 
-    if(!connected)
+    if(!connected || !settingsManager->getMQTTEnabled())
     {
+        Serial.println("NOT sending MQTT");
         return;
     }
 
@@ -30,16 +49,17 @@ void MQTTManager::updateSensorReadings(float temp, float humidity, float pressur
 
     serializeJson(jsonDoc, output);
 
-    mqttClient.publish("bedroom/sensors", 0, false, output.c_str());
+    String topic = settingsManager->getMQTTTopic() + "/sensors";
+    mqttClient.publish(topic.c_str(), 0, false, output.c_str());
 }
 
 void MQTTManager::init(SettingsManager* settingsManager)
 {
     connected = false;
+    this->settingsManager = settingsManager;
 
-    mqttClient.setServer(MQTT_HOST, MQTT_PORT);
-    mqttClient.setCredentials(MQTT_USER, MQTT_PASS);
-    
+    setBrokerDetails();
+  
     mqttClient.onConnect(onConnect);
     mqttClient.onDisconnect(onDisconnect);
 
@@ -48,19 +68,25 @@ void MQTTManager::init(SettingsManager* settingsManager)
 
 void MQTTManager::connectToMqtt()
 {
-    mqttClient.connect();
+    if(settingsManager->getMQTTEnabled() && settingsManager->getMQTTBroker() != "" && settingsManager->getMQTTUsername() != "" && settingsManager->getMQTTPassword() != "")
+    {
+        //Serial.println("Connecting to MQTT");
+        mqttClient.connect();
+    }
 }
 
 void MQTTManager::onConnect(bool sessionPresent)
 {
     connected = true;
-
-    //Serial.println("Connected to MQTT, session present: ");
-    //Serial.println(sessionPresent);
 }
 
 void MQTTManager::onDisconnect(AsyncMqttClientDisconnectReason reason)
 {
+    //char buffer[32];
+
+    //sprintf(buffer, "MQTT Disconnected: %d\n", (int)reason);
+    //Serial.println(buffer);
+
     connected = false;
 
     if(WiFi.isConnected())

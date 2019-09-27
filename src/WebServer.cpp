@@ -29,6 +29,9 @@ static const char NAV_BAR[] PROGMEM =
     "<a class='nav-link' href='thingSpeakSettings.html'>ThingSpeak</a>"
     "</li>"
     "<li class='nav-item'>"
+    "<a class='nav-link' href='mqttSettings.html'>MQTT</a>"
+    "</li>"
+    "<li class='nav-item'>"
     "<a class='nav-link' href='screenGrab.html'>Screengrab</a>"
     "</nav>";
 
@@ -92,6 +95,12 @@ void WebServer::init(SettingsManager* settingsManager)
     server.on("/updateDisplaySettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         handleUpdateDisplaySettings(request);
+        request->redirect("/index.html");
+    });
+
+    server.on("/updateMqttSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleMQTTSettings(request);
         request->redirect("/index.html");
     });
 
@@ -328,6 +337,26 @@ String WebServer::tokenProcessor(const String& token)
             return "Checked";
         }
     }
+    if(token == "MQTTBROKERURL")
+    {
+        return settingsManager->getMQTTBroker();
+    }
+    if(token == "MQTTUSERNAME")
+    {
+        return settingsManager->getMQTTUsername();
+    }
+    if(token == "MQTTPASSWORD")
+    {
+        return settingsManager->getMQTTPassword();
+    }
+    if(token == "MQTTTOPIC")
+    {
+        return settingsManager->getMQTTTopic();
+    }
+    if(token == "MQTTPORT")
+    {
+        return String(settingsManager->getMQTTPort());
+    }
 
 /*
     if(token == "THINGSPEAKLINK")
@@ -383,8 +412,46 @@ void WebServer::handleUpdateThingSpeakSettings(AsyncWebServerRequest* request)
     else
     {
         settingsManager->setThingSpeakEnabled(false);
+    }    
+}
+
+void WebServer::handleMQTTSettings(AsyncWebServerRequest* request)
+{
+    if(request->hasParam("mqttEnabled"))
+    {        
+        settingsManager->setMQTTEnabled(true);
     }
-    
+    else
+    {
+        settingsManager->setMQTTEnabled(false);
+    }
+
+    if(request->hasParam("mqttBroker"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttBroker");
+        settingsManager->setMQTTBroker(p->value());
+    }
+    if(request->hasParam("mqttPort"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttPort");
+        settingsManager->setMQTTPort(p->value().toInt());
+    }
+    if(request->hasParam("mqttUsername"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttUsername");
+        settingsManager->setMQTTUsername(p->value());
+    }
+    if(request->hasParam("mqttPassword"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttPassword");
+        settingsManager->setMQTTPassword(p->value());
+    }
+    if(request->hasParam("mqttTopic"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttTopic");
+        settingsManager->setMQTTTopic(p->value());
+    }
+
 }
 
 void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)

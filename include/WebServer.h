@@ -28,6 +28,7 @@ class WebServer
         static void handleUpdateWeatherSettings(AsyncWebServerRequest* request);
         static void handleUpdateThingSpeakSettings(AsyncWebServerRequest* request);
         static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);       
+        static void handleMQTTSettings(AsyncWebServerRequest* request);               
         static void handleUpdateTimings(AsyncWebServerRequest* request);        
         static void handleForgetWiFi(AsyncWebServerRequest* request);
         static void handleResetSettings(AsyncWebServerRequest* request);

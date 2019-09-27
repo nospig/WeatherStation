@@ -22,6 +22,12 @@ typedef struct SettingsData
     int sensorReadingInterval;
     int thingSpeakReportingInterval;
 
+    String mqttBroker;
+    String mqttUsername;
+    String mqttPassword;
+    String mqttTopic;
+    int mqttPort;
+
     bool thingSpeakEnabled;
     bool mqttEnabled;
 
@@ -67,12 +73,31 @@ class SettingsManager
         bool getMQTTEnabled();
         void setMQTTEnabled(bool enabled);
 
+        int getMQTTPort();
+        void setMQTTPort(int port);
+
+        String getMQTTBroker();
+        void setMQTTBroker(String url);
+
+        String getMQTTUsername();
+        void setMQTTUsername(String userName);
+
+        String getMQTTPassword();
+        void setMQTTPassword(String password);
+
+        String getMQTTTopic();
+        void setMQTTTopic(String topic);
+
+        bool getMQTTReconnectRequired();
+        void resetMQTTReconnectRequired();
+
         bool getSettingsChanged();
         void resetSettingsChanged();
 
     private:
         SettingsData data;
         bool settingsChanged;
+        bool mqttReconnectRequired;
 
         void loadSettings();
         void saveSettings();

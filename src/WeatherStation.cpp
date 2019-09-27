@@ -197,6 +197,12 @@ void checkSettingsChangedCallback()
         //Serial.println("Settings changed.");
         settingsManager.resetSettingsChanged();
 
+        if(settingsManager.getMQTTReconnectRequired())
+        {
+            mqttManager.reconnect();
+            settingsManager.resetMQTTReconnectRequired();
+        }
+
         // best just to force a display clear when changing settings
         display->setDisplayMode(settingsManager.getDisplayMode());
         display->restartMainDisplay();

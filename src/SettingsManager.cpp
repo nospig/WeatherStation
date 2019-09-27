@@ -24,6 +24,7 @@ void SettingsManager::init()
     loadSettings();
 
     settingsChanged = false;
+    mqttReconnectRequired = false;
 }
 
 void SettingsManager::resetSettings()
@@ -42,6 +43,12 @@ void SettingsManager::resetSettings()
     data.thingSpeakEnabled = false;
     data.mqttEnabled = false;
 
+    data.mqttBroker = "";
+    data.mqttUsername = "";
+    data.mqttPassword = "";
+    data.mqttTopic = "";
+    data.mqttPort = 0;
+
     saveSettings();
     settingsChanged = true;
 }
@@ -49,7 +56,7 @@ void SettingsManager::resetSettings()
 void SettingsManager::loadSettings()
 {
     File jsonSettings;
-    DynamicJsonDocument doc(512);       // TODO, get correct size
+    DynamicJsonDocument doc(768);
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "r");
     deserializeJson(doc, jsonSettings);
@@ -70,6 +77,12 @@ void SettingsManager::loadSettings()
     data.thingSpeakEnabled = doc["ThingSpeakEnabled"];
     data.mqttEnabled = doc["MqttEnabled"];
 
+    data.mqttBroker = (const char*)doc["MQTTBroker"];
+    data.mqttUsername = (const char*)doc["MQTTUsername"];
+    data.mqttPassword = (const char*)doc["MQTTPassword"];
+    data.mqttTopic = (const char*)doc["MQTTTopic"];
+    data.mqttPort = doc["MQTTPort"];
+
     // testing
     //serializeJson(doc, Serial);
     //Serial.println();
@@ -78,7 +91,7 @@ void SettingsManager::loadSettings()
 void SettingsManager::saveSettings()
 {
     File jsonSettings;
-    DynamicJsonDocument doc(512);       // TODO, get correct size
+    DynamicJsonDocument doc(768);   
 
     doc["WeatherAPIKey"] = data.openWeatherMapAPIKey;
     doc["WeatherLLocationID"] = data.openWeatherLocationID;
@@ -91,6 +104,11 @@ void SettingsManager::saveSettings()
     doc["ThingSpeakReportingInterval"] = data.thingSpeakReportingInterval;
     doc["ThingSpeakEnabled"] = data.thingSpeakEnabled;
     doc["MqttEnabled"] = data.mqttEnabled;
+    doc["MQTTBroker"] = data.mqttBroker;
+    doc["MQTTUsername"] = data.mqttUsername;
+    doc["MQTTPassword"] = data.mqttPassword;
+    doc["MQTTTopic"] = data.mqttTopic;
+    doc["MQTTPort"] = data.mqttPort;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
@@ -260,7 +278,6 @@ void SettingsManager::setThingSpeakEnabled(bool enabled)
     }
 }
 
-
 bool SettingsManager::getMQTTEnabled()
 {
     return data.mqttEnabled;
@@ -273,9 +290,92 @@ void SettingsManager::setMQTTEnabled(bool enabled)
         data.mqttEnabled = enabled;
         saveSettings();
         settingsChanged = true;
+
+        if(enabled)
+        {
+            mqttReconnectRequired = true;
+        }
     }
 }
 
+int SettingsManager::getMQTTPort()
+{
+    return data.mqttPort;
+}
+
+void SettingsManager::setMQTTPort(int port)
+{
+    if(data.mqttPort != port)
+    {
+        data.mqttPort = port;
+        saveSettings();
+        settingsChanged = true;
+        mqttReconnectRequired = true;
+    }
+}
+
+String SettingsManager::getMQTTBroker()
+{
+    return data.mqttBroker;
+}
+
+void SettingsManager::setMQTTBroker(String url)
+{
+    if(data.mqttBroker != url)
+    {
+        data.mqttBroker = url;
+        saveSettings();
+        settingsChanged = true;
+        mqttReconnectRequired = true;
+    }
+}
+
+String SettingsManager::getMQTTUsername()
+{
+    return data.mqttUsername;
+}
+
+void SettingsManager::setMQTTUsername(String userName)
+{
+    if(data.mqttUsername != userName)
+    {
+        data.mqttUsername = userName;
+        saveSettings();
+        settingsChanged = true;
+        mqttReconnectRequired = true;
+    }
+}
+
+String SettingsManager::getMQTTPassword()
+{
+    return data.mqttPassword;
+}
+
+void SettingsManager::setMQTTPassword(String password)
+{
+    if(data.mqttPassword != password)
+    {
+        data.mqttPassword = password;
+        saveSettings();
+        settingsChanged = true;
+        mqttReconnectRequired = true;
+    }
+}
+
+String SettingsManager::getMQTTTopic()
+{
+    return data.mqttTopic;
+}
+
+void SettingsManager::setMQTTTopic(String topic)
+{
+    if(data.mqttTopic != topic)
+    {
+        data.mqttTopic = topic;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
 
 bool SettingsManager::getSettingsChanged()
 {
@@ -287,3 +387,12 @@ void SettingsManager::resetSettingsChanged()
     settingsChanged = false;
 }
 
+bool SettingsManager::getMQTTReconnectRequired()
+{
+    return mqttReconnectRequired;
+}
+
+void SettingsManager::resetMQTTReconnectRequired()
+{
+    mqttReconnectRequired = false;
+}
