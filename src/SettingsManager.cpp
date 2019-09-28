@@ -33,7 +33,9 @@ void SettingsManager::resetSettings()
     data.thingSpeakAPIKey = "";
     data.openWeatherMapAPIKey = "";
     data.openWeatherLocationID = "";
+
     data.dispayMode = DisplayMode_1;
+    data.displayBrightness = 100;
 
     data.currentWeatherInterval = CURRENT_WEATHER_INTERVAL;
     data.forecastWeatherInterval = FORECAST_WEATHER_INTERVAL;
@@ -70,6 +72,7 @@ void SettingsManager::loadSettings()
 
     int mode = doc["DisplayMode"];
     data.dispayMode = (DisplayMode)mode;
+    data.displayBrightness = doc["DisplayBrightness"];
 
     data.currentWeatherInterval = doc["CurrentWeatherInterval"];
     data.forecastWeatherInterval = doc["ForecastWeatherInterval"];
@@ -102,6 +105,7 @@ void SettingsManager::saveSettings()
     doc["ThingSpeakChannelID"] = data.thingSpeakChannelID;
     doc["ThingSpeakAPIKey"] = data.thingSpeakAPIKey;
     doc["DisplayMode"] = (int)data.dispayMode;
+    doc["DisplayBrightness"] = data.displayBrightness;
     doc["CurrentWeatherInterval"] = data.currentWeatherInterval;
     doc["ForecastWeatherInterval"] = data.forecastWeatherInterval;
     doc["SensorReadingInterval"] = data.sensorReadingInterval;
@@ -392,6 +396,29 @@ void SettingsManager::setUtcOffset(long utcOffset)
     if(data.utcOffsetSeconds != utcOffset)
     {
         data.utcOffsetSeconds = utcOffset;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+int SettingsManager::getDisplayBrightness()
+{
+    return data.displayBrightness;
+}
+
+void SettingsManager::setDisplayBrightness(int brightnessPercent)
+{
+    if(brightnessPercent < 0)
+    {
+        brightnessPercent = 0;
+    }
+    if(brightnessPercent > 100)
+    {
+        brightnessPercent = 100;
+    }
+     if(data.displayBrightness != brightnessPercent)
+    {
+        data.displayBrightness = brightnessPercent;
         saveSettings();
         settingsChanged = true;
     }

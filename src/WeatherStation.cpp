@@ -156,6 +156,7 @@ void connectWifiCallback()
 
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
+    display->setDisplayBrightness(settingsManager.getDisplayBrightness());
     display->startMainDisplay();
 
     taskScheduler.addTask(getTime);
@@ -205,9 +206,10 @@ void checkSettingsChangedCallback()
         }
 
         timeClient.setTimeOffset(settingsManager.getUtcOffset());
-        
+
         // best just to force a display clear when changing settings
         display->setDisplayMode(settingsManager.getDisplayMode());
+        display->setDisplayBrightness(settingsManager.getDisplayBrightness());
         display->restartMainDisplay();
 
         getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());

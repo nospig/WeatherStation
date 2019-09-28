@@ -367,6 +367,11 @@ String WebServer::tokenProcessor(const String& token)
     {
         return String(settingsManager->getUtcOffset());
     }
+    if(token == "BRIGHTNESS")
+    {
+        return String(settingsManager->getDisplayBrightness());
+    }
+    
 /*
     if(token == "THINGSPEAKLINK")
     {
@@ -483,6 +488,11 @@ void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
         }
 
         //Serial.println("Got display mode of: " + p->value());
+    }
+    if(request->hasParam("brightness"))
+    {
+        AsyncWebParameter* p = request->getParam("brightness");
+        settingsManager->setDisplayBrightness(p->value().toInt());
     }
 }
 

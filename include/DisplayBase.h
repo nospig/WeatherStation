@@ -26,6 +26,7 @@ class DisplayBase
         virtual void drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount) {};
         virtual void drawWiFiStrength(long dBm) {};
         virtual void serveScreenShot() {};
+        virtual void setDisplayBrightness(int percent) {};
 
         virtual void setDisplayMode(DisplayMode mode);
         DisplayMode getDisplayMode();

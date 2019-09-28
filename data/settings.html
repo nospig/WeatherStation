@@ -28,23 +28,29 @@
                     <tr>
                         <td>
                             <form action="/updateDisplaySettings.html">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="display1">
-                                        <input type="radio" class="form-check-input" id="display1" name="optdisplay"
-                                            value="display1" %DISPLAY1CHECKED%>Mode 1 - summary
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label" for="display2">
-                                        <input type="radio" class="form-check-input" id="display2" name="optdisplay"
-                                            value="display2" %DISPLAY2CHECKED%>Mode 2 - 5 day forecast
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label" for="display3">
-                                        <input type="radio" class="form-check-input" id="display3" name="optdisplay"
-                                            value="display3" %DISPLAY3CHECKED%>Mode 3 - detailed current
-                                    </label>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="form-check-label" for="display1">
+                                            <input type="radio" class="form-check-input" id="display1" name="optdisplay"
+                                                value="display1" %DISPLAY1CHECKED%>Mode 1 - summary
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label" for="display2">
+                                            <input type="radio" class="form-check-input" id="display2" name="optdisplay"
+                                                value="display2" %DISPLAY2CHECKED%>Mode 2 - 5 day forecast
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label" for="display3">
+                                            <input type="radio" class="form-check-input" id="display3" name="optdisplay"
+                                                value="display3" %DISPLAY3CHECKED%>Mode 3 - detailed current
+                                        </label>
+                                    </div>
+                                    </div>
+                                <div class="form-group">
+                                    <label for="displayBrighness">Display brightness</label>
+                                        <input type="range" class="custom-range" id="displayBrighness" name="brightness" min="0" max="100" value="%BRIGHTNESS%">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </form>

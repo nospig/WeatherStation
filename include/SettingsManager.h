@@ -16,6 +16,7 @@ typedef struct SettingsData
     String openWeatherLocationID;
 
     DisplayMode dispayMode;
+    int displayBrightness;
 
     int currentWeatherInterval;
     int forecastWeatherInterval;
@@ -95,6 +96,9 @@ class SettingsManager
 
         long getUtcOffset();
         void setUtcOffset(long utcOffset);
+
+        int getDisplayBrightness();
+        void setDisplayBrightness(int brightnessPercent);
 
         bool getSettingsChanged();
         void resetSettingsChanged();

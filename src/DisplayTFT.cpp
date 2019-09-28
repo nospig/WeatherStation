@@ -23,8 +23,8 @@ DisplayTFT::DisplayTFT()
 void DisplayTFT::setDisplayEnabled(bool enabled)
 {
     if(enabled)
-    {
-        analogWrite(BRIGHTNESS_PIN, 512);   // TODO, move to settings to allow max brightness control
+    {        
+        analogWrite(BRIGHTNESS_PIN, brightness);
         tft->writecommand(0x11);
         //delay(5);
     }
@@ -34,6 +34,12 @@ void DisplayTFT::setDisplayEnabled(bool enabled)
         tft->writecommand(0x10);
         //delay(120);
     }    
+}
+
+void DisplayTFT::setDisplayBrightness(int percent)
+{
+    brightness = (MAX_BRIGHTNESS_VALUE * percent) / 100;
+    analogWrite(BRIGHTNESS_PIN, brightness);
 }
 
 void DisplayTFT::drawStartupDisplay()
