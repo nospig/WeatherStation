@@ -2,19 +2,36 @@
 
 Another version of the popular ESP2866 weather station.
 
-Built using the following hardware bought from AliExpress.
+**Features**
+
+* Creates an access point for connecting to any WiFi network
+* BME280 sensor for local temperature, pressure and humidity readings
+* 2.8" colour TFT for display
+* Uses a cheap Wemos D1 as the controller
+* 3 different display modes. All display modes show WiFi strength, clock with date and time and use colourful icons
+  * Summary - indoor conditions, current weather and 3 day forecast
+  * 5 day forecast
+  * Detailed current weather with indoor conditions
+* All settings controlled through a web interface which also displays sensor readings and weather conditions
+* Uses OpenWeather API for current weather and forecasts
+* Can report sensor readings to ThingSpeak
+* Can publish sensor readings to a MQTT broker
+* Can perform screengrabs and send them to a Processing sketch over serial connection
+* Password protected OTA updates enabled through PlatformIO (not through web interface)
+
+**API**
+
+Uses the [OpenWeather](https://openweathermap.org/api) API for current conditions and daily forecast. I have access to the daily forecast call. Newly created OpenWeather accounts may not as it's now a paid feature. If there is any interest I can update the code to read the forecast from the available free API call.
+
+**Hardware**
+
+Built using the following hardware from AliExpress.
 
 [Wemos D1 mini ESP8266 board](https://www.aliexpress.com/item/32651747570.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
 [2.8" TFT non touch version](https://www.aliexpress.com/item/33012793224.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
 [BME280 sensor](https://www.aliexpress.com/item/32849462236.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)
 
-Uses the [OpenWeather](https://openweathermap.org/api) API for current conditions and daily forecast. I have access to the daily forecast call. Newly created OpenWeather accounts may not as it's now a paid feature. If there is any interest I can update the code to read the forecast from the available free API call.
-
-Most station settings are set through it's webserver. Current sensor readings can be sent to a ThingSpeak channnel.
-
-3D printed case currently in development.
-
-[Weather icons](https://www.deviantart.com/umutavci/art/weather-icon-set-165476034) from umutavci.
+**OTA updates**
 
 Password protected OTA updates enabled. Set the MD5 hash of your prefered password in Settings.h. To upload via IP in PlatformIO create a file called uploadPassword.ini in the same folder as platformio.ini with the following contents:
 
@@ -22,3 +39,9 @@ Password protected OTA updates enabled. Set the MD5 hash of your prefered passwo
     upload_password = xxxxx
     
 Replace xxxxx with the plain text version of your OTA password.
+
+**Case**
+
+3D printed case currently in development.
+
+[Weather icons](https://www.deviantart.com/umutavci/art/weather-icon-set-165476034) from umutavci.
