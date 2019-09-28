@@ -139,8 +139,7 @@ void connectWifiCallback()
 
     display->drawStartupDisplay();
 
-    //wifiManager.resetSettings();
-    wifiManager.autoConnect("NospigWeather");
+    wifiManager.autoConnect("Weather Station");
 
     setupOtaUpdates();
 
