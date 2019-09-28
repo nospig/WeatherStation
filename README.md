@@ -23,6 +23,21 @@ Another version of the popular ESP2866 weather station.
 
 Uses the [OpenWeather](https://openweathermap.org/api) API for current conditions and daily forecast. I have access to the daily forecast call. Newly created OpenWeather accounts may not as it's now a paid feature. If there is any interest I can update the code to read the forecast from the available free API call.
 
+**Libraries**
+
+* Adafruit BME280
+* ArduinoJson
+* ESPAsyncWiFiManager
+* ESPAsyncTCP
+* ESPAsyncWebServer
+* TaskScheduler
+* TFT_eSPI
+* ThingSpeak
+* AsyncMqttClient
+* NTPClient
+
+Big thanks to all library developers who make developing projects such as this quite simple.
+
 **Hardware**
 
 Built using the following hardware from AliExpress.
