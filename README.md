@@ -23,6 +23,21 @@ Another version of the popular ESP2866 weather station.
 
 Uses the [OpenWeather](https://openweathermap.org/api) API for current conditions and daily forecast. I have access to the daily forecast call. Newly created OpenWeather accounts may not as it's now a paid feature. If there is any interest I can update the code to read the forecast from the available free API call.
 
+**Libraries**
+
+* Adafruit BME280
+* ArduinoJson
+* ESPAsyncWiFiManager
+* ESPAsyncTCP
+* ESPAsyncWebServer
+* TaskScheduler
+* TFT_eSPI
+* ThingSpeak
+* AsyncMqttClient
+* NTPClient
+
+Big thanks to all library developers who make developing projects such as this quite simple.
+
 **Hardware**
 
 Built using the following hardware from AliExpress.
@@ -30,6 +45,25 @@ Built using the following hardware from AliExpress.
 [Wemos D1 mini ESP8266 board](https://www.aliexpress.com/item/32651747570.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
 [2.8" TFT non touch version](https://www.aliexpress.com/item/33012793224.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
 [BME280 sensor](https://www.aliexpress.com/item/32849462236.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)
+
+Also works fine with a NodeMCU board.
+
+**Wiring**
+
+Mini RST -> TFT RST  
+Mini D0  -> TFT LED  
+Mini D5  -> TFT SCK  
+Mini D6  -> TFT MISO (only required if screen grab feature required)  
+Mini D7  -> TFT MOSI  
+Mini D1  -> BME SCL  
+Mini D2  -> BME SDA  
+Mini D3  -> TFT DC  
+
+Splice some wires and connect VCC on the TFT and BME to the Mini 3V3 pin. Do the same for GND to the Mini GND pin.
+
+**Note**
+
+There is a setting in the TFT_eSPI library that has to be set the same as you wire the TFT to the Mini.
 
 **OTA updates**
 
