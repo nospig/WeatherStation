@@ -74,6 +74,14 @@ Password protected OTA updates enabled. Set the MD5 hash of your prefered passwo
     
 Replace xxxxx with the plain text version of your OTA password.
 
+**MQTT**
+
+The station can publish sensor readings to a MQTT broker. Enter broker details on the MQTT settings page through the webserver. Choose a topic root to identify your station, i.e. bedroom, livingRoom. Sensor details will be sent using the topic root and '/sensors'. i.e. bedroom/sensors  
+
+Payload is a json file in the following format. `{"temp":"32.7","humidity":"28","pressure":"1012"}`
+
+The station will subscribe to messages using the topic root and '/display', i.e. bedroom/display. Send payload of 'off' to switch the display off, 'on' to switch display on. Use lower case for display and on/off.
+
 **Case**
 
 3D printed case currently in development.
