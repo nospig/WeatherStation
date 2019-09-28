@@ -49,6 +49,8 @@ void SettingsManager::resetSettings()
     data.mqttTopic = "";
     data.mqttPort = 0;
 
+    data.utcOffsetSeconds = 0;
+
     saveSettings();
     settingsChanged = true;
 }
@@ -83,6 +85,8 @@ void SettingsManager::loadSettings()
     data.mqttTopic = (const char*)doc["MQTTTopic"];
     data.mqttPort = doc["MQTTPort"];
 
+    data.utcOffsetSeconds = doc["utcOffset"];
+
     // testing
     //serializeJson(doc, Serial);
     //Serial.println();
@@ -109,6 +113,7 @@ void SettingsManager::saveSettings()
     doc["MQTTPassword"] = data.mqttPassword;
     doc["MQTTTopic"] = data.mqttTopic;
     doc["MQTTPort"] = data.mqttPort;
+    doc["utcOffset"] = data.utcOffsetSeconds;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
@@ -372,6 +377,21 @@ void SettingsManager::setMQTTTopic(String topic)
     if(data.mqttTopic != topic)
     {
         data.mqttTopic = topic;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+long SettingsManager::getUtcOffset()
+{
+    return data.utcOffsetSeconds;
+}
+
+void SettingsManager::setUtcOffset(long utcOffset)
+{
+    if(data.utcOffsetSeconds != utcOffset)
+    {
+        data.utcOffsetSeconds = utcOffset;
         saveSettings();
         settingsChanged = true;
     }

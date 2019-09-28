@@ -20,7 +20,7 @@
 // globals
 Scheduler taskScheduler;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
 WebServer webServer;
 ThingSpeakReporter thingSpeakReporter;
 DisplayBase* display;
@@ -152,6 +152,7 @@ void connectWifiCallback()
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
     mqttManager.init(&settingsManager);
     mqttManager.setSubscribeCallback(mqttSubscribeCallback);
+    timeClient.setTimeOffset(settingsManager.getUtcOffset());
 
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
@@ -203,6 +204,8 @@ void checkSettingsChangedCallback()
             settingsManager.resetMQTTReconnectRequired();
         }
 
+        timeClient.setTimeOffset(settingsManager.getUtcOffset());
+        
         // best just to force a display clear when changing settings
         display->setDisplayMode(settingsManager.getDisplayMode());
         display->restartMainDisplay();

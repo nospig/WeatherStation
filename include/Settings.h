@@ -14,7 +14,6 @@
 #define MINUTES_MULT 60 * SECONDS_MULT
 #define HOURS_MULT 60 * SECONDS_MULT
 
-const long utcOffsetInSeconds = 25200;
 #define TIME_FETCH_INTERVAL 5 * SECONDS_MULT
 
 // weather

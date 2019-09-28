@@ -29,7 +29,8 @@ class WebServer
         static void handleUpdateThingSpeakSettings(AsyncWebServerRequest* request);
         static void handleUpdateDisplaySettings(AsyncWebServerRequest* request);       
         static void handleMQTTSettings(AsyncWebServerRequest* request);               
-        static void handleUpdateTimings(AsyncWebServerRequest* request);        
+        static void handleUpdateTimings(AsyncWebServerRequest* request);
+        static void handleUpdateClockSettings(AsyncWebServerRequest* request);        
         static void handleForgetWiFi(AsyncWebServerRequest* request);
         static void handleResetSettings(AsyncWebServerRequest* request);
         static void handleScreenGrab(AsyncWebServerRequest* request);

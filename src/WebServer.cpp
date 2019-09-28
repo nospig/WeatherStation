@@ -110,6 +110,12 @@ void WebServer::init(SettingsManager* settingsManager)
         request->redirect("/index.html");
     });
 
+    server.on("/updateClockSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleUpdateClockSettings(request);
+        request->redirect("/index.html");
+    });
+
     server.on("/resetSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         handleResetSettings(request);
@@ -357,7 +363,10 @@ String WebServer::tokenProcessor(const String& token)
     {
         return String(settingsManager->getMQTTPort());
     }
-
+    if(token == "UTCOFFSET")
+    {
+        return String(settingsManager->getUtcOffset());
+    }
 /*
     if(token == "THINGSPEAKLINK")
     {
@@ -498,6 +507,15 @@ void WebServer::handleUpdateTimings(AsyncWebServerRequest* request)
     {
         AsyncWebParameter* p = request->getParam("thingSpeakReportingInterval");
         settingsManager->setThingSpeakReportingInterval(p->value().toInt() * SECONDS_MULT);
+    }
+}
+
+void WebServer::handleUpdateClockSettings(AsyncWebServerRequest* request)
+{
+    if(request->hasParam("utcOffset"))
+    {
+        AsyncWebParameter* p = request->getParam("utcOffset");
+        settingsManager->setUtcOffset(p->value().toInt());
     }
 }
 

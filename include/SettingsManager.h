@@ -31,6 +31,8 @@ typedef struct SettingsData
     bool thingSpeakEnabled;
     bool mqttEnabled;
 
+    long utcOffsetSeconds;
+
 } SettingsData;
 
 class SettingsManager
@@ -90,6 +92,9 @@ class SettingsManager
 
         bool getMQTTReconnectRequired();
         void resetMQTTReconnectRequired();
+
+        long getUtcOffset();
+        void setUtcOffset(long utcOffset);
 
         bool getSettingsChanged();
         void resetSettingsChanged();
