@@ -17,8 +17,25 @@ DisplayTFT::DisplayTFT()
 
     // Swap the colour byte order when rendering for images
     tft->setSwapBytes(true);
+    setDisplayEnabled(true);
 }
  
+void DisplayTFT::setDisplayEnabled(bool enabled)
+{
+    if(enabled)
+    {
+        analogWrite(BRIGHTNESS_PIN, 512);   // TODO, move to settings to allow max brightness control
+        tft->writecommand(0x11);
+        //delay(5);
+    }
+    else
+    {
+        analogWrite(BRIGHTNESS_PIN, 0);
+        tft->writecommand(0x10);
+        //delay(120);
+    }    
+}
+
 void DisplayTFT::drawStartupDisplay()
 {
     tft->fillScreen(BACKGROUND_COLOUR);

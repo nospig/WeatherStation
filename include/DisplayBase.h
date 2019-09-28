@@ -30,6 +30,7 @@ class DisplayBase
         virtual void setDisplayMode(DisplayMode mode);
         DisplayMode getDisplayMode();
 
+        virtual void setDisplayEnabled(bool enabled) {};
     private:
         DisplayMode displayMode = DisplayMode_1;
 };

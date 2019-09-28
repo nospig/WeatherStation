@@ -6,7 +6,7 @@ AsyncMqttClient MQTTManager::mqttClient;
 bool MQTTManager::connected = false;
 Ticker MQTTManager::reconnectTimer;
 SettingsManager* MQTTManager::settingsManager;
-
+void (* MQTTManager::subscribeCallback)(const char *, const char *);
 
 void MQTTManager::reconnect()
 {
@@ -56,12 +56,14 @@ void MQTTManager::updateSensorReadings(float temp, float humidity, float pressur
 void MQTTManager::init(SettingsManager* settingsManager)
 {
     connected = false;
+    subscribeCallback = nullptr;
     this->settingsManager = settingsManager;
 
     setBrokerDetails();
   
     mqttClient.onConnect(onConnect);
     mqttClient.onDisconnect(onDisconnect);
+    mqttClient.onMessage(onMessage);
 
     connectToMqtt();
 }
@@ -78,6 +80,9 @@ void MQTTManager::connectToMqtt()
 void MQTTManager::onConnect(bool sessionPresent)
 {
     connected = true;
+
+    String topic = settingsManager->getMQTTTopic() + "/" + MQTT_DISPLAY_SUBTOPIC;
+    mqttClient.subscribe(topic.c_str(), 0);
 }
 
 void MQTTManager::onDisconnect(AsyncMqttClientDisconnectReason reason)
@@ -91,6 +96,26 @@ void MQTTManager::onDisconnect(AsyncMqttClientDisconnectReason reason)
 
     if(WiFi.isConnected())
     {
-        reconnectTimer.once(2, connectToMqtt);
+        reconnectTimer.once(MQTT_RECONNECT_TIME, connectToMqtt);
     }
+}
+
+void MQTTManager::onMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
+{
+    if(subscribeCallback != nullptr)
+    {
+        char payloadBuffer[len+1];
+        strncpy(payloadBuffer, payload, len);
+        payloadBuffer[len] = '\0';
+
+        // TODO, reduce String usage
+        String subTopic = String(topic);
+        subTopic.remove(0, settingsManager->getMQTTTopic().length() + 1); // remove topic and / 
+        subscribeCallback(subTopic.c_str(), payloadBuffer);
+    }
+}
+
+void MQTTManager::setSubscribeCallback(void (* callback)(const char *, const char *))
+{
+    subscribeCallback = callback;
 }

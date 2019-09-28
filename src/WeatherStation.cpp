@@ -152,6 +152,7 @@ void connectWifiCallback()
     thingSpeakReporter.init(&settingsManager);
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
     mqttManager.init(&settingsManager);
+    mqttManager.setSubscribeCallback(mqttSubscribeCallback);
 
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
@@ -229,6 +230,25 @@ void checkScreenGrabCallback()
     {
         display->serveScreenShot();
         webServer.clearScreenGrabRequest();
+    }
+}
+
+// mqtt
+
+void mqttSubscribeCallback(const char* subTopic, const char *payload)
+{
+    if(!strcmp(subTopic, MQTT_DISPLAY_SUBTOPIC))
+    {
+        if(!strcmp(payload, "on"))
+        {
+            //Serial.println("Display on");
+            display->setDisplayEnabled(true);
+        }
+        if(!strcmp(payload, "off"))
+        {
+            //Serial.println("Display off");
+            display->setDisplayEnabled(false);
+        }
     }
 }
 

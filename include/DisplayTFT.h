@@ -55,6 +55,7 @@
 // NPIXELS values and render times: 1 = 5.0s, 2 = 1.75s, 4 = 1.68s, 8 = 1.67s
 #define NPIXELS 8  // Must be integer division of both TFT width and TFT height
 
+#define BRIGHTNESS_PIN 16   // D0
 
 class DisplayTFT : public DisplayBase
 {
@@ -74,7 +75,8 @@ class DisplayTFT : public DisplayBase
         void drawWiFiStrength(long dBm);
 
         void setDisplayMode(DisplayMode mode);
-
+        void setDisplayEnabled(bool enabled);
+        
         void serveScreenShot();
         
     private:

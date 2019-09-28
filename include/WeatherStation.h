@@ -16,6 +16,8 @@ void checkScreenGrabCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 
+void mqttSubscribeCallback(const char* subTopic, const char *payload);
+
 void setupOtaUpdates();
 
 #endif // _weatherstation_h
