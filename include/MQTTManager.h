@@ -35,8 +35,8 @@ class MQTTManager
         // MQTT library requires static strings. Not sure on max lengths required, TODO
         // max length set in mqqSettings.html
         char mqqtBroker[33];
-        char mqqtUsername[17];
-        char mqqtPassword[17];
+        char mqqtUsername[65];
+        char mqqtPassword[65];
 
         static void (* subscribeCallback)(const char *, const char *);
 };
