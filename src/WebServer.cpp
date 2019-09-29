@@ -57,7 +57,7 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/screenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/screenGrab.html");
+        request->send(SPIFFS, "/screenGrab.html", String(), false, tokenProcessor);
     });
 
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
