@@ -26,7 +26,10 @@ typedef struct SettingsData
     String mqttBroker;
     String mqttUsername;
     String mqttPassword;
-    String mqttTopic;
+    String mqttClientId;
+    String mqttTempTopic;
+    String mqttHumidityTopic;
+    String mqttPressureTopic;
     int mqttPort;
 
     bool thingSpeakEnabled;
@@ -73,26 +76,35 @@ class SettingsManager
         bool getThingSpeakEnabled();
         void setThingSpeakEnabled(bool enabled);
 
-        bool getMQTTEnabled();
-        void setMQTTEnabled(bool enabled);
+        bool getMqttEnabled();
+        void setMqttEnabled(bool enabled);
 
-        int getMQTTPort();
-        void setMQTTPort(int port);
+        int getMqttPort();
+        void setMqttPort(int port);
 
-        String getMQTTBroker();
-        void setMQTTBroker(String url);
+        String getMqttBroker();
+        void setMqttBroker(String url);
 
-        String getMQTTUsername();
-        void setMQTTUsername(String userName);
+        String getMqttUsername();
+        void setMqttUsername(String userName);
 
-        String getMQTTPassword();
-        void setMQTTPassword(String password);
+        String getMqttPassword();
+        void setMqttPassword(String password);
 
-        String getMQTTTopic();
-        void setMQTTTopic(String topic);
+        String getMqttClientId();
+        void setMqttClientId(String clientId);
 
-        bool getMQTTReconnectRequired();
-        void resetMQTTReconnectRequired();
+        String getMqttTempTopic();
+        void setMqttTempTopic(String tempTopic);
+
+        String getMqttHumidityTopic();
+        void setMqttHumidityTopic(String humidityTopic);
+
+        String getMqttPressureTopic();
+        void setMqttPressureTopic(String pressureTopic);
+
+        bool getMqttReconnectRequired();
+        void resetMqttReconnectRequired();
 
         long getUtcOffset();
         void setUtcOffset(long utcOffset);

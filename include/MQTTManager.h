@@ -1,5 +1,5 @@
-#ifndef _mqtt_manager_h
-#define _mqtt_manager_h
+#ifndef _Mqtt_manager_h
+#define _Mqtt_manager_h
 
 #include <AsyncMqttClient.h>
 #include "SettingsManager.h"
@@ -32,13 +32,14 @@ class MQTTManager
         static Ticker reconnectTimer;
         static bool connected;
 
-        // MQTT library requires static strings. Not sure on max lengths required, TODO
+        // Mqtt library requires static strings. Not sure on max lengths required, TODO
         // max length set in mqqSettings.html
-        char mqqtBroker[33];
-        char mqqtUsername[65];
-        char mqqtPassword[65];
+        char mqttBroker[33];
+        char mqttUsername[65];
+        char mqttPassword[65];
+        char mqttClientID[65];
 
         static void (* subscribeCallback)(const char *, const char *);
 };
 
-#endif // _mqtt_manager_h
+#endif // _Mqtt_manager_h

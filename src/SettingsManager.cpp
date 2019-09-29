@@ -48,8 +48,11 @@ void SettingsManager::resetSettings()
     data.mqttBroker = "";
     data.mqttUsername = "";
     data.mqttPassword = "";
-    data.mqttTopic = "";
-    data.mqttPort = 0;
+    data.mqttClientId = "";
+    data.mqttTempTopic = "";
+    data.mqttHumidityTopic = "";
+    data.mqttPressureTopic = "";
+    data.mqttPort = 1883;
 
     data.utcOffsetSeconds = 0;
 
@@ -82,17 +85,20 @@ void SettingsManager::loadSettings()
     data.thingSpeakEnabled = doc["ThingSpeakEnabled"];
     data.mqttEnabled = doc["MqttEnabled"];
 
-    data.mqttBroker = (const char*)doc["MQTTBroker"];
-    data.mqttUsername = (const char*)doc["MQTTUsername"];
-    data.mqttPassword = (const char*)doc["MQTTPassword"];
-    data.mqttTopic = (const char*)doc["MQTTTopic"];
-    data.mqttPort = doc["MQTTPort"];
+    data.mqttBroker = (const char*)doc["MqttBroker"];
+    data.mqttUsername = (const char*)doc["MqttUsername"];
+    data.mqttPassword = (const char*)doc["MqttPassword"];
+    data.mqttClientId = (const char*)doc["MqttClientID"];
+    data.mqttTempTopic = (const char*)doc["MqttTempTopic"];
+    data.mqttHumidityTopic = (const char*)doc["MqttHumidityTopic"];
+    data.mqttPressureTopic = (const char*)doc["MqttPressureTopic"];
+    data.mqttPort = doc["MqttPort"];
 
     data.utcOffsetSeconds = doc["utcOffset"];
 
     // testing
-    //serializeJson(doc, Serial);
-    //Serial.println();
+    serializeJson(doc, Serial);
+    Serial.println();
 }
 
 void SettingsManager::saveSettings()
@@ -112,11 +118,14 @@ void SettingsManager::saveSettings()
     doc["ThingSpeakReportingInterval"] = data.thingSpeakReportingInterval;
     doc["ThingSpeakEnabled"] = data.thingSpeakEnabled;
     doc["MqttEnabled"] = data.mqttEnabled;
-    doc["MQTTBroker"] = data.mqttBroker;
-    doc["MQTTUsername"] = data.mqttUsername;
-    doc["MQTTPassword"] = data.mqttPassword;
-    doc["MQTTTopic"] = data.mqttTopic;
-    doc["MQTTPort"] = data.mqttPort;
+    doc["MqttBroker"] = data.mqttBroker;
+    doc["MqttUsername"] = data.mqttUsername;
+    doc["MqttPassword"] = data.mqttPassword;
+    doc["MqttClientID"] = data.mqttClientId;
+    doc["MqttTempTopic"] = data.mqttTempTopic;
+    doc["MqttHumidityTopic"] = data.mqttHumidityTopic;
+    doc["MqttPressureTopic"] = data.mqttPressureTopic;
+    doc["MqttPort"] = data.mqttPort;
     doc["utcOffset"] = data.utcOffsetSeconds;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
@@ -287,12 +296,12 @@ void SettingsManager::setThingSpeakEnabled(bool enabled)
     }
 }
 
-bool SettingsManager::getMQTTEnabled()
+bool SettingsManager::getMqttEnabled()
 {
     return data.mqttEnabled;
 }
 
-void SettingsManager::setMQTTEnabled(bool enabled)
+void SettingsManager::setMqttEnabled(bool enabled)
 {
     if(data.mqttEnabled != enabled)
     {
@@ -307,12 +316,12 @@ void SettingsManager::setMQTTEnabled(bool enabled)
     }
 }
 
-int SettingsManager::getMQTTPort()
+int SettingsManager::getMqttPort()
 {
     return data.mqttPort;
 }
 
-void SettingsManager::setMQTTPort(int port)
+void SettingsManager::setMqttPort(int port)
 {
     if(data.mqttPort != port)
     {
@@ -323,12 +332,12 @@ void SettingsManager::setMQTTPort(int port)
     }
 }
 
-String SettingsManager::getMQTTBroker()
+String SettingsManager::getMqttBroker()
 {
     return data.mqttBroker;
 }
 
-void SettingsManager::setMQTTBroker(String url)
+void SettingsManager::setMqttBroker(String url)
 {
     if(data.mqttBroker != url)
     {
@@ -339,12 +348,12 @@ void SettingsManager::setMQTTBroker(String url)
     }
 }
 
-String SettingsManager::getMQTTUsername()
+String SettingsManager::getMqttUsername()
 {
     return data.mqttUsername;
 }
 
-void SettingsManager::setMQTTUsername(String userName)
+void SettingsManager::setMqttUsername(String userName)
 {
     if(data.mqttUsername != userName)
     {
@@ -355,12 +364,12 @@ void SettingsManager::setMQTTUsername(String userName)
     }
 }
 
-String SettingsManager::getMQTTPassword()
+String SettingsManager::getMqttPassword()
 {
     return data.mqttPassword;
 }
 
-void SettingsManager::setMQTTPassword(String password)
+void SettingsManager::setMqttPassword(String password)
 {
     if(data.mqttPassword != password)
     {
@@ -371,16 +380,61 @@ void SettingsManager::setMQTTPassword(String password)
     }
 }
 
-String SettingsManager::getMQTTTopic()
+String SettingsManager::getMqttClientId()
 {
-    return data.mqttTopic;
+    return data.mqttClientId;
 }
 
-void SettingsManager::setMQTTTopic(String topic)
+void SettingsManager::setMqttClientId(String clientId)
 {
-    if(data.mqttTopic != topic)
+    if(data.mqttClientId != clientId)
     {
-        data.mqttTopic = topic;
+        data.mqttClientId = clientId;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+String SettingsManager::getMqttTempTopic()
+{
+    return data.mqttTempTopic;
+}
+
+void SettingsManager::setMqttTempTopic(String tempTopic)
+{
+    if(data.mqttTempTopic != tempTopic)
+    {
+        data.mqttTempTopic = tempTopic;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+String SettingsManager::getMqttHumidityTopic()
+{
+    return data.mqttHumidityTopic;
+}
+
+void SettingsManager::setMqttHumidityTopic(String humidityTopic)
+{
+    if(data.mqttHumidityTopic != humidityTopic)
+    {
+        data.mqttHumidityTopic = humidityTopic;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+String SettingsManager::getMqttPressureTopic()
+{
+    return data.mqttPressureTopic;
+}
+
+void SettingsManager::setMqttPressureTopic(String pressureTopic)
+{
+    if(data.mqttPressureTopic != pressureTopic)
+    {
+        data.mqttPressureTopic = pressureTopic;
         saveSettings();
         settingsChanged = true;
     }
@@ -434,12 +488,12 @@ void SettingsManager::resetSettingsChanged()
     settingsChanged = false;
 }
 
-bool SettingsManager::getMQTTReconnectRequired()
+bool SettingsManager::getMqttReconnectRequired()
 {
     return mqttReconnectRequired;
 }
 
-void SettingsManager::resetMQTTReconnectRequired()
+void SettingsManager::resetMqttReconnectRequired()
 {
     mqttReconnectRequired = false;
 }

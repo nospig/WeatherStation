@@ -338,30 +338,42 @@ String WebServer::tokenProcessor(const String& token)
     }
     if(token == "MQTTENABLED")
     {
-        if(settingsManager->getMQTTEnabled() == true)
+        if(settingsManager->getMqttEnabled() == true)
         {
             return "Checked";
         }
     }
     if(token == "MQTTBROKERURL")
     {
-        return settingsManager->getMQTTBroker();
+        return settingsManager->getMqttBroker();
     }
     if(token == "MQTTUSERNAME")
     {
-        return settingsManager->getMQTTUsername();
+        return settingsManager->getMqttUsername();
     }
     if(token == "MQTTPASSWORD")
     {
-        return settingsManager->getMQTTPassword();
+        return settingsManager->getMqttPassword();
     }
-    if(token == "MQTTTOPIC")
+    if(token == "MQTTCLIENTID")
     {
-        return settingsManager->getMQTTTopic();
+        return settingsManager->getMqttClientId();
+    }    
+    if(token == "MQTTTEMPTOPIC")
+    {
+        return settingsManager->getMqttTempTopic();
     }
+    if(token == "MQTTHUMIDITYTOPIC")
+    {
+        return settingsManager->getMqttHumidityTopic();
+    }
+    if(token == "MQTTPRESSURETOPIC")
+    {
+        return settingsManager->getMqttPressureTopic();
+    }    
     if(token == "MQTTPORT")
     {
-        return String(settingsManager->getMQTTPort());
+        return String(settingsManager->getMqttPort());
     }
     if(token == "UTCOFFSET")
     {
@@ -433,39 +445,53 @@ void WebServer::handleMQTTSettings(AsyncWebServerRequest* request)
 {
     if(request->hasParam("mqttEnabled"))
     {        
-        settingsManager->setMQTTEnabled(true);
+        settingsManager->setMqttEnabled(true);
     }
     else
     {
-        settingsManager->setMQTTEnabled(false);
+        settingsManager->setMqttEnabled(false);
     }
 
     if(request->hasParam("mqttBroker"))
     {
         AsyncWebParameter* p = request->getParam("mqttBroker");
-        settingsManager->setMQTTBroker(p->value());
+        settingsManager->setMqttBroker(p->value());
     }
     if(request->hasParam("mqttPort"))
     {
         AsyncWebParameter* p = request->getParam("mqttPort");
-        settingsManager->setMQTTPort(p->value().toInt());
+        settingsManager->setMqttPort(p->value().toInt());
     }
     if(request->hasParam("mqttUsername"))
     {
         AsyncWebParameter* p = request->getParam("mqttUsername");
-        settingsManager->setMQTTUsername(p->value());
+        settingsManager->setMqttUsername(p->value());
     }
     if(request->hasParam("mqttPassword"))
     {
         AsyncWebParameter* p = request->getParam("mqttPassword");
-        settingsManager->setMQTTPassword(p->value());
+        settingsManager->setMqttPassword(p->value());
     }
-    if(request->hasParam("mqttTopic"))
+    if(request->hasParam("mqttClientId"))
     {
-        AsyncWebParameter* p = request->getParam("mqttTopic");
-        settingsManager->setMQTTTopic(p->value());
+        AsyncWebParameter* p = request->getParam("mqttClientId");
+        settingsManager->setMqttClientId(p->value());
     }
-
+    if(request->hasParam("mqttTempTopic"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttTempTopic");
+        settingsManager->setMqttTempTopic(p->value());
+    }
+    if(request->hasParam("mqttHumidityTopic"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttHumidityTopic");
+        settingsManager->setMqttHumidityTopic(p->value());
+    }
+    if(request->hasParam("mqttPressureTopic"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttPressureTopic");
+        settingsManager->setMqttPressureTopic(p->value());
+    }
 }
 
 void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)

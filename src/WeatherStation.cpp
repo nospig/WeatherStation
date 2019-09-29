@@ -200,10 +200,10 @@ void checkSettingsChangedCallback()
         //Serial.println("Settings changed.");
         settingsManager.resetSettingsChanged();
 
-        if(settingsManager.getMQTTReconnectRequired())
+        if(settingsManager.getMqttReconnectRequired())
         {
             mqttManager.reconnect();
-            settingsManager.resetMQTTReconnectRequired();
+            settingsManager.resetMqttReconnectRequired();
         }
 
         timeClient.setTimeOffset(settingsManager.getUtcOffset());
