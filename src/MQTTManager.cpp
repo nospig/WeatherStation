@@ -45,13 +45,13 @@ void MQTTManager::updateSensorReadings(float temp, float humidity, float pressur
         return;
     }
 
-    sprintf(buffer, "%.1f", temp);
+    sprintf(buffer, "%f", temp);
     mqttClient.publish(settingsManager->getMqttTempTopic().c_str(), 0, false, buffer);
     
-    sprintf(buffer, "%.0f", humidity);
+    sprintf(buffer, "%f", humidity);
     mqttClient.publish(settingsManager->getMqttHumidityTopic().c_str(), 0, false, buffer);
     
-    sprintf(buffer, "%.0f", pressure);
+    sprintf(buffer, "%f", pressure);
     mqttClient.publish(settingsManager->getMqttPressureTopic().c_str(), 0, false, buffer);
 }
 

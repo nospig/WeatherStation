@@ -63,7 +63,7 @@ void SettingsManager::resetSettings()
 void SettingsManager::loadSettings()
 {
     File jsonSettings;
-    DynamicJsonDocument doc(768);
+    DynamicJsonDocument doc(1024);
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "r");
     deserializeJson(doc, jsonSettings);
@@ -104,7 +104,7 @@ void SettingsManager::loadSettings()
 void SettingsManager::saveSettings()
 {
     File jsonSettings;
-    DynamicJsonDocument doc(768);   
+    DynamicJsonDocument doc(1024);   
 
     doc["WeatherAPIKey"] = data.openWeatherMapAPIKey;
     doc["WeatherLLocationID"] = data.openWeatherLocationID;
