@@ -137,6 +137,9 @@ void connectWifiCallback()
 {
     AsyncWiFiManager wifiManager(webServer.getServer(), &dns);
 
+    settingsManager.init();
+
+    display->setDisplayBrightness(settingsManager.getDisplayBrightness());
     display->drawStartupDisplay();
 
     wifiManager.autoConnect("Weather Station");
@@ -144,8 +147,6 @@ void connectWifiCallback()
     setupOtaUpdates();
 
     Serial.println(WiFi.localIP());
-
-    settingsManager.init();
 
     webServer.init(&settingsManager);
     thingSpeakReporter.init(&settingsManager);
