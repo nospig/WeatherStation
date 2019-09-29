@@ -16,7 +16,7 @@ void checkScreenGrabCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 
-void mqttSubscribeCallback(const char* subTopic, const char *payload);
+void mqttSubscribeCallback(const char* topic, const char *payload);
 
 void setupOtaUpdates();
 

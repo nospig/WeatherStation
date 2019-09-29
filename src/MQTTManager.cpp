@@ -83,8 +83,7 @@ void MQTTManager::onConnect(bool sessionPresent)
 {
     connected = true;
 
-    //String topic = settingsManager->getMQTTTempTopic() + "/" + MQTT_DISPLAY_SUBTOPIC;
-    //mqttClient.subscribe(topic.c_str(), 0);
+    mqttClient.subscribe(MQTT_DISPLAY_SUBTOPIC, 0);
 }
 
 void MQTTManager::onDisconnect(AsyncMqttClientDisconnectReason reason)
