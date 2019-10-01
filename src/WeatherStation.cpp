@@ -242,7 +242,7 @@ void checkScreenGrabCallback()
 
 void mqttSubscribeCallback(const char* topic, const char *payload)
 {
-    if(!strcmp(topic, MQTT_DISPLAY_SUBTOPIC))
+    if(!strcmp(topic, settingsManager.getMqttDisplayTopic().c_str()))
     {
         if(!strcmp(payload, "on"))
         {

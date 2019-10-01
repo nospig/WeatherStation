@@ -370,7 +370,11 @@ String WebServer::tokenProcessor(const String& token)
     if(token == "MQTTPRESSURETOPIC")
     {
         return settingsManager->getMqttPressureTopic();
-    }    
+    }  
+    if(token == "MQTTDISPLAYTOPIC")
+    {
+        return settingsManager->getMqttDisplayTopic();
+    }   
     if(token == "MQTTPORT")
     {
         return String(settingsManager->getMqttPort());

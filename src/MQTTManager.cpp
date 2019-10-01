@@ -72,7 +72,7 @@ void MQTTManager::init(SettingsManager* settingsManager)
 
 void MQTTManager::connectToMqtt()
 {
-    if(settingsManager->getMqttEnabled() && settingsManager->getMqttBroker())
+    if(settingsManager->getMqttEnabled() && settingsManager->getMqttBroker() != "")
     {
         //Serial.println("Connecting to MQTT");
         mqttClient.connect();
@@ -83,7 +83,10 @@ void MQTTManager::onConnect(bool sessionPresent)
 {
     connected = true;
 
-    mqttClient.subscribe(MQTT_DISPLAY_SUBTOPIC, 0);
+    if(settingsManager->getMqttDisplayTopic() != "")
+    {
+        mqttClient.subscribe(settingsManager->getMqttDisplayTopic().c_str(), 0);
+    }
 }
 
 void MQTTManager::onDisconnect(AsyncMqttClientDisconnectReason reason)

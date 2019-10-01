@@ -5,7 +5,7 @@
 #include "DisplayBase.h"
 #include "Settings.h"
 
-const String SETTINGS_FILE_NAME = "Settings.json";
+const String SETTINGS_FILE_NAME = "/Settings.json";
 
 typedef struct SettingsData
 {
@@ -30,6 +30,7 @@ typedef struct SettingsData
     String mqttTempTopic;
     String mqttHumidityTopic;
     String mqttPressureTopic;
+    String mqttDisplayTopic;
     int mqttPort;
 
     bool thingSpeakEnabled;
@@ -102,6 +103,9 @@ class SettingsManager
 
         String getMqttPressureTopic();
         void setMqttPressureTopic(String pressureTopic);
+
+        String getMqttDisplayTopic();
+        void setMqttDisplayTopic(String displayTopic);
 
         bool getMqttReconnectRequired();
         void resetMqttReconnectRequired();

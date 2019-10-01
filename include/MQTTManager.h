@@ -6,7 +6,7 @@
 #include <Ticker.h>
 
 #define MQTT_RECONNECT_TIME 5
-#define MQTT_DISPLAY_SUBTOPIC "bedroom/display"
+
 
 class MQTTManager
 {

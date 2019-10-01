@@ -52,6 +52,7 @@ void SettingsManager::resetSettings()
     data.mqttTempTopic = "";
     data.mqttHumidityTopic = "";
     data.mqttPressureTopic = "";
+    data.mqttDisplayTopic = "";
     data.mqttPort = 1883;
 
     data.utcOffsetSeconds = 0;
@@ -92,11 +93,13 @@ void SettingsManager::loadSettings()
     data.mqttTempTopic = (const char*)doc["MqttTempTopic"];
     data.mqttHumidityTopic = (const char*)doc["MqttHumidityTopic"];
     data.mqttPressureTopic = (const char*)doc["MqttPressureTopic"];
+    data.mqttDisplayTopic = (const char*)doc["MqttDisplayTopic"];    
     data.mqttPort = doc["MqttPort"];
 
     data.utcOffsetSeconds = doc["utcOffset"];
 
     // testing
+    Serial.println();
     serializeJson(doc, Serial);
     Serial.println();
 }
@@ -125,6 +128,7 @@ void SettingsManager::saveSettings()
     doc["MqttTempTopic"] = data.mqttTempTopic;
     doc["MqttHumidityTopic"] = data.mqttHumidityTopic;
     doc["MqttPressureTopic"] = data.mqttPressureTopic;
+    doc["MqttDisplayTopic"] = data.mqttDisplayTopic;
     doc["MqttPort"] = data.mqttPort;
     doc["utcOffset"] = data.utcOffsetSeconds;
 
@@ -435,6 +439,21 @@ void SettingsManager::setMqttPressureTopic(String pressureTopic)
     if(data.mqttPressureTopic != pressureTopic)
     {
         data.mqttPressureTopic = pressureTopic;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+String SettingsManager::getMqttDisplayTopic()
+{
+    return data.mqttDisplayTopic;
+}
+
+void SettingsManager::setMqttDisplayTopic(String displayTopic)
+{
+    if(data.mqttDisplayTopic != displayTopic)
+    {
+        data.mqttDisplayTopic = displayTopic;
         saveSettings();
         settingsChanged = true;
     }
