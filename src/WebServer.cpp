@@ -496,6 +496,11 @@ void WebServer::handleMQTTSettings(AsyncWebServerRequest* request)
         AsyncWebParameter* p = request->getParam("mqttPressureTopic");
         settingsManager->setMqttPressureTopic(p->value());
     }
+    if(request->hasParam("mqttDisplayTopic"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttDisplayTopic");
+        settingsManager->setMqttDisplayTopic(p->value());
+    }
 }
 
 void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
