@@ -336,6 +336,10 @@ String WebServer::tokenProcessor(const String& token)
             return "Checked";
         }
     }
+    if(token == "MQTTPUBLISHINTERVAL")    
+    {
+        return String(settingsManager->getMqttPublishInterval() / SECONDS_MULT);
+    }    
     if(token == "MQTTENABLED")
     {
         if(settingsManager->getMqttEnabled() == true)
@@ -552,6 +556,11 @@ void WebServer::handleUpdateTimings(AsyncWebServerRequest* request)
     {
         AsyncWebParameter* p = request->getParam("thingSpeakReportingInterval");
         settingsManager->setThingSpeakReportingInterval(p->value().toInt() * SECONDS_MULT);
+    }
+    if(request->hasParam("mqttPublishInterval"))
+    {
+        AsyncWebParameter* p = request->getParam("mqttPublishInterval");
+        settingsManager->setMqttPublishInterval(p->value().toInt() * SECONDS_MULT);
     }
 }
 

@@ -3,11 +3,11 @@
 #include <FS.h>
 #include "SettingsManager.h"
 
-const int CURRENT_WEATHER_INTERVAL =      10 * MINUTES_MULT;
-const int FORECAST_WEATHER_INTERVAL =     25 * MINUTES_MULT; 
-const int SENSOR_READING_INTERVAL =       30 * SECONDS_MULT;
+const int CURRENT_WEATHER_INTERVAL      = 10 * MINUTES_MULT;
+const int FORECAST_WEATHER_INTERVAL     = 25 * MINUTES_MULT; 
+const int SENSOR_READING_INTERVAL       = 30 * SECONDS_MULT;
 const int THINGSPEAK_REPORTING_INTERVAL = 30 * MINUTES_MULT;
-
+const int MQTT_PUBLISH_INTERVAL         = 5 * MINUTES_MULT;
 
 void SettingsManager::init()
 {
@@ -41,6 +41,7 @@ void SettingsManager::resetSettings()
     data.forecastWeatherInterval = FORECAST_WEATHER_INTERVAL;
     data.sensorReadingInterval = SENSOR_READING_INTERVAL;
     data.thingSpeakReportingInterval = THINGSPEAK_REPORTING_INTERVAL;
+    data.mqttPublishInterval = MQTT_PUBLISH_INTERVAL;
 
     data.thingSpeakEnabled = false;
     data.mqttEnabled = false;
@@ -82,6 +83,7 @@ void SettingsManager::loadSettings()
     data.forecastWeatherInterval = doc["ForecastWeatherInterval"];
     data.sensorReadingInterval = doc["SensorReadingInterval"];
     data.thingSpeakReportingInterval = doc["ThingSpeakReportingInterval"];
+    data.mqttPublishInterval = doc["MqttPublishInterval"];
 
     data.thingSpeakEnabled = doc["ThingSpeakEnabled"];
     data.mqttEnabled = doc["MqttEnabled"];
@@ -120,6 +122,7 @@ void SettingsManager::saveSettings()
     doc["SensorReadingInterval"] = data.sensorReadingInterval;
     doc["ThingSpeakReportingInterval"] = data.thingSpeakReportingInterval;
     doc["ThingSpeakEnabled"] = data.thingSpeakEnabled;
+    doc["MqttPublishInterval"] = data.mqttPublishInterval;
     doc["MqttEnabled"] = data.mqttEnabled;
     doc["MqttBroker"] = data.mqttBroker;
     doc["MqttUsername"] = data.mqttUsername;
@@ -295,6 +298,21 @@ void SettingsManager::setThingSpeakEnabled(bool enabled)
     if(data.thingSpeakEnabled != enabled)
     {
         data.thingSpeakEnabled = enabled;
+        saveSettings();
+        settingsChanged = true;
+    }
+}
+
+int SettingsManager::getMqttPublishInterval()
+{
+    return data.mqttPublishInterval;
+}
+
+void SettingsManager::setMqttPublishInterval(int interval)
+{
+    if(data.mqttPublishInterval != interval)
+    {
+        data.mqttPublishInterval = interval;
         saveSettings();
         settingsChanged = true;
     }

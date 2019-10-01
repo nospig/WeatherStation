@@ -43,7 +43,7 @@ Task updateThingSpeak(60*SECONDS_MULT, TASK_FOREVER, &updateThingSpeakCallback);
 Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengthCallback);
 Task checkSettingsChanged(SETTINGS_CHANGED_INTERVAL, TASK_FOREVER, &checkSettingsChangedCallback);
 Task checkScreenGrabRequested(SCREENGRAB_INTERVAL, TASK_FOREVER, &checkScreenGrabCallback);
-
+Task mqttPublish(5*MINUTES_MULT, TASK_FOREVER, &mqttPublishCallback);
 
 // task callbacks
 
@@ -59,8 +59,6 @@ void getTimeCallback()
 
 void readSensorsCallback()
 {
-    //Serial.println("Read sensors now");
-
     if(bmeReader.isActive())
     {
         sensorTemp = bmeReader.readTemp();
@@ -69,10 +67,10 @@ void readSensorsCallback()
 
         display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
         webServer.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
-        mqttManager.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
         
-        // only enable thing speak after some data recorded
+        // only enable thing speak and mqtt after some data recorded
         updateThingSpeak.enableIfNot();
+        mqttPublish.enableIfNot();
     }
 }
 
@@ -80,8 +78,6 @@ void readSensorsCallback()
 
 void updateThingSpeakCallback()
 {
-    //Serial.println("Update ThingSpeak");
-
     // just send the latest sensor saved readings, no need to update again, avoid chances of updating the sensor too soon
     if(settingsManager.getThingSpeakApiKey() != "" && settingsManager.getThingSpeakEnabled())
     {
@@ -112,6 +108,12 @@ void getWeatherForecastCallback()
         display->drawForecastWeather(forecastWeatherClient.isValidData(), forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
         webServer.updateForecastWeather(forecastWeatherClient.isValidData(), forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
     }
+}
+
+void mqttPublishCallback()
+{
+    // just send latest readings
+    mqttManager.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
 }
 
 // display
@@ -168,14 +170,17 @@ void connectWifiCallback()
     taskScheduler.addTask(updateWiFiStrength);
     taskScheduler.addTask(checkSettingsChanged);
     taskScheduler.addTask(checkScreenGrabRequested);
+    taskScheduler.addTask(mqttPublish);
 
     // timings
     getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
     getForecastWeather.setInterval(settingsManager.getForecastWeatherInterval());
     readSensors.setInterval(settingsManager.getSensorReadingInterval());
     updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
+    mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
 
     updateThingSpeak.disable(); 
+    mqttPublish.disable();
     getTime.enable();
     getCurrentWeather.enable();
     getForecastWeather.enable();
@@ -217,6 +222,7 @@ void checkSettingsChangedCallback()
         getForecastWeather.setInterval(settingsManager.getForecastWeatherInterval());
         readSensors.setInterval(settingsManager.getSensorReadingInterval());
         updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
+        mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
 
         getTime.forceNextIteration();
         getCurrentWeather.forceNextIteration();
@@ -224,6 +230,7 @@ void checkSettingsChangedCallback()
         readSensors.forceNextIteration();
         updateWiFiStrength.forceNextIteration();
         updateThingSpeak.forceNextIteration();
+        mqttPublish.forceNextIteration();
     }
 }
 

@@ -13,6 +13,7 @@ void updateThingSpeakCallback();
 void updateWifiStrengthCallback();
 void checkSettingsChangedCallback();
 void checkScreenGrabCallback();
+void mqttPublishCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 

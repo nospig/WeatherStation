@@ -22,6 +22,7 @@ typedef struct SettingsData
     int forecastWeatherInterval;
     int sensorReadingInterval;
     int thingSpeakReportingInterval;
+    int mqttPublishInterval;
 
     String mqttBroker;
     String mqttUsername;
@@ -76,6 +77,9 @@ class SettingsManager
 
         bool getThingSpeakEnabled();
         void setThingSpeakEnabled(bool enabled);
+
+        int getMqttPublishInterval();
+        void setMqttPublishInterval(int interval);
 
         bool getMqttEnabled();
         void setMqttEnabled(bool enabled);
