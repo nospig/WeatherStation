@@ -34,17 +34,19 @@
                                         <input type="checkbox" class="form-check-input" id="thingSpeakEnabled" name="thingSpeakEnabled" value="Enabled" %THINGSPEAKENABLED%>Enabled
                                     </label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="channelID">ThingSpeak channel ID:</label>
-                                    <input type="text" class="form-control" id="channelID"
-                                        value="%THINGSPEAKCHANNELKEY%" placeholder="ThingSpeak channel ID"
-                                        name="thingSpeakChannel">
-                                </div>
-                                <div class="form-group">
-                                    <label for="thingSpeakApi">ThingSpeak Api Key:</label>
-                                    <input type="text" class="form-control" id="thingSpeakApiKey"
-                                        value="%THINGSPEAKAPIKEY%" placeholder="ThingSpeak API Key"
-                                        name="thingSpeakApiKey">
+                                <div id="thingSpeakForm">
+                                    <div class="form-group">
+                                        <label for="channelID">ThingSpeak channel ID:</label>
+                                        <input type="text" class="form-control" id="channelID"
+                                            value="%THINGSPEAKCHANNELKEY%" placeholder="ThingSpeak channel ID"
+                                            name="thingSpeakChannel">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="thingSpeakApi">ThingSpeak Api Key:</label>
+                                        <input type="text" class="form-control" id="thingSpeakApiKey"
+                                            value="%THINGSPEAKAPIKEY%" placeholder="ThingSpeak API Key"
+                                            name="thingSpeakApiKey">
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </form>
@@ -68,7 +70,7 @@
         crossorigin="anonymous"></script>
     <!-- Confirm Modal Js -->
     <script src="js/jquery.confirmModal.min.js"></script>
-    <script src="js/settings.js"></script>
+    <script src="js/thingSpeakSettings.js"></script>
 </body>
 
 </html>

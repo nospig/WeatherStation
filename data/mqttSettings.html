@@ -35,41 +35,43 @@
                                             %MQTTENABLED%>Enabled
                                     </label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="mqttBroker">Broker url:</label>
-                                    <input type="text" class="form-control" id="mqttBroker" value="%MQTTBROKERURL%" placeholder="Broker url" maxlength="32" name="mqttBroker">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttPort">Port:</label>
-                                    <input type="number" class="form-control" id="mqttPort" value="%MQTTPORT%" placeholder="Port number" name="mqttPort">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttClientId">Client ID: (leave blank for default)</label>
-                                    <input type="text" class="form-control" id="mqttClientId" value="%MQTTCLIENTID%" placeholder="Client Id" maxlength="64" name="mqttClientId">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttUsername">User name:</label>
-                                    <input type="text" class="form-control" id="mqttUsername" value="%MQTTUSERNAME%" placeholder="User name" maxlength="64" name="mqttUsername">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttPassword">Password:</label>
-                                    <input type="password" class="form-control" id="mqttPassword" value="%MQTTPASSWORD%" placeholder="Password" maxlength="64" name="mqttPassword">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttTempTopic">Temperature topic:</label>
-                                    <input type="text" class="form-control" id="mqttTempTopic" value="%MQTTTEMPTOPIC%" placeholder="Temperature topic" name="mqttTempTopic">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttHumidityTopic">Humidity topic:</label>
-                                    <input type="text" class="form-control" id="mqttHumidityTopic" value="%MQTTHUMIDITYTOPIC%" placeholder="Humidity topic" name="mqttHumidityTopic">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttPressureTopic">Pressure topic:</label>
-                                    <input type="text" class="form-control" id="mqttPressureTopic" value="%MQTTPRESSURETOPIC%" placeholder="Pressure topic" name="mqttPressureTopic">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mqttDisplayTopic">Display topic:</label>
-                                    <input type="text" class="form-control" id="mqttDisplayTopic" value="%MQTTDISPLAYTOPIC%" placeholder="Display topic" name="mqttDisplayTopic">
+                                <div id="mqttForm">
+                                    <div class="form-group">
+                                        <label for="mqttBroker">Broker url:</label>
+                                        <input type="text" class="form-control" id="mqttBroker" value="%MQTTBROKERURL%" placeholder="Broker url" maxlength="32" name="mqttBroker">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttPort">Port:</label>
+                                        <input type="number" class="form-control" id="mqttPort" value="%MQTTPORT%" placeholder="Port number" name="mqttPort">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttClientId">Client ID: (leave blank for default)</label>
+                                        <input type="text" class="form-control" id="mqttClientId" value="%MQTTCLIENTID%" placeholder="Client Id" maxlength="64" name="mqttClientId">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttUsername">User name:</label>
+                                        <input type="text" class="form-control" id="mqttUsername" value="%MQTTUSERNAME%" placeholder="User name" maxlength="64" name="mqttUsername">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttPassword">Password:</label>
+                                        <input type="password" class="form-control" id="mqttPassword" value="%MQTTPASSWORD%" placeholder="Password" maxlength="64" name="mqttPassword">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttTempTopic">Temperature topic:</label>
+                                        <input type="text" class="form-control" id="mqttTempTopic" value="%MQTTTEMPTOPIC%" placeholder="Temperature topic" name="mqttTempTopic">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttHumidityTopic">Humidity topic:</label>
+                                        <input type="text" class="form-control" id="mqttHumidityTopic" value="%MQTTHUMIDITYTOPIC%" placeholder="Humidity topic" name="mqttHumidityTopic">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttPressureTopic">Pressure topic:</label>
+                                        <input type="text" class="form-control" id="mqttPressureTopic" value="%MQTTPRESSURETOPIC%" placeholder="Pressure topic" name="mqttPressureTopic">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mqttDisplayTopic">Display topic:</label>
+                                        <input type="text" class="form-control" id="mqttDisplayTopic" value="%MQTTDISPLAYTOPIC%" placeholder="Display topic" name="mqttDisplayTopic">
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </form>
@@ -93,7 +95,7 @@
         crossorigin="anonymous"></script>
     <!-- Confirm Modal Js -->
     <script src="js/jquery.confirmModal.min.js"></script>
-    <script src="js/settings.js"></script>
+    <script src="js/mqttSettings.js"></script>
 </body>
 
 </html>
