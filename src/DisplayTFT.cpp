@@ -204,8 +204,7 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
     tft->setTextColor(FORECAST_DAY_COLOUR); 
     tft->setTextDatum(TL_DATUM);
     
-    int day = (timeInfo->tm_mday-1) % 7;
-    sprintf(buffer, "%s - %.0fC", daysOfTheWeekLong[day], forecastWeather->tempMax);
+    sprintf(buffer, "%s - %.0fC", daysOfTheWeekLong[timeInfo->tm_wday], forecastWeather->tempMax);
     tft->drawString(buffer, 55, y + 8); 
 
     String description = forecastWeather->description;
@@ -270,8 +269,7 @@ void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int
     tft->setTextFont(2);
     tft->setTextColor(FORECAST_DAY_COLOUR); 
     tft->setTextDatum(TC_DATUM);
-    int day = (timeInfo->tm_mday-1) % 7;
-    tft->drawString(daysOfTheWeek[day], x, y); 
+    tft->drawString(daysOfTheWeek[timeInfo->tm_wday], x, y); 
 
     y += tft->fontHeight();
 
@@ -395,8 +393,7 @@ void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
     tft->drawString(buffer, tft->width()/2-30, y); 
 
     tft->setTextDatum(BC_DATUM);
-    int day = (timeInfo->tm_mday-1) % 7;
-    tft->drawString(daysOfTheWeek[day], tft->width()/2, y); 
+    tft->drawString(daysOfTheWeek[timeInfo->tm_wday], tft->width()/2, y); 
 
     tft->setTextDatum(BL_DATUM);
     sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
