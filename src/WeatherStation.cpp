@@ -144,6 +144,7 @@ void connectWifiCallback()
     settingsManager.init();
 
     display->setDisplayBrightness(settingsManager.getDisplayBrightness());
+    display->setDisplayMetric(settingsManager.getDisplayMetric());
     display->drawStartupDisplay();
 
     wifiManager.autoConnect("Weather Station");
@@ -159,6 +160,9 @@ void connectWifiCallback()
     mqttManager.setSubscribeCallback(mqttSubscribeCallback);
     octoPrintMonitor.init(&settingsManager);
     timeClient.setTimeOffset(settingsManager.getUtcOffset());
+
+    currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
+    forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
 
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
@@ -216,9 +220,13 @@ void checkSettingsChangedCallback()
 
         timeClient.setTimeOffset(settingsManager.getUtcOffset());
 
+        currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
+        forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
+
         // best just to force a display clear when changing settings
         display->setDisplayMode(settingsManager.getDisplayMode());
         display->setDisplayBrightness(settingsManager.getDisplayBrightness());
+        display->setDisplayMetric(settingsManager.getDisplayMetric());
         display->restartMainDisplay();
 
         getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
@@ -278,10 +286,7 @@ void setup()
     //display = new DisplaySerial();
     display = new DisplayTFT();
 
-    currentWeatherClient.setMetric(true);
     currentWeatherClient.setLanguage("en");
-
-    forecastWeatherClient.setMetric(true);
     forecastWeatherClient.setLanguage("en");
 
     taskScheduler.startNow(); 

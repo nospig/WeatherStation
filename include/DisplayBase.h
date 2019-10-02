@@ -27,13 +27,17 @@ class DisplayBase
         virtual void drawWiFiStrength(long dBm) {};
         virtual void serveScreenShot() {};
         virtual void setDisplayBrightness(int percent) {};
-
+        
         virtual void setDisplayMode(DisplayMode mode);
         DisplayMode getDisplayMode();
 
         virtual void setDisplayEnabled(bool enabled) {};
+
+        void setDisplayMetric(bool metric) { displayMetric = metric; }
+        bool getDisplayMetric() { return displayMetric; }
     private:
         DisplayMode displayMode = DisplayMode_1;
+        bool displayMetric = true;
 };
 
 

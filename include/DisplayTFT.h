@@ -93,6 +93,8 @@ class DisplayTFT : public DisplayBase
         void drawVerticalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y);
 
+        char* getTempPostfix();
+
         boolean screenServer(void);
         boolean screenServer(String filename);
         boolean serialScreenServer(String filename);

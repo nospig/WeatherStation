@@ -204,7 +204,7 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
     tft->setTextColor(FORECAST_DAY_COLOUR); 
     tft->setTextDatum(TL_DATUM);
     
-    sprintf(buffer, "%s - %.0fC", daysOfTheWeekLong[timeInfo->tm_wday], forecastWeather->tempMax);
+    sprintf(buffer, "%s - %.0f%s", daysOfTheWeekLong[timeInfo->tm_wday], forecastWeather->tempMax, getTempPostfix());
     tft->drawString(buffer, 55, y + 8); 
 
     String description = forecastWeather->description;
@@ -288,7 +288,7 @@ int DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, in
     tft->fillRect(0, y+20, tft->width(), 60, BACKGROUND_COLOUR);
 
     if(currentWeather->validData)
-    {
+    {       
         tft->setTextFont(2);
         tft->setTextDatum(TC_DATUM);
         tft->setTextColor(SECTION_HEADER_COLOUR); 
@@ -302,8 +302,8 @@ int DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, in
         int widthTemp;
 
         tft->setTextDatum(TR_DATUM);
-        tft->drawString(tempString + "C", x , y + 32);    
-        widthTemp = tft->textWidth(tempString + "C");
+        tft->drawString(tempString + getTempPostfix(), x , y + 32);    
+        widthTemp = tft->textWidth(tempString + getTempPostfix());
 
         String description = currentWeather->description;
         bool truncatedDescription = false;
@@ -343,11 +343,17 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, 
     tft->setTextColor(SENSOR_READINGS_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextPadding(10);
 
+    // sensor readings always in metric
+    if(!getDisplayMetric())
+    {
+        temp = (temp * 1.8f) + 32;
+    }
+
     String tempString = String(temp, 1);
     int center = tft->width()/2;
 
     tft->setTextDatum(TR_DATUM);
-    tft->drawString(tempString + "C", center - 40 , y+26);
+    tft->drawString(tempString + getTempPostfix(), center - 40 , y+26);
 
     tft->setTextDatum(TL_DATUM);
     String humidityString = String(humidity, 0);
@@ -431,7 +437,7 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
         tft->setTextColor(CURRENT_WEATHER_CONDITIONS_COLOUR); 
         tft->setTextDatum(TL_DATUM);
 
-        sprintf(buffer, "Min: %.1f | Max: %.1f", currentWeather->tempMin, currentWeather->tempMax);
+        sprintf(buffer, "Min: %.1f%s | Max: %.1f%s", currentWeather->tempMin, getTempPostfix(), currentWeather->tempMax, getTempPostfix());
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
 
@@ -473,6 +479,28 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
     }
+}
+
+/****************************************************************************************
+ * 
+ *  Misc routines
+ * 
+ * 
+****************************************************************************************/
+
+char* DisplayTFT::getTempPostfix()
+{
+    static char postFix[2];
+
+    if(getDisplayMetric())
+    {
+        sprintf(postFix, "C");
+    }
+    else
+    {
+        sprintf(postFix, "F");
+    }
+    return postFix;
 }
 
 const unsigned short* DisplayTFT::getIconData(String iconId)
