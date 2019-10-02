@@ -119,15 +119,12 @@ void WebServer::init(SettingsManager* settingsManager)
     server.on("/resetSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         handleResetSettings(request);
-        //Serial.println("Reset settings");
         request->redirect("/index.html");
     });
 
     server.on("/forgetWiFi.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        //Serial.println("Forget WiFi");
         request->redirect("/index.html");
-
         handleForgetWiFi(request);
     });
 
@@ -153,8 +150,7 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
 {
     String output;
 
-    const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
-    DynamicJsonDocument jsonDoc(capacity);
+    DynamicJsonDocument jsonDoc(512);   // TODO
 
     jsonDoc["type"] = "sensorReadings";
 
@@ -162,6 +158,7 @@ void WebServer::updateSensorReadings(float temp, float humidity, float pressure)
     readings["temp"] = temp;
     readings["humidity"] = humidity;
     readings["pressure"] = pressure;
+    readings["metric"] = settingsManager->getDisplayMetric();
 
     serializeJson(jsonDoc, output);
     currentSensorJson = output;
@@ -195,6 +192,7 @@ void WebServer::updateCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
     weather["windDirection"] = currentWeather->windDeg;
     weather["description"] = currentWeather->description;
     weather["time"] = currentWeather->observationTime;
+    weather["metric"] = settingsManager->getDisplayMetric();
 
     serializeJson(jsonDoc, output);
     currentWeatherJson = output;
@@ -221,6 +219,7 @@ void WebServer::updateForecastWeather(bool validData, OpenWeatherMapDailyData* f
 
     jsonDoc["type"] = "weatherForecast";
     jsonDoc["count"] = forecastCount;
+    jsonDoc["metric"] = settingsManager->getDisplayMetric();
 
     JsonArray list = jsonDoc.createNestedArray("list");
 

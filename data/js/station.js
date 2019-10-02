@@ -8,7 +8,16 @@ function init()
 function updateSensorReadings(messageData)
 {
     var readings = messageData.readings;
-    $("#sensorTemp").html(readings.temp.toFixed(1) + "&#8451");
+    
+    if(readings.metric)
+    {
+        $("#sensorTemp").html(readings.temp.toFixed(1) + "&#8451");
+    }
+    else
+    {
+        var farenheit = (readings.temp * 1.8) + 32;
+        $("#sensorTemp").html(farenheit.toFixed(1) + "&#8457");
+    }
     $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
     $("#sensorPressure").html(readings.pressure.toFixed(1) + " hPA");
 }
@@ -21,13 +30,20 @@ function updateInternetCurrent(messageData)
    
     $("#internetWeatherList").empty();
 
-    currentValue = current.temp.toFixed(1) + "C - " + current.description;
+    if(current.metric)
+    {
+        currentValue = current.temp.toFixed(1) + "C - " + current.description;
+    }
+    else
+    {
+        currentValue = current.temp.toFixed(1) + "F - " + current.description;
+    }
     $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
     
     currentValue = "Humidity: " + current.humidity + "%";
     $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
     
-    currentValue = "Wind speed: " + current.windSpeed + "m/s from " + current.windDirection + "&#8451";
+    currentValue = "Wind speed: " + current.windSpeed + "m/s from " + current.windDirection + "&#176";
     $("#internetWeatherList").append('<li class="list-group-item">' + currentValue + '</li>');
 
     observedTime = new Date(current.time * 1000);
@@ -50,7 +66,15 @@ function updateWeatherForecast(messageData)
         forecastTime = new Date(day.time * 1000);
         dateString = days[forecastTime.getDay()];
     
-        currentValue = dateString + " - " + day.description + ", min " + day.tempMin.toFixed(1) + "C, max " + day.tempMax.toFixed(1) + "C";
+        if(messageData.metric)
+        {
+            currentValue = dateString + " - " + day.description + ", min " + day.tempMin.toFixed(1) + "C, max " + day.tempMax.toFixed(1) + "C";
+        }
+        else
+        {
+            currentValue = dateString + " - " + day.description + ", min " + day.tempMin.toFixed(1) + "F, max " + day.tempMax.toFixed(1) + "F";
+        }
+            
         $("#internetForecastList").append('<li class="list-group-item">' + currentValue + '</li>');
     }
 
