@@ -313,6 +313,13 @@ String WebServer::tokenProcessor(const String& token)
             return "Checked";
         }
     }
+     if(token == "DISPLAYMETRIC")
+    {
+        if(settingsManager->getDisplayMetric())
+        {
+            return "Checked";
+        }
+    }
     if(token == "CURRENTWEATHERINTERVAL")    
     {
         return String(settingsManager->getCurrentWeatherInterval() / SECONDS_MULT);
@@ -411,16 +418,20 @@ void WebServer::handleUpdateWeatherSettings(AsyncWebServerRequest* request)
     {
         AsyncWebParameter* p = request->getParam("openWeatherLocation");
         settingsManager->setOpenWeatherlocationID(p->value());
-
-        //Serial.println("Got weather location of: " + p->value());
     }
     if(request->hasParam("openWeatherApiKey"))
     {
         AsyncWebParameter* p = request->getParam("openWeatherApiKey");
         settingsManager->setOpenWeatherApiKey(p->value());
-
-        //Serial.println("Got weather API key of: " + p->value());
     }
+    if(request->hasParam("displayMetric"))
+    {        
+        settingsManager->setDisplayMetric(true);
+    }
+    else
+    {
+        settingsManager->setDisplayMetric(false);
+    }   
 }
 
 void WebServer::handleUpdateThingSpeakSettings(AsyncWebServerRequest* request)

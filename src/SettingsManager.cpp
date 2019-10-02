@@ -36,6 +36,7 @@ void SettingsManager::resetSettings()
 
     data.dispayMode = DisplayMode_1;
     data.displayBrightness = 100;
+    data.displayMetric = true;
 
     data.currentWeatherInterval = CURRENT_WEATHER_INTERVAL;
     data.forecastWeatherInterval = FORECAST_WEATHER_INTERVAL;
@@ -78,6 +79,7 @@ void SettingsManager::loadSettings()
     int mode = doc["DisplayMode"];
     data.dispayMode = (DisplayMode)mode;
     data.displayBrightness = doc["DisplayBrightness"];
+    data.displayMetric = doc["DisplayMetric"];
 
     data.currentWeatherInterval = doc["CurrentWeatherInterval"];
     data.forecastWeatherInterval = doc["ForecastWeatherInterval"];
@@ -117,6 +119,7 @@ void SettingsManager::saveSettings()
     doc["ThingSpeakAPIKey"] = data.thingSpeakAPIKey;
     doc["DisplayMode"] = (int)data.dispayMode;
     doc["DisplayBrightness"] = data.displayBrightness;
+    doc["DisplayMetric"] = data.displayMetric;
     doc["CurrentWeatherInterval"] = data.currentWeatherInterval;
     doc["ForecastWeatherInterval"] = data.forecastWeatherInterval;
     doc["SensorReadingInterval"] = data.sensorReadingInterval;
@@ -152,6 +155,11 @@ void SettingsManager::saveSettings()
     //Serial.println();
 }
 
+void SettingsManager::updateSettings()
+{
+    saveSettings();
+    settingsChanged = true;
+}
 
 String SettingsManager::getThingSpeakApiKey()
 {
@@ -163,8 +171,7 @@ void SettingsManager::setThingSpeakApiKey(String apiKey)
     if(apiKey != data.thingSpeakAPIKey)
     {
         data.thingSpeakAPIKey = apiKey;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -178,8 +185,7 @@ void SettingsManager::setThingSpeakChannelID(int channelID)
     if(channelID != data.thingSpeakChannelID)
     {
         data.thingSpeakChannelID = channelID;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -193,8 +199,7 @@ void SettingsManager::setOpenWeatherApiKey(String apiKey)
     if(apiKey != data.openWeatherMapAPIKey)
     {
         data.openWeatherMapAPIKey = apiKey;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -208,8 +213,7 @@ void SettingsManager::setOpenWeatherlocationID(String locationID)
     if(locationID != data.openWeatherLocationID)
     {
         data.openWeatherLocationID = locationID;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -223,8 +227,21 @@ void SettingsManager::setDisplayMode(DisplayMode displayMode)
     if(displayMode != data.dispayMode)
     {
         data.dispayMode = displayMode;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
+    }
+}
+
+bool SettingsManager::getDisplayMetric()
+{
+    return data.displayMetric;
+}
+
+void SettingsManager::setDisplayMetric(bool metric)
+{
+    if(metric != data.displayMetric)
+    {
+        data.displayMetric = metric;
+        updateSettings();
     }
 }
 
@@ -238,8 +255,7 @@ void SettingsManager::setCurrentWeatherInterval(int interval)
     if(data.currentWeatherInterval != interval)
     {
         data.currentWeatherInterval = interval;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -253,8 +269,7 @@ void SettingsManager::setForecastWeatherInterval(int interval)
     if(data.forecastWeatherInterval != interval)
     {
         data.forecastWeatherInterval = interval;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -268,8 +283,7 @@ void SettingsManager::setSensorReadingInterval(int interval)
     if(data.sensorReadingInterval != interval)
     {
         data.sensorReadingInterval = interval;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -283,8 +297,7 @@ void SettingsManager::setThingSpeakReportingInterval(int interval)
     if(data.thingSpeakReportingInterval != interval)
     {
         data.thingSpeakReportingInterval = interval;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -298,8 +311,7 @@ void SettingsManager::setThingSpeakEnabled(bool enabled)
     if(data.thingSpeakEnabled != enabled)
     {
         data.thingSpeakEnabled = enabled;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -313,8 +325,7 @@ void SettingsManager::setMqttPublishInterval(int interval)
     if(data.mqttPublishInterval != interval)
     {
         data.mqttPublishInterval = interval;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -328,8 +339,7 @@ void SettingsManager::setMqttEnabled(bool enabled)
     if(data.mqttEnabled != enabled)
     {
         data.mqttEnabled = enabled;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
 
         if(enabled)
         {
@@ -348,8 +358,7 @@ void SettingsManager::setMqttPort(int port)
     if(data.mqttPort != port)
     {
         data.mqttPort = port;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
         mqttReconnectRequired = true;
     }
 }
@@ -364,8 +373,7 @@ void SettingsManager::setMqttBroker(String url)
     if(data.mqttBroker != url)
     {
         data.mqttBroker = url;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
         mqttReconnectRequired = true;
     }
 }
@@ -380,8 +388,7 @@ void SettingsManager::setMqttUsername(String userName)
     if(data.mqttUsername != userName)
     {
         data.mqttUsername = userName;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
         mqttReconnectRequired = true;
     }
 }
@@ -396,8 +403,7 @@ void SettingsManager::setMqttPassword(String password)
     if(data.mqttPassword != password)
     {
         data.mqttPassword = password;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
         mqttReconnectRequired = true;
     }
 }
@@ -412,8 +418,7 @@ void SettingsManager::setMqttClientId(String clientId)
     if(data.mqttClientId != clientId)
     {
         data.mqttClientId = clientId;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -427,8 +432,7 @@ void SettingsManager::setMqttTempTopic(String tempTopic)
     if(data.mqttTempTopic != tempTopic)
     {
         data.mqttTempTopic = tempTopic;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -442,8 +446,7 @@ void SettingsManager::setMqttHumidityTopic(String humidityTopic)
     if(data.mqttHumidityTopic != humidityTopic)
     {
         data.mqttHumidityTopic = humidityTopic;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -457,8 +460,7 @@ void SettingsManager::setMqttPressureTopic(String pressureTopic)
     if(data.mqttPressureTopic != pressureTopic)
     {
         data.mqttPressureTopic = pressureTopic;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -472,8 +474,7 @@ void SettingsManager::setMqttDisplayTopic(String displayTopic)
     if(data.mqttDisplayTopic != displayTopic)
     {
         data.mqttDisplayTopic = displayTopic;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -487,8 +488,7 @@ void SettingsManager::setUtcOffset(long utcOffset)
     if(data.utcOffsetSeconds != utcOffset)
     {
         data.utcOffsetSeconds = utcOffset;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 
@@ -510,8 +510,7 @@ void SettingsManager::setDisplayBrightness(int brightnessPercent)
      if(data.displayBrightness != brightnessPercent)
     {
         data.displayBrightness = brightnessPercent;
-        saveSettings();
-        settingsChanged = true;
+        updateSettings();
     }
 }
 

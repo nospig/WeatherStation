@@ -17,6 +17,7 @@ typedef struct SettingsData
 
     DisplayMode dispayMode;
     int displayBrightness;
+    bool displayMetric;
 
     int currentWeatherInterval;
     int forecastWeatherInterval;
@@ -62,6 +63,9 @@ class SettingsManager
 
         DisplayMode getDisplayMode();
         void setDisplayMode(DisplayMode displayMode);
+
+        bool getDisplayMetric();
+        void setDisplayMetric(bool metric);
 
         int getCurrentWeatherInterval();
         void setCurrentWeatherInterval(int interval);
@@ -130,6 +134,7 @@ class SettingsManager
 
         void loadSettings();
         void saveSettings();
+        void updateSettings();
 };
 
 #endif // _settingsmanager_h
