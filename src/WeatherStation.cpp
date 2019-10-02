@@ -15,6 +15,7 @@
 #include "ThingSpeakReporter.h"
 #include "BMEReader.h"
 #include "MQTTManager.h"
+#include "OctoPrintMonitor.h"
 #include <FS.h>
 
 // globals
@@ -30,6 +31,7 @@ SettingsManager settingsManager;
 DNSServer dns;
 BMEReader bmeReader;
 MQTTManager mqttManager;
+OctoPrintMonitor octoPrintMonitor;
 
 float sensorTemp = 0, sensorHumidity = 0, sensorPressure = 0;
 
@@ -155,6 +157,7 @@ void connectWifiCallback()
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
     mqttManager.init(&settingsManager);
     mqttManager.setSubscribeCallback(mqttSubscribeCallback);
+    octoPrintMonitor.init(&settingsManager);
     timeClient.setTimeOffset(settingsManager.getUtcOffset());
 
     delay(WIFI_CONNECTING_DELAY);
