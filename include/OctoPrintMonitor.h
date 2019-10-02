@@ -3,15 +3,38 @@
 
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include "SettingsManager.h"
+
+#define OCTOPRINT_JOB       "/api/job"
+#define OCTOPRINT_PRINTER   "/api/printer?exclude=sd"
+
+typedef struct PrinterMonitorData
+{
+    // job
+    float progress;
+
+    // printer
+
+    bool valid;
+} PrinterMonitorData;
 
 class OctoPrintMonitor
 {
     public:
-        void init(SettingsManager* settingsManager);
+        void init(String apiKey, String server, String userName, String password);
+        void updateSettings(String apiKey, String server, String userName, String password);
+        void update();
+        PrinterMonitorData* getCurrentData() { return &data; }
 
     private:
-        SettingsManager* settingsManager;   
+        void updateJobStatus();
+        void updatePrinterStatus();
+        String performAPIGet(String apiCall);
+        
+        String apiKey;
+        String server;
+        String userName;
+        String password;
+        PrinterMonitorData data;
 };
 
 #endif // _octoPrintMonitor_h

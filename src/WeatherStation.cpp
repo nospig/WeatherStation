@@ -16,6 +16,7 @@
 #include "BMEReader.h"
 #include "MQTTManager.h"
 #include "OctoPrintMonitor.h"
+#include "Secrets.h"    // TODO
 #include <FS.h>
 
 // globals
@@ -46,6 +47,7 @@ Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengt
 Task checkSettingsChanged(SETTINGS_CHANGED_INTERVAL, TASK_FOREVER, &checkSettingsChangedCallback);
 Task checkScreenGrabRequested(SCREENGRAB_INTERVAL, TASK_FOREVER, &checkScreenGrabCallback);
 Task mqttPublish(5*MINUTES_MULT, TASK_FOREVER, &mqttPublishCallback);
+Task octoPrintUpdate(5*MINUTES_MULT, TASK_FOREVER, &updatePrinterMonitorCallback);
 
 // task callbacks
 
@@ -112,10 +114,19 @@ void getWeatherForecastCallback()
     }
 }
 
+// MQTT
+
 void mqttPublishCallback()
 {
     // just send latest readings
     mqttManager.updateSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
+}
+
+// Printer monitor
+
+void updatePrinterMonitorCallback()
+{
+    octoPrintMonitor.update();
 }
 
 // display
@@ -158,7 +169,7 @@ void connectWifiCallback()
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
     mqttManager.init(&settingsManager);
     mqttManager.setSubscribeCallback(mqttSubscribeCallback);
-    octoPrintMonitor.init(&settingsManager);
+    octoPrintMonitor.init(OCTOPRINT_API_KEY, OCTOPRINT_HOST, OCTOPRINT_USER, OCTOPRINT_PASSWORD);
     timeClient.setTimeOffset(settingsManager.getUtcOffset());
 
     currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
@@ -178,6 +189,7 @@ void connectWifiCallback()
     taskScheduler.addTask(checkSettingsChanged);
     taskScheduler.addTask(checkScreenGrabRequested);
     taskScheduler.addTask(mqttPublish);
+    taskScheduler.addTask(octoPrintUpdate);
 
     // timings
     getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
@@ -185,6 +197,7 @@ void connectWifiCallback()
     readSensors.setInterval(settingsManager.getSensorReadingInterval());
     updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
     mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
+    octoPrintUpdate.setInterval(30*SECONDS_MULT);   // TODO
 
     updateThingSpeak.disable(); 
     mqttPublish.disable();
@@ -195,6 +208,7 @@ void connectWifiCallback()
     updateWiFiStrength.enable();
     checkSettingsChanged.enable();
     checkScreenGrabRequested.enable();
+    octoPrintUpdate.enable();
 }
 
 void updateWifiStrengthCallback()
@@ -234,6 +248,7 @@ void checkSettingsChangedCallback()
         readSensors.setInterval(settingsManager.getSensorReadingInterval());
         updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
         mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
+        octoPrintUpdate.setInterval(30*SECONDS_MULT);   // TODO
 
         getTime.forceNextIteration();
         getCurrentWeather.forceNextIteration();
@@ -242,6 +257,7 @@ void checkSettingsChangedCallback()
         updateWiFiStrength.forceNextIteration();
         updateThingSpeak.forceNextIteration();
         mqttPublish.forceNextIteration();
+        octoPrintUpdate.forceNextIteration();
     }
 }
 

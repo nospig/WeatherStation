@@ -14,6 +14,7 @@ void updateWifiStrengthCallback();
 void checkSettingsChangedCallback();
 void checkScreenGrabCallback();
 void mqttPublishCallback();
+void updatePrinterMonitorCallback();
 
 void changeDisplayMode(DisplayMode newMode);
 
