@@ -4,19 +4,20 @@
 #include <ArduinoJson.h>
 #include "OctoPrintMonitor.h"
 
-void OctoPrintMonitor::init(String apiKey, String server, String userName, String password)
+void OctoPrintMonitor::init(String server, int port, String apiKey, String userName, String password)
 {
-    updateSettings(apiKey, server, userName, password);
+    updateSettings(server, port, apiKey, userName, password);
 
     update();
 }
 
-void OctoPrintMonitor::updateSettings(String apiKey, String server, String userName, String password)
+void OctoPrintMonitor::updateSettings(String server, int port, String apiKey, String userName, String password)
 {
     this->apiKey = apiKey;
     this->server = server;
     this->userName = userName;
     this->password = password;
+    this->port = port;
 }
 
 void OctoPrintMonitor::update()
@@ -51,12 +52,7 @@ String OctoPrintMonitor::performAPIGet(String apiCall)
     WiFiClient client;
     HTTPClient http;
 
-    String url = this->server + apiCall;
-
-    //Serial.println("Testing OctoPrintMonitor");
-    //Serial.println("URL :" + url);
-
-    http.begin(client, url);
+    http.begin(client, this->server, this->port, apiCall);
     http.addHeader("X-Api-Key", this->apiKey);
     http.setAuthorization(this->userName.c_str(), this->password.c_str());      // TODO if set in settings
 

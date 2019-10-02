@@ -32,6 +32,9 @@ static const char NAV_BAR[] PROGMEM =
     "<a class='nav-link' href='mqttSettings.html'>MQTT</a>"
     "</li>"
     "<li class='nav-item'>"
+    "<a class='nav-link' href='printMonitorSettings.html'>OctoPrint Monitor</a>"
+    "</li>"
+    "<li class='nav-item'>"
     "<a class='nav-link' href='screenGrab.html'>Screengrab</a>"
     "</nav>";
 
@@ -80,6 +83,11 @@ void WebServer::init(SettingsManager* settingsManager)
         request->send(SPIFFS, "/mqttSettings.html", String(), false, tokenProcessor);
     });
 
+    server.on("/printMonitorSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/printMonitorSettings.html", String(), false, tokenProcessor);
+    });
+
     server.on("/updateWeatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         handleUpdateWeatherSettings(request);
@@ -113,6 +121,12 @@ void WebServer::init(SettingsManager* settingsManager)
     server.on("/updateClockSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         handleUpdateClockSettings(request);
+        request->redirect("/index.html");
+    });
+
+    server.on("/updatePrintMonitorSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        handleUpdatePrintMonitorSettings(request);
         request->redirect("/index.html");
     });
 
@@ -397,17 +411,34 @@ String WebServer::tokenProcessor(const String& token)
     {
         return String(settingsManager->getDisplayBrightness());
     }
-    
-/*
-    if(token == "THINGSPEAKLINK")
+    if(token == "PRINTMONITORENABLED")
     {
-        if(settingsManager->getThingSpeakChannelID() != 0)
+        if(settingsManager->getOctoPrintEnabled() == true)
         {
-            String url = "https://thingspeak.com/channels/" + String(settingsManager->getThingSpeakChannelID());
-            return "<li class='nav-item'><a class='nav-link' href='" + url + "'>ThingSpeak</a></li>";
+            return "Checked";
         }
     }
-*/
+    if(token == "PRINTMONITORURL")
+    {
+        return String(settingsManager->getOctoPrintAddress());
+    }
+    if(token == "PRINTMONITOPORT")
+    {
+        return String(settingsManager->getOctoPrintPort());
+    }
+    if(token == "PRINTMONITORUSERNAME")
+    {
+        return String(settingsManager->getOctoPrintUsername());
+    }
+    if(token == "PRINTMONITORPASSWORD")
+    {
+        return String(settingsManager->getOctoPrintPassword());
+    }
+    if(token == "PRINTMONITORAPIKEY")
+    {
+        return String(settingsManager->getOctoPrintAPIKey());
+    }
+
     return String();
 }
 
@@ -580,6 +611,44 @@ void WebServer::handleUpdateClockSettings(AsyncWebServerRequest* request)
     {
         AsyncWebParameter* p = request->getParam("utcOffset");
         settingsManager->setUtcOffset(p->value().toInt());
+    }
+}
+
+void WebServer::handleUpdatePrintMonitorSettings(AsyncWebServerRequest* request)
+{
+    if(request->hasParam("printMonitorEnabled"))
+    {        
+        settingsManager->setOctoPrintEnabled(true);
+    }
+    else
+    {
+        settingsManager->setOctoPrintEnabled(false);
+    }
+
+    if(request->hasParam("octoPrintUrl"))
+    {
+        AsyncWebParameter* p = request->getParam("octoPrintUrl");
+        settingsManager->setOctoPrintAddress(p->value());
+    }
+    if(request->hasParam("octoPrintPort"))
+    {
+        AsyncWebParameter* p = request->getParam("octoPrintPort");
+        settingsManager->setOctoPrintPort(p->value().toInt());
+    }
+    if(request->hasParam("octoPrintUsername"))
+    {
+        AsyncWebParameter* p = request->getParam("octoPrintUsername");
+        settingsManager->setOctoPrintUsername(p->value());
+    }
+    if(request->hasParam("octoPrintPassword"))
+    {
+        AsyncWebParameter* p = request->getParam("octoPrintPassword");
+        settingsManager->setOctoPrintPassword(p->value());
+    }
+    if(request->hasParam("octoPrintAPIKey"))
+    {
+        AsyncWebParameter* p = request->getParam("octoPrintAPIKey");
+        settingsManager->setOctoPrintAPIKey(p->value());
     }
 }
 

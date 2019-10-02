@@ -17,7 +17,7 @@ typedef struct PrinterMonitorData
     float percentComplete;
     unsigned int printTimeElapsed;
     unsigned int printTimeRemaining;
-    
+
     // printer
     float tool0Temp;
     float tool0Target;
@@ -31,8 +31,8 @@ typedef struct PrinterMonitorData
 class OctoPrintMonitor
 {
     public:
-        void init(String apiKey, String server, String userName, String password);
-        void updateSettings(String apiKey, String server, String userName, String password);
+        void init(String server, int port, String apiKey, String userName, String password);
+        void updateSettings(String server, int port, String apiKey, String userName, String password);
         void update();
         PrinterMonitorData* getCurrentData() { return &data; }
 
@@ -45,6 +45,8 @@ class OctoPrintMonitor
         String server;
         String userName;
         String password;
+        int port;
+
         PrinterMonitorData data;
 };
 

@@ -57,6 +57,13 @@ void SettingsManager::resetSettings()
     data.mqttDisplayTopic = "";
     data.mqttPort = 1883;
 
+    data.octoPrintAddress = "";
+    data.octoPrintPort = 80;
+    data.octoPrintUsername = "";
+    data.octoPrintPassword = "";
+    data.octoPrintAPIKey = "";
+    data.octoPrintMonitorEnabled = false;
+
     data.utcOffsetSeconds = 0;
 
     saveSettings();
@@ -66,7 +73,7 @@ void SettingsManager::resetSettings()
 void SettingsManager::loadSettings()
 {
     File jsonSettings;
-    DynamicJsonDocument doc(1024);
+    DynamicJsonDocument doc(SETTINGS_JSON_SIZE);
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "r");
     deserializeJson(doc, jsonSettings);
@@ -99,6 +106,13 @@ void SettingsManager::loadSettings()
     data.mqttPressureTopic = (const char*)doc["MqttPressureTopic"];
     data.mqttDisplayTopic = (const char*)doc["MqttDisplayTopic"];    
     data.mqttPort = doc["MqttPort"];
+    
+    data.octoPrintAddress = (const char*)doc["OctoPrintAddress"];
+    data.octoPrintPort = doc["OctoPrintPort"];
+    data.octoPrintUsername = (const char*)doc["OctoPrintUsername"];
+    data.octoPrintPassword = (const char*)doc["OctoPrintPassword"];
+    data.octoPrintAPIKey = (const char*)doc["OctoPrintAPIKey"];
+    data.octoPrintMonitorEnabled = doc["OctoPrintEnabled"];
 
     data.utcOffsetSeconds = doc["utcOffset"];
 
@@ -111,7 +125,7 @@ void SettingsManager::loadSettings()
 void SettingsManager::saveSettings()
 {
     File jsonSettings;
-    DynamicJsonDocument doc(1024);   
+    DynamicJsonDocument doc(SETTINGS_JSON_SIZE);   
 
     doc["WeatherAPIKey"] = data.openWeatherMapAPIKey;
     doc["WeatherLLocationID"] = data.openWeatherLocationID;
@@ -137,6 +151,13 @@ void SettingsManager::saveSettings()
     doc["MqttDisplayTopic"] = data.mqttDisplayTopic;
     doc["MqttPort"] = data.mqttPort;
     doc["utcOffset"] = data.utcOffsetSeconds;
+
+    doc["OctoPrintAddress"] = data.octoPrintAddress;
+    doc["OctoPrintPort"] = data.octoPrintPort;
+    doc["OctoPrintUsername"] = data.octoPrintUsername;
+    doc["OctoPrintPassword"] = data.octoPrintPassword;
+    doc["OctoPrintAPIKey"] = data.octoPrintAPIKey;
+    doc["OctoPrintEnabled"] = data.octoPrintMonitorEnabled;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
@@ -474,6 +495,90 @@ void SettingsManager::setMqttDisplayTopic(String displayTopic)
     if(data.mqttDisplayTopic != displayTopic)
     {
         data.mqttDisplayTopic = displayTopic;
+        updateSettings();
+    }
+}
+
+String SettingsManager::getOctoPrintAddress()
+{
+    return data.octoPrintAddress;
+}
+
+void SettingsManager::setOctoPrintAddress(String address)
+{
+    if(data.octoPrintAddress != address)
+    {
+        data.octoPrintAddress = address;
+        updateSettings();
+    }
+}
+
+int SettingsManager::getOctoPrintPort()
+{
+    return data.octoPrintPort;
+}
+
+void SettingsManager::setOctoPrintPort(int port)
+{
+    if(data.octoPrintPort != port)
+    {
+        data.octoPrintPort = port;
+        updateSettings();
+    }
+}
+
+String SettingsManager::getOctoPrintUsername()
+{
+    return data.octoPrintUsername;
+}
+
+void SettingsManager::setOctoPrintUsername(String userName)
+{
+    if(data.octoPrintUsername != userName)
+    {
+        data.octoPrintUsername = userName;
+        updateSettings();
+    }
+}
+
+String SettingsManager::getOctoPrintPassword()
+{
+    return data.octoPrintPassword;
+}
+
+void SettingsManager::setOctoPrintPassword(String password)
+{
+    if(data.octoPrintPassword != password)
+    {
+        data.octoPrintPassword = password;
+        updateSettings();
+    }
+}
+
+String SettingsManager::getOctoPrintAPIKey()
+{
+    return data.octoPrintAPIKey;
+}
+
+void SettingsManager::setOctoPrintAPIKey(String apiKey)
+{
+    if(data.octoPrintAPIKey != apiKey)
+    {
+        data.octoPrintAPIKey = apiKey;
+        updateSettings();
+    }
+}
+
+bool SettingsManager::getOctoPrintEnabled()
+{
+    return data.octoPrintMonitorEnabled;
+}
+
+void SettingsManager::setOctoPrintEnabled(bool enabled)
+{
+    if(data.octoPrintMonitorEnabled != enabled)
+    {
+        data.octoPrintMonitorEnabled = enabled;
         updateSettings();
     }
 }

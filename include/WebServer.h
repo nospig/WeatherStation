@@ -31,6 +31,7 @@ class WebServer
         static void handleMQTTSettings(AsyncWebServerRequest* request);               
         static void handleUpdateTimings(AsyncWebServerRequest* request);
         static void handleUpdateClockSettings(AsyncWebServerRequest* request);        
+        static void handleUpdatePrintMonitorSettings(AsyncWebServerRequest* request);        
         static void handleForgetWiFi(AsyncWebServerRequest* request);
         static void handleResetSettings(AsyncWebServerRequest* request);
         static void handleScreenGrab(AsyncWebServerRequest* request);

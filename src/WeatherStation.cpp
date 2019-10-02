@@ -169,7 +169,9 @@ void connectWifiCallback()
     bmeReader.init(BME_SDA, BME_SCL, BME_ADDRESS);
     mqttManager.init(&settingsManager);
     mqttManager.setSubscribeCallback(mqttSubscribeCallback);
-    octoPrintMonitor.init(OCTOPRINT_API_KEY, OCTOPRINT_HOST, OCTOPRINT_USER, OCTOPRINT_PASSWORD);
+
+    octoPrintMonitor.init(settingsManager.getOctoPrintAddress(), settingsManager.getOctoPrintPort(), 
+                          settingsManager.getOctoPrintAPIKey(), settingsManager.getOctoPrintUsername(), settingsManager.getOctoPrintPassword());
     timeClient.setTimeOffset(settingsManager.getUtcOffset());
 
     currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
@@ -236,6 +238,9 @@ void checkSettingsChangedCallback()
 
         currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
         forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
+
+        octoPrintMonitor.updateSettings(settingsManager.getOctoPrintAddress(), settingsManager.getOctoPrintPort(), 
+                                        settingsManager.getOctoPrintAPIKey(), settingsManager.getOctoPrintUsername(), settingsManager.getOctoPrintPassword());
 
         // best just to force a display clear when changing settings
         display->setDisplayMode(settingsManager.getDisplayMode());

@@ -6,6 +6,7 @@
 #include "Settings.h"
 
 const String SETTINGS_FILE_NAME = "/Settings.json";
+const int SETTINGS_JSON_SIZE = 1536;
 
 typedef struct SettingsData
 {
@@ -35,8 +36,15 @@ typedef struct SettingsData
     String mqttDisplayTopic;
     int mqttPort;
 
+    String octoPrintAddress;
+    int octoPrintPort;
+    String octoPrintUsername;
+    String octoPrintPassword;
+    String octoPrintAPIKey;
+
     bool thingSpeakEnabled;
     bool mqttEnabled;
+    bool octoPrintMonitorEnabled;
 
     long utcOffsetSeconds;
 
@@ -117,6 +125,24 @@ class SettingsManager
 
         bool getMqttReconnectRequired();
         void resetMqttReconnectRequired();
+
+        String getOctoPrintAddress();
+        void setOctoPrintAddress(String address);
+
+        int getOctoPrintPort();
+        void setOctoPrintPort(int port);
+
+        String getOctoPrintUsername();
+        void setOctoPrintUsername(String userName);
+
+        String getOctoPrintPassword();
+        void setOctoPrintPassword(String password);
+
+        String getOctoPrintAPIKey();
+        void setOctoPrintAPIKey(String apiKey);
+
+        bool getOctoPrintEnabled();
+        void setOctoPrintEnabled(bool enabled);
 
         long getUtcOffset();
         void setUtcOffset(long utcOffset);
