@@ -84,4 +84,6 @@ The station can publish sensor readings to a MQTT broker. Enter broker details o
 
 ## Thanks
 
-[Weather icons](https://www.deviantart.com/umutavci/art/weather-icon-set-165476034) from umutavci.
+[Weather icons](https://www.deviantart.com/umutavci/art/weather-icon-set-165476034) from umutavci.  
+Inspired by [ThingPulse color weather station](https://github.com/ThingPulse/esp8266-weather-station-color)
+
