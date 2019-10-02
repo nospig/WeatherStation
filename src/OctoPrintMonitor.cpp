@@ -31,7 +31,7 @@ void OctoPrintMonitor::updateJobStatus()
     
     if(result != "")
     {
-        //Serial.println(result);
+        Serial.println(result);
     }
 }
 
@@ -41,7 +41,7 @@ void OctoPrintMonitor::updatePrinterStatus()
     
     if(result != "")
     {
-        //Serial.println(result);
+        Serial.println(result);
     }
 }
 

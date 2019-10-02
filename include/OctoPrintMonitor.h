@@ -10,9 +10,20 @@
 typedef struct PrinterMonitorData
 {
     // job
-    float progress;
-
+    String fileName;
+    unsigned int estimatedPrintTime;
+    unsigned int filamentLength;
+    String jobState;
+    float percentComplete;
+    unsigned int printTimeElapsed;
+    unsigned int printTimeRemaining;
+    
     // printer
+    float tool0Temp;
+    float tool0Target;
+    float bedTemp;
+    float bedTarget;
+    String printState;
 
     bool valid;
 } PrinterMonitorData;
@@ -29,7 +40,7 @@ class OctoPrintMonitor
         void updateJobStatus();
         void updatePrinterStatus();
         String performAPIGet(String apiCall);
-        
+
         String apiKey;
         String server;
         String userName;
