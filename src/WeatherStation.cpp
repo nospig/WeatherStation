@@ -210,7 +210,12 @@ void connectWifiCallback()
     updateWiFiStrength.enable();
     checkSettingsChanged.enable();
     checkScreenGrabRequested.enable();
-    octoPrintUpdate.enable();
+
+    // try different method with print monitor
+    if(settingsManager.getOctoPrintEnabled())
+    {
+        octoPrintUpdate.enable();
+    }
 }
 
 void updateWifiStrengthCallback()
@@ -262,7 +267,16 @@ void checkSettingsChangedCallback()
         updateWiFiStrength.forceNextIteration();
         updateThingSpeak.forceNextIteration();
         mqttPublish.forceNextIteration();
-        octoPrintUpdate.forceNextIteration();
+
+        if(settingsManager.getOctoPrintEnabled())
+        {
+            octoPrintUpdate.enableIfNot();
+            octoPrintUpdate.forceNextIteration();
+        }
+        else
+        {
+            octoPrintUpdate.disable();
+        }        
     }
 }
 

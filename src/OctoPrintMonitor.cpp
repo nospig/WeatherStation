@@ -7,8 +7,6 @@
 void OctoPrintMonitor::init(String server, int port, String apiKey, String userName, String password)
 {
     updateSettings(server, port, apiKey, userName, password);
-
-    update();
 }
 
 void OctoPrintMonitor::updateSettings(String server, int port, String apiKey, String userName, String password)
