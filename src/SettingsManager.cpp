@@ -8,6 +8,7 @@ const int FORECAST_WEATHER_INTERVAL     = 25 * MINUTES_MULT;
 const int SENSOR_READING_INTERVAL       = 30 * SECONDS_MULT;
 const int THINGSPEAK_REPORTING_INTERVAL = 30 * MINUTES_MULT;
 const int MQTT_PUBLISH_INTERVAL         = 5 * MINUTES_MULT;
+const int PRINT_MONITOR_INERVAL         = 30 * SECONDS_MULT;
 
 void SettingsManager::init()
 {
@@ -43,6 +44,7 @@ void SettingsManager::resetSettings()
     data.sensorReadingInterval = SENSOR_READING_INTERVAL;
     data.thingSpeakReportingInterval = THINGSPEAK_REPORTING_INTERVAL;
     data.mqttPublishInterval = MQTT_PUBLISH_INTERVAL;
+    data.printMonitorInterval = PRINT_MONITOR_INERVAL;
 
     data.thingSpeakEnabled = false;
     data.mqttEnabled = false;
@@ -93,6 +95,7 @@ void SettingsManager::loadSettings()
     data.sensorReadingInterval = doc["SensorReadingInterval"];
     data.thingSpeakReportingInterval = doc["ThingSpeakReportingInterval"];
     data.mqttPublishInterval = doc["MqttPublishInterval"];
+    data.printMonitorInterval = doc["PrinterMonitorInterval"];
 
     data.thingSpeakEnabled = doc["ThingSpeakEnabled"];
     data.mqttEnabled = doc["MqttEnabled"];
@@ -140,6 +143,7 @@ void SettingsManager::saveSettings()
     doc["ThingSpeakReportingInterval"] = data.thingSpeakReportingInterval;
     doc["ThingSpeakEnabled"] = data.thingSpeakEnabled;
     doc["MqttPublishInterval"] = data.mqttPublishInterval;
+    doc["PrinterMonitorInterval"] = data.printMonitorInterval;
     doc["MqttEnabled"] = data.mqttEnabled;
     doc["MqttBroker"] = data.mqttBroker;
     doc["MqttUsername"] = data.mqttUsername;
@@ -346,6 +350,20 @@ void SettingsManager::setMqttPublishInterval(int interval)
     if(data.mqttPublishInterval != interval)
     {
         data.mqttPublishInterval = interval;
+        updateSettings();
+    }
+}
+
+int SettingsManager::getPrintMonitorInterval()
+{
+    return data.printMonitorInterval;
+}
+
+void SettingsManager::setPrintMonitorInterval(int interval)
+{
+    if(data.printMonitorInterval != interval)
+    {
+        data.printMonitorInterval = interval;
         updateSettings();
     }
 }

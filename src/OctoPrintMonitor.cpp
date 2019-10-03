@@ -54,7 +54,11 @@ String OctoPrintMonitor::performAPIGet(String apiCall)
 
     http.begin(client, this->server, this->port, apiCall);
     http.addHeader("X-Api-Key", this->apiKey);
-    http.setAuthorization(this->userName.c_str(), this->password.c_str());      // TODO if set in settings
+
+    if(this->userName != "")
+    {
+        http.setAuthorization(this->userName.c_str(), this->password.c_str());
+    }
 
     int httpCode = http.GET();
 

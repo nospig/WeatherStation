@@ -199,7 +199,7 @@ void connectWifiCallback()
     readSensors.setInterval(settingsManager.getSensorReadingInterval());
     updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
     mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
-    octoPrintUpdate.setInterval(30*SECONDS_MULT);   // TODO
+    octoPrintUpdate.setInterval(settingsManager.getPrintMonitorInterval());
 
     updateThingSpeak.disable(); 
     mqttPublish.disable();
@@ -253,7 +253,7 @@ void checkSettingsChangedCallback()
         readSensors.setInterval(settingsManager.getSensorReadingInterval());
         updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
         mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
-        octoPrintUpdate.setInterval(30*SECONDS_MULT);   // TODO
+        octoPrintUpdate.setInterval(settingsManager.getPrintMonitorInterval());
 
         getTime.forceNextIteration();
         getCurrentWeather.forceNextIteration();

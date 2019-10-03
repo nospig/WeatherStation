@@ -25,6 +25,7 @@ typedef struct SettingsData
     int sensorReadingInterval;
     int thingSpeakReportingInterval;
     int mqttPublishInterval;
+    int printMonitorInterval;
 
     String mqttBroker;
     String mqttUsername;
@@ -92,6 +93,9 @@ class SettingsManager
 
         int getMqttPublishInterval();
         void setMqttPublishInterval(int interval);
+
+        int getPrintMonitorInterval();
+        void setPrintMonitorInterval(int interval);
 
         bool getMqttEnabled();
         void setMqttEnabled(bool enabled);
