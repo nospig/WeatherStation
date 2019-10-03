@@ -14,17 +14,31 @@
 #define CURRENT_WEATHER_CONDITIONS_COLOUR   TFT_YELLOW
 #define FORECAST_DAY_COLOUR                 TFT_YELLOW
 
+#define PRINT_MONITOR_TEXT_COLOUR           TFT_YELLOW
+#define PRINT_MONITOR_TOOL_ARC_COLOUR       TFT_RED
+#define PRINT_MONITOR_BED_ARC_COLOUR        TFT_RED
+#define PRINT_MONITOR_ACTUAL_TEMP_COLOUR    TFT_YELLOW
+#define PRINT_MONITOR_TARGET_TEMP_COLOUR    TFT_YELLOW
+#define PRINT_MONITOR_TEMP_HEADING_COLOUR   0x75DF
+#define PRINT_MONITOR_ARC_TARGET_COLOUR     TFT_DARKGREY
+
 // positions for modes
 
 #define MODE_1_INDOOR_Y     0
 #define MODE_1_CURRENT_Y    60
 #define MODE_1_FORECAST_Y   160
-#define MODE_1_TIME_Y       300
 #define MODE_1_TIME_HEIGHT  20
 
 #define MODE_2_FORECAST_Y   0
 
 #define MODE_3_CURRENT_Y    MODE_1_CURRENT_Y
+
+#define TIME_Y              300
+
+#define TOOL_TEMP_DISPLAY_X     60
+#define TOOL_TEMP_DISPLAY_Y     60
+#define BED_TEMP_DISPLAY_X      240 - TOOL_TEMP_DISPLAY_X
+#define BED_TEMP_DISPLAY_Y      TOOL_TEMP_DISPLAY_Y
 
 #define WEATHER_ICON_WIDTH  48
 #define WEATHER_ICON_HEIGHT 48
@@ -58,6 +72,13 @@
 #define BRIGHTNESS_PIN          16   // D0
 #define MAX_BRIGHTNESS_VALUE    1023 // max value of analog out on ESP8266
 
+#define DEG2RAD 0.0174532925
+#define TEMP_ARC_START              240
+#define TEMP_ARC_SPAN               240
+#define TEMP_ARC_DEGREE_PER_SEG     3
+#define TOOL_TEMP_MAX               250
+#define BED_TEMP_MAX                100
+
 class DisplayTFT : public DisplayBase
 {
     public:
@@ -74,6 +95,7 @@ class DisplayTFT : public DisplayBase
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
         void drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount);
         void drawWiFiStrength(long dBm);
+        void drawOctoPrintStatus(OctoPrintMonitorData* printData);
 
         void setDisplayMode(DisplayMode mode);
         void setDisplayEnabled(bool enabled);
@@ -93,6 +115,11 @@ class DisplayTFT : public DisplayBase
         void drawVerticalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y);
 
+        void drawInvalidPrintData();
+        void drawPrintInfo(OctoPrintMonitorData* printData);
+        void drawTempArc(String title, float value, float target, float max, int x, int y);
+
+        int fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour);
         char* getTempPostfix();
 
         boolean screenServer(void);

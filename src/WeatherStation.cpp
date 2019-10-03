@@ -127,23 +127,7 @@ void mqttPublishCallback()
 void updatePrinterMonitorCallback()
 {
     octoPrintMonitor.update();
-}
-
-// display
-
-// only call if all data is available
-
-void changeDisplayMode(DisplayMode newMode)
-{
-    display->setDisplayMode(newMode);
-
-    if(bmeReader.isActive())
-    {
-        display->drawSensorReadings(sensorTemp, sensorHumidity, sensorPressure);
-    }
-    display->drawCurrentWeather(currentWeatherClient.getCurrentData());
-    display->drawForecastWeather(forecastWeatherClient.isValidData(), forecastWeatherClient.getDailyForecasts(), forecastWeatherClient.getForecastCount());
-    display->drawCurrentTime(timeClient.getEpochTime());
+    display->drawOctoPrintStatus(octoPrintMonitor.getCurrentData());
 }
 
 // wifi
@@ -178,7 +162,10 @@ void connectWifiCallback()
     forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
 
     delay(WIFI_CONNECTING_DELAY);
-    display->setDisplayMode(settingsManager.getDisplayMode());
+    //display->setDisplayMode(settingsManager.getDisplayMode());
+// testing
+display->setDisplayMode(DisplayMode_4);
+
     display->setDisplayBrightness(settingsManager.getDisplayBrightness());
     display->startMainDisplay();
 

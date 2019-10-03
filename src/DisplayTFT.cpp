@@ -75,7 +75,7 @@ void DisplayTFT::setDisplayMode(DisplayMode mode)
 
 void DisplayTFT::drawCurrentTime(unsigned long epochTime)
 {
-    drawTimeDisplay(epochTime, MODE_1_TIME_Y);
+    drawTimeDisplay(epochTime, TIME_Y);
 }
 
 void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
@@ -367,14 +367,17 @@ void DisplayTFT::drawStaticElements()
         case DisplayMode_1:
             tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
             tft->drawLine(0, MODE_1_FORECAST_Y, tft->width(), MODE_1_FORECAST_Y, SECTION_HEADER_LINE_COLOUR); 
-            tft->drawLine(0, MODE_1_TIME_Y, tft->width(), MODE_1_TIME_Y, SECTION_HEADER_LINE_COLOUR); 
+            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
         case DisplayMode_2:
-            tft->drawLine(0, MODE_1_TIME_Y, tft->width(), MODE_1_TIME_Y, SECTION_HEADER_LINE_COLOUR); 
+            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
         case DisplayMode_3:
             tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
-            tft->drawLine(0, MODE_1_TIME_Y, tft->width(), MODE_1_TIME_Y, SECTION_HEADER_LINE_COLOUR); 
+            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
+            break;
+        case DisplayMode_4:
+            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
         default:
             break;
@@ -491,7 +494,93 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
 
 /****************************************************************************************
  * 
- *  Misc routines
+ *  Print monitor display
+ * 
+ * 
+****************************************************************************************/
+
+void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData)
+{
+    if(getDisplayMode() != DisplayMode_4)
+    {
+        return;
+    }
+
+    if(!printData->validPrintData)
+    {
+        Serial.println("No valid print data.");
+        drawInvalidPrintData();
+    }
+    else
+    {
+        drawPrintInfo(printData);
+    }
+    
+    if(!printData->validJobData)
+    {
+        Serial.println("No valid job data.");
+    }
+}
+
+void DisplayTFT::drawInvalidPrintData()
+{
+    tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);// TODO? Only need to clear if changing mode or from no info to info?
+
+    tft->setTextDatum(MC_DATUM);
+    tft->setTextFont(2);
+    tft->setTextColor(PRINT_MONITOR_TEXT_COLOUR, BACKGROUND_COLOUR); 
+    tft->drawString("No print data available", tft->width()/2, tft->height()/4);    
+}
+
+void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData)
+{
+    // TODO, clearing screen if changing from no info to info
+    drawTempArc("Tool", printData->tool0Temp, printData->tool0Target, TOOL_TEMP_MAX, TOOL_TEMP_DISPLAY_X, TOOL_TEMP_DISPLAY_Y);
+    drawTempArc("Bed", printData->bedTemp, printData->bedTarget, BED_TEMP_MAX, BED_TEMP_DISPLAY_X, BED_TEMP_DISPLAY_Y);
+}
+
+void DisplayTFT::drawTempArc(String title, float value, float target, float max, int x, int y)
+{
+    char buffer[64];
+    int endAngle;
+    int padding;
+
+    tft->setTextFont(2);
+    tft->setTextColor(PRINT_MONITOR_TEMP_HEADING_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextPadding(50);
+    tft->setTextDatum(BC_DATUM);
+    tft->drawString(title, x, y - 60);
+
+    tft->setTextFont(4);
+    tft->setTextColor(PRINT_MONITOR_ACTUAL_TEMP_COLOUR, BACKGROUND_COLOUR); 
+    sprintf(buffer, "%.0f", max);
+    padding = tft->textWidth(buffer);
+    tft->setTextPadding(padding);
+    tft->setTextDatum(TC_DATUM);
+
+    sprintf(buffer, "%.0f", value);
+    tft->drawString(buffer, x, y + 20);
+
+    tft->setTextFont(2);
+    tft->setTextColor(PRINT_MONITOR_TARGET_TEMP_COLOUR, BACKGROUND_COLOUR); 
+    sprintf(buffer, "%.0f", max);
+    padding = tft->textWidth(buffer);
+    tft->setTextDatum(BC_DATUM);
+    sprintf(buffer, "%.0f", target);
+    tft->drawString(buffer, x, y);
+
+    float temp = min(value, max);
+    float segments = ((temp / max) * TEMP_ARC_SPAN) / TEMP_ARC_DEGREE_PER_SEG;
+    endAngle = fillArc(x, y, TEMP_ARC_START, (int)segments, 40, 40, 8, TFT_RED);
+
+    segments = (max - temp) / max;
+    segments = (segments * TEMP_ARC_SPAN) / TEMP_ARC_DEGREE_PER_SEG;
+    fillArc(x, y, endAngle, (int)segments, 40, 40, 8, TFT_LIGHTGREY);
+}
+
+/****************************************************************************************
+ * 
+ *  Misc
  * 
  * 
 ****************************************************************************************/
@@ -742,4 +831,62 @@ void DisplayTFT::sendParameters(String filename)
     Serial.write(FILE_EXT); // Filename extension identifier
 
     Serial.write(*FILE_TYPE); // First character defines file type j,b,p,t
+}
+
+/****************************************************************************************
+ * 
+ *  From TFT library samples
+ * 
+****************************************************************************************/
+
+// #########################################################################
+// Draw a circular or elliptical arc with a defined thickness
+// #########################################################################
+
+// x,y == coords of centre of arc
+// start_angle = 0 - 359
+// seg_count = number of 6 degree segments to draw (60 => 360 degree arc)
+// rx = x axis outer radius
+// ry = y axis outer radius
+// w  = width (thickness) of arc in pixels
+// colour = 16 bit colour value
+// Note if rx and ry are the same then an arc of a circle is drawn
+
+int DisplayTFT::fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour)
+{
+    byte seg = TEMP_ARC_DEGREE_PER_SEG; // Segments are 3 degrees wide = 120 segments for 360 degrees
+    byte inc = TEMP_ARC_DEGREE_PER_SEG; // Draw segments every 3 degrees, increase to 6 for segmented ring
+
+    // Calculate first pair of coordinates for segment start
+    float sx = cos((start_angle - 90) * DEG2RAD);
+    float sy = sin((start_angle - 90) * DEG2RAD);
+    uint16_t x0 = sx * (rx - w) + x;
+    uint16_t y0 = sy * (ry - w) + y;
+    uint16_t x1 = sx * rx + x;
+    uint16_t y1 = sy * ry + y;
+
+    // Draw colour blocks every inc degrees
+    int i;
+    for (i = start_angle; i < start_angle + seg * seg_count; i += inc)
+    {
+
+        // Calculate pair of coordinates for segment end
+        float sx2 = cos((i + seg - 90) * DEG2RAD);
+        float sy2 = sin((i + seg - 90) * DEG2RAD);
+        int x2 = sx2 * (rx - w) + x;
+        int y2 = sy2 * (ry - w) + y;
+        int x3 = sx2 * rx + x;
+        int y3 = sy2 * ry + y;
+
+        tft->fillTriangle(x0, y0, x1, y1, x2, y2, colour);
+        tft->fillTriangle(x1, y1, x2, y2, x3, y3, colour);
+
+        // Copy segment end to sgement start for next segment
+        x0 = x2;
+        y0 = y2;
+        x1 = x3;
+        y1 = y3;
+    }
+
+    return i;
 }

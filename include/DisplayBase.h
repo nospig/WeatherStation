@@ -3,12 +3,14 @@
 
 #include "OpenWeatherMapCurrent.h"
 #include "OpenWeatherMapDaily.h"
+#include "OctoPrintMonitor.h"
 
 enum DisplayMode
 {
-    DisplayMode_1,
-    DisplayMode_2,
-    DisplayMode_3,
+    DisplayMode_1,  // current weather
+    DisplayMode_2,  // weather forecast
+    DisplayMode_3,  // detailed current
+    DisplayMode_4,  // print monitor
 };
 
 class DisplayBase
@@ -25,9 +27,10 @@ class DisplayBase
         virtual void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather) {};
         virtual void drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount) {};
         virtual void drawWiFiStrength(long dBm) {};
+        virtual void drawOctoPrintStatus(OctoPrintMonitorData* printData) {};
+
         virtual void serveScreenShot() {};
-        virtual void setDisplayBrightness(int percent) {};
-        
+        virtual void setDisplayBrightness(int percent) {};        
         virtual void setDisplayMode(DisplayMode mode);
         DisplayMode getDisplayMode();
 

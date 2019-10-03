@@ -4,6 +4,10 @@
 #include <ArduinoJson.h>
 #include "OctoPrintMonitor.h"
 
+const int JOB_DECODE_SIZE   = 1024;   // TODO
+const int PRINT_DECODE_SIZE = 2048;   // TODO
+
+
 void OctoPrintMonitor::init(String server, int port, String apiKey, String userName, String password)
 {
     updateSettings(server, port, apiKey, userName, password);
@@ -26,25 +30,45 @@ void OctoPrintMonitor::update()
 
 void OctoPrintMonitor::updateJobStatus()
 {
-    String result = performAPIGet(OCTOPRINT_JOB);
+    String result;
+    int httpCode;
     
-    if(result != "")
+    httpCode = performAPIGet(OCTOPRINT_JOB, result);
+    
+    if(httpCode == 200)
     {
+        data.validJobData = true;
+        deserialiseJob(result);
+
         Serial.println(result);
+    }
+    else
+    {
+        data.validJobData = false;
     }
 }
 
 void OctoPrintMonitor::updatePrinterStatus()
 {
-    String result = performAPIGet(OCTOPRINT_PRINTER);
+    String result;
+    int httpCode;
+
+    httpCode = performAPIGet(OCTOPRINT_PRINTER, result);
     
-    if(result != "")
+     if(httpCode == 200)
     {
+        data.validPrintData = true;
+        deserialisePrint(result);
+
         Serial.println(result);
+    }
+    else
+    {
+        data.validPrintData = false;
     }
 }
 
-String OctoPrintMonitor::performAPIGet(String apiCall)
+int OctoPrintMonitor::performAPIGet(String apiCall, String& payload)
 {
     // must be in this order
     WiFiClient client;
@@ -60,16 +84,37 @@ String OctoPrintMonitor::performAPIGet(String apiCall)
 
     int httpCode = http.GET();
 
-    //Serial.print("HTTP CODE: ");
-    //Serial.println(httpCode);
+    Serial.print("HTTP CODE: ");
+    Serial.println(httpCode);
 
     if (httpCode > 0)
     {
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
         {            
-            return http.getString();
+            payload = http.getString();
         }        
     }
-    return "";
+    
+    return httpCode;
+}
+
+void OctoPrintMonitor::deserialiseJob(String payload)
+{
+    DynamicJsonDocument doc(JOB_DECODE_SIZE);
+    deserializeJson(doc, payload);
+
+    data.jobState = (const char*)doc["state"];
+}
+
+void OctoPrintMonitor::deserialisePrint(String payload)
+{
+    DynamicJsonDocument doc(PRINT_DECODE_SIZE);
+    deserializeJson(doc, payload);
+
+    data.tool0Temp = doc["temperature"]["tool0"]["actual"];
+    data.tool0Target= doc["temperature"]["tool0"]["target"];
+
+    data.bedTemp = doc["temperature"]["bed"]["actual"];
+    data.bedTarget = doc["temperature"]["bed"]["target"];
 }
 
