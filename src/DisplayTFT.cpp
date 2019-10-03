@@ -449,7 +449,15 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
 
-        sprintf(buffer, "Wind: %.1fm/s from %.0f degress", currentWeather->windSpeed, currentWeather->windDeg);
+        if(getDisplayMetric())
+        {
+            sprintf(buffer, "Wind: %.1fm/s from %.0f degress", currentWeather->windSpeed, currentWeather->windDeg);
+        }
+        else
+        {
+            sprintf(buffer, "Wind: %.1fmph from %.0f degress", currentWeather->windSpeed, currentWeather->windDeg);
+        }
+        
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
 
