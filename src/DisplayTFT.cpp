@@ -515,11 +515,6 @@ void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData)
     {
         drawPrintInfo(printData);
     }
-    
-    if(!printData->validJobData)
-    {
-        Serial.println("No valid job data.");
-    }
 }
 
 void DisplayTFT::drawInvalidPrintData()
@@ -529,14 +524,69 @@ void DisplayTFT::drawInvalidPrintData()
     tft->setTextDatum(MC_DATUM);
     tft->setTextFont(2);
     tft->setTextColor(PRINT_MONITOR_TEXT_COLOUR, BACKGROUND_COLOUR); 
-    tft->drawString("No print data available", tft->width()/2, tft->height()/4);    
+    tft->drawString("No printer data available", tft->width()/2, tft->height()/4);    
 }
 
 void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData)
 {
     // TODO, clearing screen if changing from no info to info
+
+    tft->setTextFont(2);
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextPadding(tft->width());  // TODO
+    //Serial.println(printData->printerFlags);
+
+    String printer = "Ender 3"; // TODO, don't see name in API
+    String title;        
+    uint16_t flags = printData->printerFlags;
+    
+    Serial.println(printData->printerFlags);
+
+    if((flags & PRINT_STATE_CLOSED_OR_ERROR) || (flags & PRINT_STATE_ERROR))
+    {
+        title = printer + " - Error";
+    }
+    else if(flags & PRINT_STATE_CANCELLING)
+    {
+        title = printer + " - Cancelling";
+    }
+    else if(flags & PRINT_STATE_FINISHING)
+    {
+        title = printer + " - Finishing";
+    }
+    else if(flags & PRINT_STATE_PAUSING)
+    {
+        title = printer + " - Pausing";
+    }
+    else if(flags & PRINT_STATE_PAUSED)
+    {
+        title = printer + " - Paused";
+    }    
+    else if(flags & PRINT_STATE_RESUMING)
+    {
+        title = printer + " - Resuming";
+    }
+    else if(flags & PRINT_STATE_PRINTING)
+    {
+        title = printer + " - Printing";
+    }
+    else if(flags & PRINT_STATE_READY)
+    {
+        title = printer + " - Ready";
+    }
+    else
+    {
+        title = printer;
+    }
+    
+    tft->drawString(title, tft->width()/2, TOOL_TEMP_DISPLAY_Y - 88); 
+
     drawTempArc("Tool", printData->tool0Temp, printData->tool0Target, TOOL_TEMP_MAX, TOOL_TEMP_DISPLAY_X, TOOL_TEMP_DISPLAY_Y);
     drawTempArc("Bed", printData->bedTemp, printData->bedTarget, BED_TEMP_MAX, BED_TEMP_DISPLAY_X, BED_TEMP_DISPLAY_Y);
+
+    //Serial.println(printData->printState);
+    //Serial.println(printData->fileName);
 }
 
 void DisplayTFT::drawTempArc(String title, float value, float target, float max, int x, int y)
@@ -547,9 +597,10 @@ void DisplayTFT::drawTempArc(String title, float value, float target, float max,
 
     tft->setTextFont(2);
     tft->setTextColor(PRINT_MONITOR_TEMP_HEADING_COLOUR, BACKGROUND_COLOUR); 
-    tft->setTextPadding(50);
     tft->setTextDatum(BC_DATUM);
-    tft->drawString(title, x, y - 60);
+    padding = tft->textWidth(title);
+    tft->setTextPadding(padding);
+    tft->drawString(title, x, y - 50);
 
     tft->setTextFont(4);
     tft->setTextColor(PRINT_MONITOR_ACTUAL_TEMP_COLOUR, BACKGROUND_COLOUR); 

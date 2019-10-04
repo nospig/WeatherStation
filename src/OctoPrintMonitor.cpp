@@ -40,7 +40,7 @@ void OctoPrintMonitor::updateJobStatus()
         data.validJobData = true;
         deserialiseJob(result);
 
-        Serial.println(result);
+        //Serial.println(result);
     }
     else
     {
@@ -60,7 +60,7 @@ void OctoPrintMonitor::updatePrinterStatus()
         data.validPrintData = true;
         deserialisePrint(result);
 
-        Serial.println(result);
+        //Serial.println(result);
     }
     else
     {
@@ -84,8 +84,8 @@ int OctoPrintMonitor::performAPIGet(String apiCall, String& payload)
 
     int httpCode = http.GET();
 
-    Serial.print("HTTP CODE: ");
-    Serial.println(httpCode);
+    //Serial.print("HTTP CODE: ");
+    //Serial.println(httpCode);
 
     if (httpCode > 0)
     {
@@ -104,6 +104,13 @@ void OctoPrintMonitor::deserialiseJob(String payload)
     deserializeJson(doc, payload);
 
     data.jobState = (const char*)doc["state"];
+    data.estimatedPrintTime = doc["job"]["estimatedPrintTime"];
+    data.filamentLength = doc["job"]["filament"];
+    data.fileName = (const char*)doc["job"]["file"]["display"];
+    
+    data.percentComplete = doc["progress"]["completion"];
+    data.printTimeElapsed = doc["progress"]["printTime"];
+    data.printTimeRemaining = doc["progress"]["printTimeLeft"];
 }
 
 void OctoPrintMonitor::deserialisePrint(String payload)
@@ -116,5 +123,53 @@ void OctoPrintMonitor::deserialisePrint(String payload)
 
     data.bedTemp = doc["temperature"]["bed"]["actual"];
     data.bedTarget = doc["temperature"]["bed"]["target"];
+
+    data.printState = (const char*)doc["state"]["text"];
+    data.printerFlags = 0;
+    
+    if(doc["state"]["flags"]["cancelling"])
+    {
+        data.printerFlags |= PRINT_STATE_CANCELLING;
+    }
+    if(doc["state"]["flags"]["closedOrError"])
+    {
+        data.printerFlags |= PRINT_STATE_CLOSED_OR_ERROR;
+    }
+    if(doc["state"]["flags"]["error"])
+    {
+        data.printerFlags |= PRINT_STATE_ERROR;
+    }
+    if(doc["state"]["flags"]["finishing"])
+    {
+        data.printerFlags |= PRINT_STATE_FINISHING;
+    }
+    if(doc["state"]["flags"]["operational"])
+    {
+        data.printerFlags |= PRINT_STATE_OPERATIONAL;
+    }
+    if(doc["state"]["flags"]["paused"])
+    {
+        data.printerFlags |= PRINT_STATE_PAUSED;
+    }
+    if(doc["state"]["flags"]["pausing"])
+    {
+        data.printerFlags |= PRINT_STATE_PAUSING;
+    }
+    if(doc["state"]["flags"]["printing"])
+    {
+        data.printerFlags |= PRINT_STATE_PRINTING;
+    }
+    if(doc["state"]["flags"]["ready"])
+    {
+        data.printerFlags |= PRINT_STATE_READY;
+    }
+    if(doc["state"]["flags"]["resuming"])
+    {
+        data.printerFlags |= PRINT_STATE_RESUMING;
+    }
+    if(doc["state"]["flags"]["sdReady"])
+    {
+        data.printerFlags |= PRINT_STATE_SD_READY;
+    }
 }
 
