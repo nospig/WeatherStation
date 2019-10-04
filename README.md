@@ -46,7 +46,8 @@ Built using the following hardware from AliExpress.
 [2.8" TFT non touch version](https://www.aliexpress.com/item/33012793224.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
 [BME280 sensor](https://www.aliexpress.com/item/32849462236.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)
 
-Also works fine with a NodeMCU board.
+Development was done on a NodeMCU board.
+Any TFT with a 320x240 display that works with the TFT_eSPI library should work but has not been tested.
 
 ## Wiring
 
