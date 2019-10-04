@@ -128,6 +128,9 @@ class DisplayTFT : public DisplayBase
         boolean serialScreenServer(String filename);
         void sendParameters(String filename);
 
+        bool showingPrintInfo;
+        bool showingNoPrintInfo;
+        
         TFT_eSPI *tft;
         int brightness;
 };

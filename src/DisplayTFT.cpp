@@ -18,6 +18,9 @@ DisplayTFT::DisplayTFT()
     // Swap the colour byte order when rendering for images
     tft->setSwapBytes(true);
     setDisplayEnabled(true);
+
+    showingPrintInfo = false;
+    showingNoPrintInfo = false;
 }
  
 void DisplayTFT::setDisplayEnabled(bool enabled)
@@ -66,6 +69,9 @@ void DisplayTFT::restartMainDisplay()
 void DisplayTFT::setDisplayMode(DisplayMode mode)
 {
     DisplayBase::setDisplayMode(mode);
+
+    showingPrintInfo = false;
+    showingNoPrintInfo = false;
 
     // do display changing logic, going to assume for now in main display mode
     // caller responsible for updating all elements after making this call
@@ -508,19 +514,28 @@ void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData)
 
     if(!printData->validPrintData)
     {
-        Serial.println("No valid print data.");
+        showingPrintInfo = false;
+        if(!showingNoPrintInfo)
+        {
+            tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
+            showingNoPrintInfo = true;
+        }
         drawInvalidPrintData();
     }
     else
     {
+        showingNoPrintInfo = false;
+        if(!showingPrintInfo)
+        {
+            tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
+            showingPrintInfo = true;
+        }
         drawPrintInfo(printData);
     }
 }
 
 void DisplayTFT::drawInvalidPrintData()
 {
-    tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);// TODO? Only need to clear if changing mode or from no info to info?
-
     tft->setTextDatum(MC_DATUM);
     tft->setTextFont(2);
     tft->setTextColor(PRINT_MONITOR_TEXT_COLOUR, BACKGROUND_COLOUR); 
@@ -529,8 +544,6 @@ void DisplayTFT::drawInvalidPrintData()
 
 void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData)
 {
-    // TODO, clearing screen if changing from no info to info
-
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
     tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
