@@ -579,78 +579,93 @@ void DisplayTFT::drawJobInfo(OctoPrintMonitorData* printData, int y)
     char estimatedTimeBuffer[32];
     char buffer[128];
     char timeBuffer[32];
-
+    int infoX, elapsedPadding;
+    
     x = (tft->width() / 2) - (PRINT_PROGRESS_BAR_WIDTH / 2);
     y += 15;
     
     drawProgressBar(printData->percentComplete, x, y, PRINT_PROGRESS_BAR_WIDTH, PRINT_PROGRESS_BAR_HEIGHT, PRINT_MONITOR_PROGRESS_BAR_COLOUR, TFT_LIGHTGREY);
 
     y += PRINT_PROGRESS_BAR_HEIGHT;
-    y += 10;
+    y += 15;
     x = 20;
 
     tft->setTextFont(2);
-    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextDatum(TL_DATUM);
 
     // estimated time
-    sprintf(buffer, "Estimated time: 999:59:59");
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_HEADING_COLOUR, BACKGROUND_COLOUR); 
+    infoX = x + tft->drawString("Estimated time: ", x, y);        
+    
+    sprintf(buffer, "999:59:59");
     tft->setTextPadding(tft->textWidth(buffer));
-
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
     formatSeconds(estimatedTimeBuffer, (int)printData->estimatedPrintTime);
-    sprintf(buffer, "Estimated time: %s", estimatedTimeBuffer);
-    tft->drawString(buffer, x, y);    
+    sprintf(buffer, "%s", estimatedTimeBuffer);
+    elapsedPadding = tft->textWidth(estimatedTimeBuffer);
+    tft->drawString(buffer, infoX, y);    
     y += tft->fontHeight();
 
     // elapsed print time
-    int elapsedPadding, remainingPadding;
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_HEADING_COLOUR, BACKGROUND_COLOUR); 
+    infoX = x + tft->drawString("Print time: ", x, y);    
 
-    sprintf(buffer, "Print time: %s", estimatedTimeBuffer);
-    elapsedPadding = tft->textWidth(buffer);
-    sprintf(buffer, "Remaining time: %s", estimatedTimeBuffer);
-    remainingPadding = tft->textWidth(buffer);
-
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextPadding(elapsedPadding);
 
     if(printData->printTimeElapsed > 0.0f)
     {
         formatSeconds(timeBuffer, (int)printData->printTimeElapsed);
-        sprintf(buffer, "Print time: %s", timeBuffer);
-        tft->drawString(buffer, x, y);
+        tft->drawString(timeBuffer, infoX, y);
     }
     else
     {
-        tft->drawString("Print time: -", x, y);    
+        tft->drawString("-", infoX, y);    
     }    
     y += tft->fontHeight();
 
     // remaining
-    tft->setTextPadding(remainingPadding);
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_HEADING_COLOUR, BACKGROUND_COLOUR); 
+    infoX = x + tft->drawString("Remaining time: ", x, y);    
+
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
 
     if(printData->printTimeElapsed > 0.0f)
     {
         float remaining = printData->printTimeRemaining;
         remaining = max(0.0f, remaining);
         formatSeconds(timeBuffer, (int)remaining);
-        sprintf(buffer, "Remaining time: %s", timeBuffer);
-        tft->drawString(buffer, x, y);
+        tft->drawString(timeBuffer, infoX, y);
     }
     else
     {
-        tft->drawString("Remaining time: -", x, y);    
+        tft->drawString("-", infoX, y);    
     }
     y += tft->fontHeight();
 
     // filament length
     int padding;
     
-    sprintf(buffer, "Filament: 9999.9m");
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_HEADING_COLOUR, BACKGROUND_COLOUR); 
+    infoX = x + tft->drawString("Filament: ", x, y);    
+
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
+
+    sprintf(buffer, "9999.9m");
     padding = tft->textWidth(buffer);
     tft->setTextPadding(padding);
-    sprintf(buffer, "Filament: %.02fm", printData->filamentLength / 1000.0f);
-    tft->drawString(buffer, x, y);
 
+    sprintf(buffer, "%.02fm", printData->filamentLength / 1000.0f);
+    tft->drawString(buffer, infoX, y);
+
+    // file name
     y += tft->fontHeight();
+
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_HEADING_COLOUR, BACKGROUND_COLOUR); 
+    tft->drawString("File:", x, y);
+    y += tft->fontHeight();
+
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
 
     String file = printData->fileName;
     bool truncatedDescription = false;
@@ -668,7 +683,6 @@ void DisplayTFT::drawJobInfo(OctoPrintMonitorData* printData, int y)
 
     tft->setTextPadding(tft->width() - x - 20);
     tft->drawString(file, x, y); 
-
 }
 
 void DisplayTFT::formatSeconds(char* buffer, int seconds)
@@ -766,20 +780,20 @@ void DisplayTFT::drawTempArc(String title, float value, float target, float max,
 
     tft->setTextFont(4);
     tft->setTextColor(PRINT_MONITOR_ACTUAL_TEMP_COLOUR, BACKGROUND_COLOUR); 
-    sprintf(buffer, "%.0f", max);
+    sprintf(buffer, "%.0fC", max);
     padding = tft->textWidth(buffer);
     tft->setTextPadding(padding);
     tft->setTextDatum(TC_DATUM);
 
-    sprintf(buffer, "%.0f", value);
+    sprintf(buffer, "%.0fC", value);
     tft->drawString(buffer, x, y + 20);
 
     tft->setTextFont(2);
     tft->setTextColor(PRINT_MONITOR_TARGET_TEMP_COLOUR, BACKGROUND_COLOUR); 
-    sprintf(buffer, "%.0f", max);
+    sprintf(buffer, "%.0fC", max);
     padding = tft->textWidth(buffer);
     tft->setTextDatum(BC_DATUM);
-    sprintf(buffer, "%.0f", target);
+    sprintf(buffer, "%.0fC", target);
     tft->drawString(buffer, x, y);
 
     float temp = min(value, max);
