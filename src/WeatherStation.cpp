@@ -126,8 +126,12 @@ void mqttPublishCallback()
 
 void updatePrinterMonitorCallback()
 {
-    octoPrintMonitor.update();
-    display->drawOctoPrintStatus(octoPrintMonitor.getCurrentData(), settingsManager.getOctoPrintDisplayName());
+    if(settingsManager.getOctoPrintEnabled())
+    {
+        octoPrintMonitor.update();
+    }
+    
+    display->drawOctoPrintStatus(octoPrintMonitor.getCurrentData(), settingsManager.getOctoPrintDisplayName(), settingsManager.getOctoPrintEnabled());
 }
 
 // wifi
@@ -162,10 +166,7 @@ void connectWifiCallback()
     forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
 
     delay(WIFI_CONNECTING_DELAY);
-    //display->setDisplayMode(settingsManager.getDisplayMode());
-// testing
-display->setDisplayMode(DisplayMode_4);
-
+    display->setDisplayMode(settingsManager.getDisplayMode());
     display->setDisplayBrightness(settingsManager.getDisplayBrightness());
     display->startMainDisplay();
 
@@ -197,12 +198,7 @@ display->setDisplayMode(DisplayMode_4);
     updateWiFiStrength.enable();
     checkSettingsChanged.enable();
     checkScreenGrabRequested.enable();
-
-    // try different method with print monitor
-    if(settingsManager.getOctoPrintEnabled())
-    {
-        octoPrintUpdate.enable();
-    }
+    octoPrintUpdate.enable();
 }
 
 void updateWifiStrengthCallback()
@@ -254,16 +250,7 @@ void checkSettingsChangedCallback()
         updateWiFiStrength.forceNextIteration();
         updateThingSpeak.forceNextIteration();
         mqttPublish.forceNextIteration();
-
-        if(settingsManager.getOctoPrintEnabled())
-        {
-            octoPrintUpdate.enableIfNot();
-            octoPrintUpdate.forceNextIteration();
-        }
-        else
-        {
-            octoPrintUpdate.disable();
-        }        
+        octoPrintUpdate.forceNextIteration();
     }
 }
 

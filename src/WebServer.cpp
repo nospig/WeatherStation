@@ -326,6 +326,13 @@ String WebServer::tokenProcessor(const String& token)
             return "Checked";
         }
     }
+    if(token == "DISPLAY4CHECKED")
+    {
+        if(settingsManager->getDisplayMode() == DisplayMode_4)
+        {
+            return "Checked";
+        }
+    }
      if(token == "DISPLAYMETRIC")
     {
         if(settingsManager->getDisplayMetric())
@@ -573,6 +580,10 @@ void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
         if(p->value() == "display3")
         {
             settingsManager->setDisplayMode(DisplayMode_3);
+        }
+        if(p->value() == "display4")
+        {
+            settingsManager->setDisplayMode(DisplayMode_4);
         }
 
         //Serial.println("Got display mode of: " + p->value());

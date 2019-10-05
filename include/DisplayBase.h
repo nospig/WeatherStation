@@ -27,8 +27,8 @@ class DisplayBase
         virtual void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather) {};
         virtual void drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount) {};
         virtual void drawWiFiStrength(long dBm) {};
-        virtual void drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName) {};
-
+        virtual void drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName, bool enabled) {};
+        
         virtual void serveScreenShot() {};
         virtual void setDisplayBrightness(int percent) {};        
         virtual void setDisplayMode(DisplayMode mode);

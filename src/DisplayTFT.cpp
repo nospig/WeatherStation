@@ -21,6 +21,7 @@ DisplayTFT::DisplayTFT()
 
     showingPrintInfo = false;
     showingNoPrintInfo = false;
+    showingNotEnabled = false;
 }
  
 void DisplayTFT::setDisplayEnabled(bool enabled)
@@ -512,32 +513,47 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
  * 
 ****************************************************************************************/
 
-void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName)
+void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName, bool enabled)
 {
     if(getDisplayMode() != DisplayMode_4)
     {
         return;
     }
 
-    if(!printData->validPrintData)
+    if(!enabled)
     {
         showingPrintInfo = false;
-        if(!showingNoPrintInfo)
+        showingNoPrintInfo = false;
+
+        if(!showingNotEnabled)
         {
             tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
-            showingNoPrintInfo = true;
         }
-        drawInvalidPrintData(printerName);
+        drawOctoPrintNotEnabled();
+        showingNotEnabled = true;
     }
     else
     {
-        showingNoPrintInfo = false;
-        if(!showingPrintInfo)
+        if(!printData->validPrintData)
         {
-            tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
-            showingPrintInfo = true;
+            showingPrintInfo = false;
+            if(!showingNoPrintInfo)
+            {
+                tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
+                showingNoPrintInfo = true;
+            }
+            drawInvalidPrintData(printerName);
         }
-        drawPrintInfo(printData, printerName);
+        else
+        {
+            showingNoPrintInfo = false;
+            if(!showingPrintInfo)
+            {
+                tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
+                showingPrintInfo = true;
+            }
+            drawPrintInfo(printData, printerName);
+        }
     }
 }
 
@@ -552,6 +568,18 @@ void DisplayTFT::drawInvalidPrintData(String printerName)
     tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
 
     tft->drawString(printerName, tft->width()/2, TOOL_TEMP_DISPLAY_Y - 88);  
+}
+
+void DisplayTFT::drawOctoPrintNotEnabled()
+{
+    if(getDisplayMode() == DisplayMode_4)
+    {
+        tft->setTextDatum(MC_DATUM);
+        tft->setTextFont(2);
+        tft->setTextColor(PRINT_MONITOR_TEXT_COLOUR, BACKGROUND_COLOUR); 
+        tft->drawString("Enable OctoPrint monitor", tft->width()/2, tft->height()/4);   
+        tft->drawString("in settings", tft->width()/2, (tft->height()/4) + tft->fontHeight());  
+    }
 }
 
 void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData, String printerName)

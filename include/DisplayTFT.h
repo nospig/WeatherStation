@@ -106,7 +106,7 @@ class DisplayTFT : public DisplayBase
         void drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather);
         void drawForecastWeather(bool validData, OpenWeatherMapDailyData* forecastWeather, int forecastCount);
         void drawWiFiStrength(long dBm);
-        void drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName);
+        void drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName, bool enabled);    
 
         void setDisplayMode(DisplayMode mode);
         void setDisplayEnabled(bool enabled);
@@ -127,6 +127,7 @@ class DisplayTFT : public DisplayBase
         void drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y);
 
         void drawInvalidPrintData(String printerName);
+        void drawOctoPrintNotEnabled();
         void drawPrintInfo(OctoPrintMonitorData* printData, String printerName);
         void drawTempArc(String title, float value, float target, float max, int x, int y);
         String getPrintInfoTitle(String printerName, uint16_t flags);
@@ -144,6 +145,7 @@ class DisplayTFT : public DisplayBase
 
         bool showingPrintInfo;
         bool showingNoPrintInfo;
+        bool showingNotEnabled;
 
         TFT_eSPI *tft;
         int brightness;
