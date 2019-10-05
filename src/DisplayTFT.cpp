@@ -454,7 +454,14 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
 
-        sprintf(buffer, "Pressure: %d hpa", currentWeather->pressure);
+        if(getDisplayMetric())
+        {
+            sprintf(buffer, "Pressure: %d hpa", currentWeather->pressure);
+        }
+        else
+        {     
+            sprintf(buffer, "Pressure: %d mb", currentWeather->pressure);
+        }
         tft->drawString(buffer, x, y);    
         y += tft->fontHeight();
 

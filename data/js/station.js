@@ -19,7 +19,15 @@ function updateSensorReadings(messageData)
         $("#sensorTemp").html(farenheit.toFixed(1) + "&#8457");
     }
     $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
-    $("#sensorPressure").html(readings.pressure.toFixed(1) + " hPA");
+
+    if(readings.metric)
+    {
+        $("#sensorPressure").html(readings.pressure.toFixed(1) + " hPA");
+    }
+    else
+    {
+        $("#sensorPressure").html(readings.pressure.toFixed(1) + " mb");
+    }
 }
 
 function updateInternetCurrent(messageData)
