@@ -65,6 +65,7 @@ void SettingsManager::resetSettings()
     data.octoPrintPassword = "";
     data.octoPrintAPIKey = "";
     data.octoPrintMonitorEnabled = false;
+    data.octoPrintDisplayName = "";
 
     data.utcOffsetSeconds = 0;
 
@@ -115,6 +116,7 @@ void SettingsManager::loadSettings()
     data.octoPrintUsername = (const char*)doc["OctoPrintUsername"];
     data.octoPrintPassword = (const char*)doc["OctoPrintPassword"];
     data.octoPrintAPIKey = (const char*)doc["OctoPrintAPIKey"];
+    data.octoPrintDisplayName = (const char*)doc["OctoPrintDisplayName"];
     data.octoPrintMonitorEnabled = doc["OctoPrintEnabled"];
 
     data.utcOffsetSeconds = doc["utcOffset"];
@@ -161,6 +163,7 @@ void SettingsManager::saveSettings()
     doc["OctoPrintUsername"] = data.octoPrintUsername;
     doc["OctoPrintPassword"] = data.octoPrintPassword;
     doc["OctoPrintAPIKey"] = data.octoPrintAPIKey;
+    doc["OctoPrintDisplayName"] = data.octoPrintDisplayName;
     doc["OctoPrintEnabled"] = data.octoPrintMonitorEnabled;
 
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
@@ -583,6 +586,20 @@ void SettingsManager::setOctoPrintAPIKey(String apiKey)
     if(data.octoPrintAPIKey != apiKey)
     {
         data.octoPrintAPIKey = apiKey;
+        updateSettings();
+    }
+}
+
+String SettingsManager::getOctoPrintDisplayName()
+{
+    return data.octoPrintDisplayName;
+}
+
+void SettingsManager::setOctoPrintDisplayName(String displayName)
+{
+    if(data.octoPrintDisplayName != displayName)
+    {
+        data.octoPrintDisplayName = displayName;
         updateSettings();
     }
 }

@@ -127,7 +127,7 @@ void mqttPublishCallback()
 void updatePrinterMonitorCallback()
 {
     octoPrintMonitor.update();
-    display->drawOctoPrintStatus(octoPrintMonitor.getCurrentData());
+    display->drawOctoPrintStatus(octoPrintMonitor.getCurrentData(), settingsManager.getOctoPrintDisplayName());
 }
 
 // wifi

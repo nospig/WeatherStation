@@ -505,7 +505,7 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
  * 
 ****************************************************************************************/
 
-void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData)
+void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName)
 {
     if(getDisplayMode() != DisplayMode_4)
     {
@@ -530,7 +530,7 @@ void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData)
             tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
             showingPrintInfo = true;
         }
-        drawPrintInfo(printData);
+        drawPrintInfo(printData, printerName);
     }
 }
 
@@ -542,14 +542,19 @@ void DisplayTFT::drawInvalidPrintData()
     tft->drawString("No printer data available", tft->width()/2, tft->height()/4);    
 }
 
-void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData)
+void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData, String printerName)
 {
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
     tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextPadding(tft->width());  // TODO
 
-    String printer = "Ender 3"; // TODO, don't see name in API    
+    String printer = printerName;
+    if(printer == "")
+    {
+        printer = "Printer";
+    }
+     
     String title = getPrintInfoTitle(printer, printData->printerFlags);
     tft->drawString(title, tft->width()/2, TOOL_TEMP_DISPLAY_Y - 88); 
 

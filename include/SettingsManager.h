@@ -42,6 +42,7 @@ typedef struct SettingsData
     String octoPrintUsername;
     String octoPrintPassword;
     String octoPrintAPIKey;
+    String octoPrintDisplayName;
 
     bool thingSpeakEnabled;
     bool mqttEnabled;
@@ -144,6 +145,9 @@ class SettingsManager
 
         String getOctoPrintAPIKey();
         void setOctoPrintAPIKey(String apiKey);
+
+        String getOctoPrintDisplayName();
+        void setOctoPrintDisplayName(String displayName);
 
         bool getOctoPrintEnabled();
         void setOctoPrintEnabled(bool enabled);

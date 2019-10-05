@@ -442,6 +442,10 @@ String WebServer::tokenProcessor(const String& token)
     {
         return String(settingsManager->getOctoPrintAPIKey());
     }
+    if(token == "PRINTMONITORDISPLAYNAME")
+    {
+        return String(settingsManager->getOctoPrintDisplayName());
+    }    
 
     return String();
 }
@@ -660,6 +664,11 @@ void WebServer::handleUpdatePrintMonitorSettings(AsyncWebServerRequest* request)
         AsyncWebParameter* p = request->getParam("octoPrintAPIKey");
         settingsManager->setOctoPrintAPIKey(p->value());
     }
+    if(request->hasParam("octoPrintDisplayName"))
+    {
+        AsyncWebParameter* p = request->getParam("octoPrintDisplayName");
+        settingsManager->setOctoPrintDisplayName(p->value());
+    }    
 }
 
 void WebServer::handleForgetWiFi(AsyncWebServerRequest* request)
