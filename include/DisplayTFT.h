@@ -25,6 +25,7 @@
 #define PRINT_MONITOR_PROGRESS_BAR_COLOUR           TFT_GREEN
 #define PRINT_MONITOR_PROGRESS_BAR_OUTLINE_COLOUR   TFT_WHITE
 #define PRINT_MONITOR_PROGRESS_COLOUR               TFT_YELLOW
+#define PRINT_MONITOR_JOB_INFO_COLOUR               TFT_YELLOW
 
 // positions for modes
 
@@ -45,6 +46,7 @@
 #define BED_TEMP_DISPLAY_Y              TOOL_TEMP_DISPLAY_Y
 #define PRINT_INFO_SECTION_DIVIDER_Y    140
 #define PRINT_PROGRESS_BAR_WIDTH        160
+#define PRINT_PROGRESS_BAR_HEIGHT       10
 
 #define WEATHER_ICON_WIDTH  48
 #define WEATHER_ICON_HEIGHT 48
@@ -127,6 +129,7 @@ class DisplayTFT : public DisplayBase
         String getPrintInfoTitle(String printerName, uint16_t flags);
         void drawJobInfo(OctoPrintMonitorData* printData, int y);
         void drawProgressBar(float percent, int x, int y, int width, int height, uint32_t barColour, uint32_t backgroundColour);
+        void formatSeconds(char* buffer, int seconds);
 
         int fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour);
         char* getTempPostfix();

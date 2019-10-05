@@ -565,18 +565,118 @@ void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData)
     else
     {
         tft->fillRect(0, PRINT_INFO_SECTION_DIVIDER_Y + 1, tft->width(), TIME_Y - PRINT_INFO_SECTION_DIVIDER_Y - 1, BACKGROUND_COLOUR);
-    }
-    
+    }   
 }
 
 void DisplayTFT::drawJobInfo(OctoPrintMonitorData* printData, int y)
 {
     int x;
+    char estimatedTimeBuffer[32];
+    char buffer[128];
+    char timeBuffer[32];
 
     x = (tft->width() / 2) - (PRINT_PROGRESS_BAR_WIDTH / 2);
     y += 15;
     
-    drawProgressBar(printData->percentComplete, x, y, PRINT_PROGRESS_BAR_WIDTH, 10, PRINT_MONITOR_PROGRESS_BAR_COLOUR, TFT_LIGHTGREY);
+    drawProgressBar(printData->percentComplete, x, y, PRINT_PROGRESS_BAR_WIDTH, PRINT_PROGRESS_BAR_HEIGHT, PRINT_MONITOR_PROGRESS_BAR_COLOUR, TFT_LIGHTGREY);
+
+    y += PRINT_PROGRESS_BAR_HEIGHT;
+    y += 10;
+    x = 20;
+
+    tft->setTextFont(2);
+    tft->setTextColor(PRINT_MONITOR_JOB_INFO_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextDatum(TL_DATUM);
+
+    // estimated time
+    sprintf(buffer, "Estimated time: 999:59:59");
+    tft->setTextPadding(tft->textWidth(buffer));
+
+    formatSeconds(estimatedTimeBuffer, (int)printData->estimatedPrintTime);
+    sprintf(buffer, "Estimated time: %s", estimatedTimeBuffer);
+    tft->drawString(buffer, x, y);    
+    y += tft->fontHeight();
+
+    // elapsed print time
+    int elapsedPadding, remainingPadding;
+
+    sprintf(buffer, "Print time: %s", estimatedTimeBuffer);
+    elapsedPadding = tft->textWidth(buffer);
+    sprintf(buffer, "Remaining time: %s", estimatedTimeBuffer);
+    remainingPadding = tft->textWidth(buffer);
+
+    tft->setTextPadding(elapsedPadding);
+
+    if(printData->printTimeElapsed > 0.0f)
+    {
+        formatSeconds(timeBuffer, (int)printData->printTimeElapsed);
+        sprintf(buffer, "Print time: %s", timeBuffer);
+        tft->drawString(buffer, x, y);
+    }
+    else
+    {
+        tft->drawString("Print time: -", x, y);    
+    }    
+    y += tft->fontHeight();
+
+    // remaining
+    tft->setTextPadding(remainingPadding);
+
+    if(printData->printTimeElapsed > 0.0f)
+    {
+        float remaining = printData->printTimeRemaining;
+        remaining = max(0.0f, remaining);
+        formatSeconds(timeBuffer, (int)remaining);
+        sprintf(buffer, "Remaining time: %s", timeBuffer);
+        tft->drawString(buffer, x, y);
+    }
+    else
+    {
+        tft->drawString("Remaining time: -", x, y);    
+    }
+    y += tft->fontHeight();
+
+    // filament length
+    int padding;
+    
+    sprintf(buffer, "Filament: 9999.9m");
+    padding = tft->textWidth(buffer);
+    tft->setTextPadding(padding);
+    sprintf(buffer, "Filament: %.02fm", printData->filamentLength / 1000.0f);
+    tft->drawString(buffer, x, y);
+
+    y += tft->fontHeight();
+
+    String file = printData->fileName;
+    bool truncatedDescription = false;
+
+    while(tft->textWidth(file) > (tft->width() - x - 20))
+    {
+        truncatedDescription = true;
+        file = file.substring(0, file.length()-1);
+    }
+
+    if(truncatedDescription)
+    {
+        file = file + "...";
+    }
+
+    tft->setTextPadding(tft->width() - x - 20);
+    tft->drawString(file, x, y); 
+
+}
+
+void DisplayTFT::formatSeconds(char* buffer, int seconds)
+{
+    int hours, minutes;
+
+    hours = seconds / 3600;
+    seconds = seconds % 3600;
+    minutes = seconds / 60;
+    seconds = seconds % 60;
+    seconds = seconds;
+
+    sprintf(buffer, "%02d:%02d:%02d", hours, minutes, seconds);    
 }
 
 void DisplayTFT::drawProgressBar(float percent, int x, int y, int width, int height, uint32_t barColour, uint32_t backgroundColour)

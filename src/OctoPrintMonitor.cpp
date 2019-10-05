@@ -109,7 +109,7 @@ void OctoPrintMonitor::deserialiseJob(String payload)
     {
         data.jobLoaded = true;
         data.estimatedPrintTime = doc["job"]["estimatedPrintTime"];
-        data.filamentLength = doc["job"]["filament"];
+        data.filamentLength = doc["job"]["filament"]["tool0"]["length"];
         data.fileName = (const char*)doc["job"]["file"]["display"];
         
         data.percentComplete = doc["progress"]["completion"];
