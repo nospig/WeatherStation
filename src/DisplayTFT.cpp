@@ -591,7 +591,8 @@ void DisplayTFT::drawJobInfo(OctoPrintMonitorData* printData, int y)
     x = (tft->width() / 2) - (PRINT_PROGRESS_BAR_WIDTH / 2);
     y += 15;
     
-    drawProgressBar(printData->percentComplete, x, y, PRINT_PROGRESS_BAR_WIDTH, PRINT_PROGRESS_BAR_HEIGHT, PRINT_MONITOR_PROGRESS_BAR_COLOUR, TFT_LIGHTGREY);
+    drawProgressBar(printData->percentComplete, x, y, PRINT_PROGRESS_BAR_WIDTH, PRINT_PROGRESS_BAR_HEIGHT, 
+        PRINT_MONITOR_PROGRESS_BAR_COLOUR, PRINT_MONITOR_PROGRESS_BAR_BACKGROUND_COLOUR);
 
     y += PRINT_PROGRESS_BAR_HEIGHT;
     y += 15;
@@ -809,7 +810,7 @@ void DisplayTFT::drawTempArc(String title, float value, float target, float max,
 
     segments = (max - temp) / max;
     segments = (segments * TEMP_ARC_SPAN) / TEMP_ARC_DEGREE_PER_SEG;
-    fillArc(x, y, endAngle, (int)segments, 40, 40, 8, TFT_LIGHTGREY);
+    fillArc(x, y, endAngle, (int)segments, 40, 40, 8, PRINT_MONITOR_ARC_BACKGROUND_COLOUR);
 }
 
 /****************************************************************************************
