@@ -29,6 +29,7 @@ typedef struct OctoPrintMonitorData
     float percentComplete;
     unsigned int printTimeElapsed;
     unsigned int printTimeRemaining;
+    bool jobLoaded;
 
     // printer
     float tool0Temp;

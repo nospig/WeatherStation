@@ -548,58 +548,102 @@ void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData)
     tft->setTextDatum(TC_DATUM);
     tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextPadding(tft->width());  // TODO
-    //Serial.println(printData->printerFlags);
 
-    String printer = "Ender 3"; // TODO, don't see name in API
-    String title;        
-    uint16_t flags = printData->printerFlags;
-    
-    Serial.println(printData->printerFlags);
-
-    if((flags & PRINT_STATE_CLOSED_OR_ERROR) || (flags & PRINT_STATE_ERROR))
-    {
-        title = printer + " - Error";
-    }
-    else if(flags & PRINT_STATE_CANCELLING)
-    {
-        title = printer + " - Cancelling";
-    }
-    else if(flags & PRINT_STATE_FINISHING)
-    {
-        title = printer + " - Finishing";
-    }
-    else if(flags & PRINT_STATE_PAUSING)
-    {
-        title = printer + " - Pausing";
-    }
-    else if(flags & PRINT_STATE_PAUSED)
-    {
-        title = printer + " - Paused";
-    }    
-    else if(flags & PRINT_STATE_RESUMING)
-    {
-        title = printer + " - Resuming";
-    }
-    else if(flags & PRINT_STATE_PRINTING)
-    {
-        title = printer + " - Printing";
-    }
-    else if(flags & PRINT_STATE_READY)
-    {
-        title = printer + " - Ready";
-    }
-    else
-    {
-        title = printer;
-    }
-    
+    String printer = "Ender 3"; // TODO, don't see name in API    
+    String title = getPrintInfoTitle(printer, printData->printerFlags);
     tft->drawString(title, tft->width()/2, TOOL_TEMP_DISPLAY_Y - 88); 
 
     drawTempArc("Tool", printData->tool0Temp, printData->tool0Target, TOOL_TEMP_MAX, TOOL_TEMP_DISPLAY_X, TOOL_TEMP_DISPLAY_Y);
     drawTempArc("Bed", printData->bedTemp, printData->bedTarget, BED_TEMP_MAX, BED_TEMP_DISPLAY_X, BED_TEMP_DISPLAY_Y);
 
-    //Serial.println(printData->printState);
-    //Serial.println(printData->fileName);
+    tft->drawLine(0, PRINT_INFO_SECTION_DIVIDER_Y, tft->width(), PRINT_INFO_SECTION_DIVIDER_Y, SECTION_HEADER_LINE_COLOUR);
+
+    if(printData->jobLoaded)
+    {
+        drawJobInfo(printData, PRINT_INFO_SECTION_DIVIDER_Y);
+    }
+    else
+    {
+        tft->fillRect(0, PRINT_INFO_SECTION_DIVIDER_Y + 1, tft->width(), TIME_Y - PRINT_INFO_SECTION_DIVIDER_Y - 1, BACKGROUND_COLOUR);
+    }
+    
+}
+
+void DisplayTFT::drawJobInfo(OctoPrintMonitorData* printData, int y)
+{
+    int x;
+
+    x = (tft->width() / 2) - (PRINT_PROGRESS_BAR_WIDTH / 2);
+    y += 15;
+    
+    drawProgressBar(printData->percentComplete, x, y, PRINT_PROGRESS_BAR_WIDTH, 10, PRINT_MONITOR_PROGRESS_BAR_COLOUR, TFT_LIGHTGREY);
+}
+
+void DisplayTFT::drawProgressBar(float percent, int x, int y, int width, int height, uint32_t barColour, uint32_t backgroundColour)
+{
+    int completedWidth;
+    char buffer[16];
+    int barX;
+
+    percent = min(percent, 100.0f);
+    percent = max(0.0f, percent);
+    barX = x + 10;  // space for text
+
+    completedWidth = (PRINT_PROGRESS_BAR_WIDTH * percent) / 100.0f;
+    tft->fillRect(barX, y, completedWidth, 10, barColour);
+    tft->fillRect(barX + completedWidth, y, PRINT_PROGRESS_BAR_WIDTH - completedWidth, height, backgroundColour);
+    tft->drawRect(barX -1, y -1, PRINT_PROGRESS_BAR_WIDTH + 2, height + 2, PRINT_MONITOR_PROGRESS_BAR_OUTLINE_COLOUR);
+
+    tft->setTextFont(2);
+    tft->setTextColor(PRINT_MONITOR_PROGRESS_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextDatum(CR_DATUM);
+    tft->setTextPadding(tft->textWidth("100%"));
+    sprintf(buffer, "%0.f%%", percent);
+    tft->drawString(buffer, x, y + (height / 2));
+}
+
+String DisplayTFT::getPrintInfoTitle(String printerName, uint16_t flags)
+{
+    String title;
+
+    if((flags & PRINT_STATE_CLOSED_OR_ERROR) || (flags & PRINT_STATE_ERROR))
+    {
+        title = printerName + " - Error";
+    }
+    else if(flags & PRINT_STATE_CANCELLING)
+    {
+        title = printerName + " - Cancelling";
+    }
+    else if(flags & PRINT_STATE_FINISHING)
+    {
+        title = printerName + " - Finishing";
+    }
+    else if(flags & PRINT_STATE_PAUSING)
+    {
+        title = printerName + " - Pausing";
+    }
+    else if(flags & PRINT_STATE_PAUSED)
+    {
+        title = printerName + " - Paused";
+    }    
+    else if(flags & PRINT_STATE_RESUMING)
+    {
+        title = printerName + " - Resuming";
+    }
+    else if(flags & PRINT_STATE_PRINTING)
+    {
+        title = printerName + " - Printing";
+    }
+    else if(flags & PRINT_STATE_READY)
+    {
+        title = printerName + " - Ready";
+    }
+    else
+    {
+        title = printerName;
+    }
+
+    return title;
 }
 
 void DisplayTFT::drawTempArc(String title, float value, float target, float max, int x, int y)

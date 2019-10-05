@@ -14,14 +14,17 @@
 #define CURRENT_WEATHER_CONDITIONS_COLOUR   TFT_YELLOW
 #define FORECAST_DAY_COLOUR                 TFT_YELLOW
 
-#define PRINT_MONITOR_TEXT_COLOUR           TFT_YELLOW
-#define PRINT_MONITOR_TOOL_ARC_COLOUR       TFT_RED
-#define PRINT_MONITOR_BED_ARC_COLOUR        TFT_RED
-#define PRINT_MONITOR_ACTUAL_TEMP_COLOUR    TFT_YELLOW
-#define PRINT_MONITOR_TARGET_TEMP_COLOUR    TFT_YELLOW
-#define PRINT_MONITOR_TEMP_HEADING_COLOUR   0x75DF
-#define PRINT_MONITOR_ARC_TARGET_COLOUR     TFT_DARKGREY
-#define PRINT_MONITOR_PRINTER_NAME_COLOUR   TFT_YELLOW
+#define PRINT_MONITOR_TEXT_COLOUR                   TFT_YELLOW
+#define PRINT_MONITOR_TOOL_ARC_COLOUR               TFT_RED
+#define PRINT_MONITOR_BED_ARC_COLOUR                TFT_RED
+#define PRINT_MONITOR_ACTUAL_TEMP_COLOUR            TFT_YELLOW
+#define PRINT_MONITOR_TARGET_TEMP_COLOUR            TFT_YELLOW
+#define PRINT_MONITOR_TEMP_HEADING_COLOUR           0x75DF
+#define PRINT_MONITOR_ARC_TARGET_COLOUR             TFT_DARKGREY
+#define PRINT_MONITOR_PRINTER_NAME_COLOUR           TFT_YELLOW
+#define PRINT_MONITOR_PROGRESS_BAR_COLOUR           TFT_GREEN
+#define PRINT_MONITOR_PROGRESS_BAR_OUTLINE_COLOUR   TFT_WHITE
+#define PRINT_MONITOR_PROGRESS_COLOUR               TFT_YELLOW
 
 // positions for modes
 
@@ -36,10 +39,12 @@
 
 #define TIME_Y              300
 
-#define TOOL_TEMP_DISPLAY_X     60
-#define TOOL_TEMP_DISPLAY_Y     90
-#define BED_TEMP_DISPLAY_X      240 - TOOL_TEMP_DISPLAY_X
-#define BED_TEMP_DISPLAY_Y      TOOL_TEMP_DISPLAY_Y
+#define TOOL_TEMP_DISPLAY_X             60
+#define TOOL_TEMP_DISPLAY_Y             90
+#define BED_TEMP_DISPLAY_X              240 - TOOL_TEMP_DISPLAY_X
+#define BED_TEMP_DISPLAY_Y              TOOL_TEMP_DISPLAY_Y
+#define PRINT_INFO_SECTION_DIVIDER_Y    140
+#define PRINT_PROGRESS_BAR_WIDTH        160
 
 #define WEATHER_ICON_WIDTH  48
 #define WEATHER_ICON_HEIGHT 48
@@ -119,6 +124,9 @@ class DisplayTFT : public DisplayBase
         void drawInvalidPrintData();
         void drawPrintInfo(OctoPrintMonitorData* printData);
         void drawTempArc(String title, float value, float target, float max, int x, int y);
+        String getPrintInfoTitle(String printerName, uint16_t flags);
+        void drawJobInfo(OctoPrintMonitorData* printData, int y);
+        void drawProgressBar(float percent, int x, int y, int width, int height, uint32_t barColour, uint32_t backgroundColour);
 
         int fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour);
         char* getTempPostfix();
@@ -130,7 +138,7 @@ class DisplayTFT : public DisplayBase
 
         bool showingPrintInfo;
         bool showingNoPrintInfo;
-        
+
         TFT_eSPI *tft;
         int brightness;
 };

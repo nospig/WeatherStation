@@ -104,13 +104,22 @@ void OctoPrintMonitor::deserialiseJob(String payload)
     deserializeJson(doc, payload);
 
     data.jobState = (const char*)doc["state"];
-    data.estimatedPrintTime = doc["job"]["estimatedPrintTime"];
-    data.filamentLength = doc["job"]["filament"];
-    data.fileName = (const char*)doc["job"]["file"]["display"];
-    
-    data.percentComplete = doc["progress"]["completion"];
-    data.printTimeElapsed = doc["progress"]["printTime"];
-    data.printTimeRemaining = doc["progress"]["printTimeLeft"];
+
+    if(doc["job"]["file"]["display"] != nullptr)
+    {
+        data.jobLoaded = true;
+        data.estimatedPrintTime = doc["job"]["estimatedPrintTime"];
+        data.filamentLength = doc["job"]["filament"];
+        data.fileName = (const char*)doc["job"]["file"]["display"];
+        
+        data.percentComplete = doc["progress"]["completion"];
+        data.printTimeElapsed = doc["progress"]["printTime"];
+        data.printTimeRemaining = doc["progress"]["printTimeLeft"];
+    }
+    else
+    {
+        data.jobLoaded = false;
+    }
 }
 
 void OctoPrintMonitor::deserialisePrint(String payload)
