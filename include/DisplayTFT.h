@@ -126,7 +126,7 @@ class DisplayTFT : public DisplayBase
         void drawVerticalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWeather, int y);
 
-        void drawInvalidPrintData();
+        void drawInvalidPrintData(String printerName);
         void drawPrintInfo(OctoPrintMonitorData* printData, String printerName);
         void drawTempArc(String title, float value, float target, float max, int x, int y);
         String getPrintInfoTitle(String printerName, uint16_t flags);

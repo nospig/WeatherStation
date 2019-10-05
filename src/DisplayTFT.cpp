@@ -527,7 +527,7 @@ void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData, String pri
             tft->fillRect(0, 0, tft->width(), TIME_Y-1, BACKGROUND_COLOUR);
             showingNoPrintInfo = true;
         }
-        drawInvalidPrintData();
+        drawInvalidPrintData(printerName);
     }
     else
     {
@@ -541,12 +541,17 @@ void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData, String pri
     }
 }
 
-void DisplayTFT::drawInvalidPrintData()
+void DisplayTFT::drawInvalidPrintData(String printerName)
 {
     tft->setTextDatum(MC_DATUM);
     tft->setTextFont(2);
     tft->setTextColor(PRINT_MONITOR_TEXT_COLOUR, BACKGROUND_COLOUR); 
-    tft->drawString("No printer data available", tft->width()/2, tft->height()/4);    
+    tft->drawString("No printer data available", tft->width()/2, tft->height()/4);   
+
+    tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
+
+    tft->drawString(printerName, tft->width()/2, TOOL_TEMP_DISPLAY_Y - 88);  
 }
 
 void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData, String printerName)
