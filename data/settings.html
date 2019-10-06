@@ -78,9 +78,8 @@
                         <td>
                             <form action="/updateClockSettings.html">
                                 <div class="form-group">
-                                    <label for="utcOffset">Offset from UTC in seconds</label>
-                                    <input type="number" class="form-control" id="utcOffset" value="%UTCOFFSET%"
-                                        placeholder="UTC offset" name="utcOffset">
+                                    <label for="utcOffset">Offset from UTC in hours</label>
+                                    <input type="number" class="form-control" id="utcOffset" value="%UTCOFFSET%" placeholder="UTC offset" name="utcOffset" maxlength="12">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </form>

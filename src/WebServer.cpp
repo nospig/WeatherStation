@@ -416,7 +416,7 @@ String WebServer::tokenProcessor(const String& token)
     }
     if(token == "UTCOFFSET")
     {
-        return String(settingsManager->getUtcOffset());
+        return String(settingsManager->getUtcOffset() / 3600.0f);
     }
     if(token == "BRIGHTNESS")
     {
@@ -635,7 +635,7 @@ void WebServer::handleUpdateClockSettings(AsyncWebServerRequest* request)
     if(request->hasParam("utcOffset"))
     {
         AsyncWebParameter* p = request->getParam("utcOffset");
-        settingsManager->setUtcOffset(p->value().toInt());
+        settingsManager->setUtcOffset(p->value().toFloat() * 3600.0f);
     }
 }
 
