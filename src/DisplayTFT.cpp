@@ -722,7 +722,7 @@ void DisplayTFT::drawJobInfo(OctoPrintMonitorData* printData, int y)
         file = file + "...";
     }
 
-    tft->setTextPadding(tft->width() - x - 20);
+    tft->setTextPadding(tft->width() - x);
     tft->drawString(file, x, y); 
 }
 
