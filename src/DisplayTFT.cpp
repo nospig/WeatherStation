@@ -349,9 +349,8 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, 
 
     tft->setTextFont(4);
     tft->setTextColor(SENSOR_READINGS_COLOUR, BACKGROUND_COLOUR); 
-    tft->setTextPadding(10);
 
-    // sensor readings always in metric
+    // sensor readings always sent in metric
     if(!getDisplayMetric())
     {
         temp = (temp * 1.8f) + 32;
@@ -361,9 +360,11 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, 
     int center = tft->width()/2;
 
     tft->setTextDatum(TR_DATUM);
+    tft->setTextPadding(tft->textWidth("150F"));
     tft->drawString(tempString + getTempPostfix(), center - 40 , y+26);
 
     tft->setTextDatum(TL_DATUM);
+    tft->setTextPadding(tft->textWidth("99%"));
     String humidityString = String(humidity, 0);
     tft->drawString(humidityString + "%", center + 40, y+26);
 }
@@ -395,8 +396,7 @@ void DisplayTFT::drawStaticElements()
 void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
 {
     tft->setTextFont(2);
-    tft->setTextPadding(10);
-    tft->setTextColor(TIME_TEXT_COLOUR, BACKGROUND_COLOUR); // Set the font colour AND the background colour
+    tft->setTextColor(TIME_TEXT_COLOUR, BACKGROUND_COLOUR); 
    
     time_t time = epochTime;
     struct tm* timeInfo;
@@ -406,13 +406,16 @@ void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
     y += MODE_1_TIME_HEIGHT;
 
     tft->setTextDatum(BR_DATUM);
+    tft->setTextPadding(tft->textWidth("23:59"));
     sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
     tft->drawString(buffer, tft->width()/2-30, y); 
 
     tft->setTextDatum(BC_DATUM);
+    tft->setTextPadding(tft->textWidth(daysOfTheWeek[3]));  // Wed longest?
     tft->drawString(daysOfTheWeek[timeInfo->tm_wday], tft->width()/2, y); 
 
     tft->setTextDatum(BL_DATUM);
+    tft->setTextPadding(tft->textWidth("31/12/99"));
     sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
     tft->drawString(buffer, tft->width()/2+30, y); 
 }
@@ -588,7 +591,7 @@ void DisplayTFT::drawPrintInfo(OctoPrintMonitorData* printData, String printerNa
     tft->setTextFont(2);
     tft->setTextDatum(TC_DATUM);
     tft->setTextColor(PRINT_MONITOR_PRINTER_NAME_COLOUR, BACKGROUND_COLOUR); 
-    tft->setTextPadding(tft->width());  // TODO
+    tft->setTextPadding(tft->width());  
 
     String printer = printerName;
     if(printer == "")
