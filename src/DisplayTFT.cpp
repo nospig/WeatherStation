@@ -204,6 +204,7 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
     struct tm* timeInfo;
     timeInfo = gmtime(&time);
     char buffer[32];
+    int width;
 
     tft->pushImage(2, y, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, getIconData(forecastWeather->icon));
 
@@ -211,8 +212,13 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
     tft->setTextColor(FORECAST_DAY_COLOUR); 
     tft->setTextDatum(TL_DATUM);
     
-    sprintf(buffer, "%s - %.0f%s", daysOfTheWeekLong[timeInfo->tm_wday], forecastWeather->tempMax, getTempPostfix());
+    sprintf(buffer, "%s - ", daysOfTheWeekLong[timeInfo->tm_wday]);
     tft->drawString(buffer, 60, y + 8); 
+    width = tft->textWidth(buffer);
+
+    tft->setTextColor(TEMPERATURE_COLOUR); 
+    sprintf(buffer, "%.0f%s", forecastWeather->tempMax, getTempPostfix());
+    tft->drawString(buffer, 60 + width, y + 8); 
 
     String description = forecastWeather->description;
     bool truncatedDescription = false;
@@ -228,8 +234,8 @@ void DisplayTFT::drawSingleVerticalForecast(OpenWeatherMapDailyData *forecastWea
         description = description + "...";
     }
 
+    tft->setTextColor(FORECAST_DAY_COLOUR); 
     tft->drawString(description, 60, y + tft->fontHeight() + 8); 
-
 }
 
 /****************************************************************************************
@@ -285,6 +291,7 @@ void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int
     y += WEATHER_ICON_HEIGHT + 4;
 
     tft->setTextDatum(TC_DATUM);
+    tft->setTextColor(TEMPERATURE_COLOUR); 
     sprintf(buffer, "%.0f | %.0f\n", forecastWeather->tempMin, forecastWeather->tempMax);
     tft->drawString(buffer, x, y); 
 }
@@ -302,7 +309,7 @@ int DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, in
         tft->drawString(currentWeather->location, tft->width()/2, y+2); 
 
         tft->setTextFont(4);
-        tft->setTextColor(CURRENT_WEATHER_TEMP_COLOUR); 
+        tft->setTextColor(TEMPERATURE_COLOUR); 
 
         String tempString = String(currentWeather->temp, 1);
         int x = tft->width()/2 - 40;
@@ -348,7 +355,7 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, 
     tft->drawString("Indoor", tft->width()/2, y+2); 
 
     tft->setTextFont(4);
-    tft->setTextColor(SENSOR_READINGS_COLOUR, BACKGROUND_COLOUR); 
+    tft->setTextColor(TEMPERATURE_COLOUR, BACKGROUND_COLOUR); 
 
     // sensor readings always sent in metric
     if(!getDisplayMetric())
@@ -363,6 +370,7 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, 
     tft->setTextPadding(tft->textWidth("150F"));
     tft->drawString(tempString + getTempPostfix(), center - 40 , y+26);
 
+    tft->setTextColor(HUMIDITY_COLOUR, BACKGROUND_COLOUR); 
     tft->setTextDatum(TL_DATUM);
     tft->setTextPadding(tft->textWidth("99%"));
     String humidityString = String(humidity, 0);
@@ -843,7 +851,7 @@ void DisplayTFT::drawTempArc(String title, float value, float target, float max,
 
     float temp = min(value, max);
     float segments = ((temp / max) * TEMP_ARC_SPAN) / TEMP_ARC_DEGREE_PER_SEG;
-    endAngle = fillArc(x, y, TEMP_ARC_START, (int)segments, 40, 40, 8, TFT_RED);
+    endAngle = fillArc(x, y, TEMP_ARC_START, (int)segments, 40, 40, 8, PRINT_MONITOR_ARC_COLOUR);
 
     segments = (max - temp) / max;
     segments = (segments * TEMP_ARC_SPAN) / TEMP_ARC_DEGREE_PER_SEG;

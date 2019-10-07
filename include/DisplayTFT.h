@@ -5,29 +5,28 @@
 // http://rinkydinkelectronics.com/calc_rgb565.php
 
 #define BACKGROUND_COLOUR                   TFT_BLACK
-#define SECTION_HEADER_COLOUR               TFT_YELLOW
-#define SECTION_HEADER_LINE_COLOUR          0x75DF
-#define SENSOR_READINGS_COLOUR              TFT_YELLOW
-#define TIME_TEXT_COLOUR                    0x75DF
-#define WIFI_STRENGTH_COLOUR                0x75DF
-#define CURRENT_WEATHER_TEMP_COLOUR         TFT_YELLOW
-#define CURRENT_WEATHER_CONDITIONS_COLOUR   TFT_YELLOW
-#define FORECAST_DAY_COLOUR                 TFT_YELLOW
+#define SECTION_HEADER_COLOUR               0xFDE0
+#define SECTION_HEADER_LINE_COLOUR          0x7518
+#define TIME_TEXT_COLOUR                    0x5C55
+#define WIFI_STRENGTH_COLOUR                0x7518
+#define CURRENT_WEATHER_CONDITIONS_COLOUR   0xFDE0
+#define FORECAST_DAY_COLOUR                 0xFDE0
+#define TEMPERATURE_COLOUR                  0xFB20  // blaze orange
+#define HUMIDITY_COLOUR                     0xFB20  // blaze orange
 
-#define PRINT_MONITOR_TEXT_COLOUR                       TFT_YELLOW
-#define PRINT_MONITOR_TOOL_ARC_COLOUR                   TFT_RED
-#define PRINT_MONITOR_BED_ARC_COLOUR                    TFT_RED
+#define PRINT_MONITOR_TEXT_COLOUR                       0xFDE0
+#define PRINT_MONITOR_ARC_COLOUR                        TFT_RED
 #define PRINT_MONITOR_ARC_BACKGROUND_COLOUR             TFT_DARKGREY
-#define PRINT_MONITOR_ACTUAL_TEMP_COLOUR                TFT_YELLOW
-#define PRINT_MONITOR_TARGET_TEMP_COLOUR                TFT_YELLOW
+#define PRINT_MONITOR_ACTUAL_TEMP_COLOUR                TEMPERATURE_COLOUR
+#define PRINT_MONITOR_TARGET_TEMP_COLOUR                TEMPERATURE_COLOUR
 #define PRINT_MONITOR_TEMP_HEADING_COLOUR               0x75DF
 #define PRINT_MONITOR_ARC_TARGET_COLOUR                 TFT_DARKGREY
-#define PRINT_MONITOR_PRINTER_NAME_COLOUR               TFT_YELLOW
+#define PRINT_MONITOR_PRINTER_NAME_COLOUR               0xFDE0
 #define PRINT_MONITOR_PROGRESS_BAR_COLOUR               TFT_GREEN
 #define PRINT_MONITOR_PROGRESS_BAR_BACKGROUND_COLOUR    TFT_DARKGREY
 #define PRINT_MONITOR_PROGRESS_BAR_OUTLINE_COLOUR       TFT_WHITE
-#define PRINT_MONITOR_PROGRESS_COLOUR                   TFT_YELLOW
-#define PRINT_MONITOR_JOB_INFO_HEADING_COLOUR           TFT_YELLOW
+#define PRINT_MONITOR_PROGRESS_COLOUR                   0xFDE0
+#define PRINT_MONITOR_JOB_INFO_HEADING_COLOUR           0xFDE0
 #define PRINT_MONITOR_JOB_INFO_COLOUR                   TFT_WHITE
 
 // positions for modes
