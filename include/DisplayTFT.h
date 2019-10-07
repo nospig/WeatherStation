@@ -13,6 +13,8 @@
 #define FORECAST_DAY_COLOUR                 0xFDE0
 #define TEMPERATURE_COLOUR                  0xFB20  // blaze orange
 #define HUMIDITY_COLOUR                     0xFB20  // blaze orange
+#define DETAILED_WEATHER_DESCRIPTION_COLOUR 0xFDE0
+#define DETAILED_WEATHER_INFO_COLOUR        0xFB20
 
 #define PRINT_MONITOR_TEXT_COLOUR                       0xFDE0
 #define PRINT_MONITOR_ARC_COLOUR                        TFT_RED
