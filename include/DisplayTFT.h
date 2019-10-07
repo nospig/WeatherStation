@@ -34,7 +34,7 @@
 
 #define MODE_1_INDOOR_Y     0
 #define MODE_1_CURRENT_Y    60
-#define MODE_1_FORECAST_Y   160
+#define MODE_1_FORECAST_Y   180
 #define MODE_1_TIME_HEIGHT  20
 
 #define MODE_2_FORECAST_Y   0
