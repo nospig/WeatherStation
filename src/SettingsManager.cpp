@@ -517,6 +517,7 @@ void SettingsManager::setMqttDisplayTopic(String displayTopic)
     {
         data.mqttDisplayTopic = displayTopic;
         updateSettings();
+        mqttReconnectRequired = true;
     }
 }
 
