@@ -34,13 +34,15 @@ class DisplayBase
         virtual void setDisplayMode(DisplayMode mode);
         DisplayMode getDisplayMode();
 
-        virtual void setDisplayEnabled(bool enabled) {};
+        virtual void setDisplayEnabled(bool enabled) { displayEnabled = enabled;};
+        bool getDisplayEnabled() { return displayEnabled; }
 
         void setDisplayMetric(bool metric) { displayMetric = metric; }
         bool getDisplayMetric() { return displayMetric; }
     private:
         DisplayMode displayMode = DisplayMode_1;
         bool displayMetric = true;
+        bool displayEnabled;
 };
 
 

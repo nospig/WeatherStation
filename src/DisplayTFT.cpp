@@ -26,6 +26,8 @@ DisplayTFT::DisplayTFT()
  
 void DisplayTFT::setDisplayEnabled(bool enabled)
 {
+    DisplayBase::setDisplayEnabled(enabled);
+
     if(enabled)
     {        
         analogWrite(BRIGHTNESS_PIN, brightness);
@@ -43,7 +45,10 @@ void DisplayTFT::setDisplayEnabled(bool enabled)
 void DisplayTFT::setDisplayBrightness(int percent)
 {
     brightness = (MAX_BRIGHTNESS_VALUE * percent) / 100;
-    analogWrite(BRIGHTNESS_PIN, brightness);
+    if(getDisplayEnabled())
+    {
+        analogWrite(BRIGHTNESS_PIN, brightness);
+    }
 }
 
 void DisplayTFT::drawStartupDisplay()
