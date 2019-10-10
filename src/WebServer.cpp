@@ -2,6 +2,7 @@
 #include <ArduinoJson.h>
 #include <ESPAsyncWiFiManager.h>
 #include "WebServer.h"
+#include "serverpages/settingsjs.h"
 
 // globals
 AsyncWebServer server(80);
@@ -146,6 +147,12 @@ void WebServer::init(SettingsManager* settingsManager)
     {
         handleScreenGrab(request);
         request->redirect("/screenGrab.html");
+    });
+
+    server.on("/js/settings.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        Serial.println("Serving js from PROGMEM");
+        request->send_P(200, "application/javascript", settings_js);
     });
 
     server.serveStatic("/img", SPIFFS, "/img/");
