@@ -2,9 +2,8 @@
 #define _settings_h
 
 #include <Arduino.h>
+#include "UserSettings.h"
 
-// OTA password
-#define OTA_MD5_PASSWORD_HASH "3dd7f02976f79aaeb807bdb6dc1b9ef2"
 
 // task scheduler
 #define _TASK_SLEEP_ON_IDLE_RUN
@@ -23,11 +22,5 @@
 #define SETTINGS_CHANGED_INTERVAL       10 * SECONDS_MULT
 #define SCREENGRAB_INTERVAL             10 * SECONDS_MULT
 #define WIFI_CONNECTING_DELAY           2 * SECONDS_MULT
-
-// BME280 pins
-// TFT pins changed in the library
-const int BME_SDA = D2;
-const int BME_SCL = D1;
-const uint8_t BME_ADDRESS = 0x76;
 
 #endif // _settings_h

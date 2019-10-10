@@ -4,6 +4,7 @@
 #include "TFT_eSPI.h"
 #include <time.h>
 #include "icons/weatherIcons.h"
+#include "Settings.h"
 
 const char daysOfTheWeek[7][12] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 const char daysOfTheWeekLong[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -13,7 +14,7 @@ DisplayTFT::DisplayTFT()
     tft = new TFT_eSPI();
 
     tft->begin();
-    tft->setRotation(2);
+    tft->setRotation(SCREEN_ROTATION);
 
     // Swap the colour byte order when rendering for images
     tft->setSwapBytes(true);
