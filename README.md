@@ -65,7 +65,16 @@ Splice some wires and connect VCC on the TFT and BME to the Mini 3V3 pin. Do the
 
 ## Note
 
-There is a setting in the TFT_eSPI library that has to be set the same as you wire the TFT to the Mini.
+There is a setting in the TFT_eSPI library that has to be set the same as you wire the TFT to the Mini. With the above wiring no changes should be required.
+Open User_Setup.h in the TFT_eSPI library folder and set the following to suit your build:
+
+    // ###### EDIT THE PIN NUMBERS IN THE LINES FOLLOWING TO SUIT YOUR ESP8266 SETUP ######
+
+    // For NodeMCU - use pin numbers in the form PIN_Dx where Dx is the NodeMCU pin designation
+    #define TFT_CS   PIN_D8  // Chip select control pin D8
+    #define TFT_DC   PIN_D3  // Data Command control pin
+    #define TFT_RST  PIN_D4  // Reset pin (could connect to NodeMCU RST, see next line)
+    //#define TFT_RST  -1    // Set TFT_RST to -1 if the display RESET is connected to NodeMCU RST or 3.3V
 
 ## OTA updates
 
