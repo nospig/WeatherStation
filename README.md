@@ -1,21 +1,23 @@
 # Weather Station
 
-Another version of the popular ESP2866 weather station.
+Another version of the popular ESP2866 weather station. Built using Visual Studio Code and PlatformIO.
 
 ## Features
 
 * Creates an access point for connecting to any WiFi network.
 * BME280 sensor for local temperature, pressure and humidity readings.
-* 2.8" colour TFT for display.
+* 2.8" colour TFT for display. Should work with any size 320x240 display handled by the TFT library.
 * Uses a cheap ESP8266 board as the controller.
-* 3 different display modes. All display modes show WiFi strength, clock with date and time and use colourful icons.
+* 4 different display modes. All display modes show WiFi strength, clock with date and time and use colourful icons.
   * Summary - indoor conditions, current weather and 3 day forecast.
-  * 5 day forecast.
+  * 5 day forecast. 
   * Detailed current weather with indoor conditions.
+  * OctoPrint monitor mode.
 * All settings controlled through a web interface which also displays sensor readings and weather conditions.
-* Uses OpenWeather API for current weather and forecasts.
+* Uses OpenWeather API for current weather and forecasts. See note below.
 * ThingSpeak integration - send sensor readings.
 * MQTT - publishes sensor readings, subscribes to a control to switch display on and off.
+* OctoPrint Monitor - monitor one 3D printer through Octoprint
 * Can perform screengrabs and send them to a Processing sketch over serial connection.
 * Password protected OTA updates enabled through PlatformIO (not through web interface).
 
@@ -36,7 +38,7 @@ Uses the [OpenWeather](https://openweathermap.org/api) API for current condition
 * AsyncMqttClient
 * NTPClient
 
-Big thanks to all library developers who make developing projects such as this quite simple.
+Big thanks to all library developers who make developing projects such as this simple.
 
 ## Hardware
 
@@ -51,7 +53,7 @@ Development was done on a NodeMCU board. Any TFT with a 320x240 display that wor
 ## Wiring
 
     Mini RST -> TFT RST  
-    Mini D0  -> TFT LED (for display brightness control, hope this is OK, just connect TFT LED to VCC if worried)
+    Mini D0  -> TFT LED (for display brightness and on/off control, hope this is OK, just connect TFT LED to VCC if worried)
     Mini D5  -> TFT SCK  
     Mini D6  -> TFT MISO (only required if screen grab feature required)  
     Mini D7  -> TFT MOSI  
@@ -67,12 +69,12 @@ There is a setting in the TFT_eSPI library that has to be set the same as you wi
 
 ## OTA updates
 
-Password protected OTA updates enabled. Set the MD5 hash of your prefered password in Settings.h. To upload via IP in PlatformIO create a file called uploadPassword.ini in the same folder as platformio.ini with the following contents:
+Password protected OTA updates enabled. Set the MD5 hash of your prefered password in UserSettings.h. To upload via IP in PlatformIO create a file called uploadPassword.ini in the same folder as platformio.ini with the following contents:
 
     [password]
     upload_password = xxxxx
     
-Replace xxxxx with the plain text version of your OTA password.
+Replace xxxxx with the plain text version of your MD5 hash set above.
 
 ## MQTT
 
@@ -80,7 +82,7 @@ The station can publish sensor readings to a MQTT broker. Enter broker details o
 
 ## OctoPrint Monitor
 
-OctoPrint monitoring currently in development.
+OctoPrint monitor can monitor one 3D printer. Set up your OctoPrint host and API key on the OctoPrint Monitor settings page.
 
 ## Case
 
