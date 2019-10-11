@@ -12,8 +12,13 @@ const int BME_SDA = D2;
 const int BME_SCL = D1;
 const uint8_t BME_ADDRESS = 0x76;
 
+// TFT settings
+
 // change depending if your screen is pins up or down, 0 is usually down, 2 for up
 #define SCREEN_ROTATION 2
+
+// Pin used for brightness control. Just connect LED pin on TFT to 3.3V if not required.
+#define BRIGHTNESS_PIN          16   // D0
 
 
 #endif // _user_settings_h
