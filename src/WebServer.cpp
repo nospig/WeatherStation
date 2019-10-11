@@ -2,7 +2,7 @@
 #include <ArduinoJson.h>
 #include <ESPAsyncWiFiManager.h>
 #include "WebServer.h"
-#include "serverpages/settingsjs.h"
+#include "Serverpages/AllPages.h"
 
 // globals
 AsyncWebServer server(80);
@@ -49,6 +49,9 @@ void WebServer::init(SettingsManager* settingsManager)
     server.addHandler(&webSocket);
     server.addHandler(&events);
 
+// SPIFFS for reference
+//request->send(SPIFFS, "/settings.html", String(), false, tokenProcessor);
+
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send(SPIFFS, "/index.html");
@@ -60,8 +63,8 @@ void WebServer::init(SettingsManager* settingsManager)
     });
 
     server.on("/screenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(SPIFFS, "/screenGrab.html", String(), false, tokenProcessor);
+    {        
+        request->send_P(200, "text/html", screenGrab_html, tokenProcessor);
     });
 
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -71,22 +74,22 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/weatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/weatherSettings.html", String(), false, tokenProcessor);
+        request->send_P(200, "text/html", weatherSettings_html, tokenProcessor);        
     });
 
     server.on("/thingSpeakSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/thingSpeakSettings.html", String(), false, tokenProcessor);
+        request->send_P(200, "text/html", thingSpeakSettings_html, tokenProcessor);
     });
 
     server.on("/mqttSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/mqttSettings.html", String(), false, tokenProcessor);
+        request->send_P(200, "text/html", mqttSettings_html, tokenProcessor);        
     });
 
     server.on("/printMonitorSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/printMonitorSettings.html", String(), false, tokenProcessor);
+        request->send_P(200, "text/html", printMonitorSettings_html, tokenProcessor);
     });
 
     server.on("/updateWeatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -151,9 +154,29 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/js/settings.js", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        Serial.println("Serving js from PROGMEM");
         request->send_P(200, "application/javascript", settings_js);
     });
+
+    server.on("/js/thingSpeakSettings.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send_P(200, "application/javascript", thingSpeakSettings_js);
+    });
+
+    server.on("/js/jquery.confirmModal.min.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send_P(200, "application/javascript", confirmModal_js);
+    });
+
+    server.on("/js/mqttSettings.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send_P(200, "application/javascript", mqttSettings_js);
+    });
+
+    server.on("/js/printMonitorSettings.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send_P(200, "application/javascript", printMonitorSettings_js);
+    });
+
 
     server.serveStatic("/img", SPIFFS, "/img/");
     server.serveStatic("/js", SPIFFS, "/js/");
