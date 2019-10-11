@@ -76,6 +76,10 @@ Open User_Setup.h in the TFT_eSPI library folder and set the following to suit y
     #define TFT_RST  PIN_D4  // Reset pin (could connect to NodeMCU RST, see next line)
     //#define TFT_RST  -1    // Set TFT_RST to -1 if the display RESET is connected to NodeMCU RST or 3.3V
 
+## UserSettings.h
+
+Contains defines for MD5 password hash if you want to use OTA for future updates. The SCREEN_ROTATION define should be set depending on if you screen is pins up or pins down in it's case.
+
 ## OTA updates
 
 Password protected OTA updates enabled. Set the MD5 hash of your prefered password in UserSettings.h. To upload via IP in PlatformIO create a file called uploadPassword.ini in the same folder as platformio.ini with the following contents:
