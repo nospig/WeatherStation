@@ -68,8 +68,8 @@ void WebServer::init(SettingsManager* settingsManager)
     });
 
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(SPIFFS, "/settings.html", String(), false, tokenProcessor);
+    {        
+        request->send_P(200, "text/html", settings_html, tokenProcessor);
     });
 
     server.on("/weatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -177,10 +177,13 @@ void WebServer::init(SettingsManager* settingsManager)
         request->send_P(200, "application/javascript", printMonitorSettings_js);
     });
 
+    server.on("/css/station.css", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send_P(200, "text/css", station_css);
+    });
 
     server.serveStatic("/img", SPIFFS, "/img/");
     server.serveStatic("/js", SPIFFS, "/js/");
-    server.serveStatic("/css", SPIFFS, "/css/");
 
     server.begin();
 }
