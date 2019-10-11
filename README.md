@@ -91,7 +91,7 @@ Replace xxxxx with the plain text version of your MD5 hash set above.
 
 ## MQTT
 
-The station can publish sensor readings to a MQTT broker. Enter broker details on the MQTT settings page through the webserver. It will subscribe to the display topic, send 'on' and 'off' to control the display. Use packages such Node-Red, Influxdb and Grafana to graph local conditions.
+The station can publish sensor readings to a MQTT broker. Enter broker details on the MQTT settings page through the webserver. It will subscribe to the display topic, send 'on' and 'off' to control the display. Use packages such as Home Assistant, Node-Red, Influxdb and Grafana to graph local conditions.
 
 ## OctoPrint Monitor
 
