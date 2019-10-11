@@ -54,12 +54,12 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     {
-        request->send(SPIFFS, "/index.html");
+        request->send_P(200, "text/html", index_html, tokenProcessor);
     });
 
     server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(SPIFFS, "/index.html", String(), false, tokenProcessor);
+    {        
+        request->send_P(200, "text/html", index_html, tokenProcessor);
     });
 
     server.on("/screenGrab.html", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -152,6 +152,11 @@ void WebServer::init(SettingsManager* settingsManager)
         request->redirect("/screenGrab.html");
     });
 
+    server.on("/js/station.js", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send_P(200, "application/javascript", station_js);
+    });
+
     server.on("/js/settings.js", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send_P(200, "application/javascript", settings_js);
@@ -181,9 +186,6 @@ void WebServer::init(SettingsManager* settingsManager)
     {
         request->send_P(200, "text/css", station_css);
     });
-
-    server.serveStatic("/img", SPIFFS, "/img/");
-    server.serveStatic("/js", SPIFFS, "/js/");
 
     server.begin();
 }

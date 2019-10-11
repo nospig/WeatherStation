@@ -7,5 +7,6 @@
 #include "Serverpages/ScreenGrab.h"
 #include "Serverpages/SettingsPage.h"
 #include "Serverpages/StationCss.h"
+#include "Serverpages/IndexPage.h"
 
 

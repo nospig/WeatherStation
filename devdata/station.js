@@ -7,27 +7,34 @@ function init()
 
 function updateSensorReadings(messageData)
 {
-    var readings = messageData.readings;
-    
+    var readings = messageData.readings;   
+    var currentValue;
+   
+    $("#sensorReadingsList").empty();
+
     if(readings.metric)
     {
-        $("#sensorTemp").html(readings.temp.toFixed(1) + "&#8451");
+        currentValue = readings.temp.toFixed(1) + "&#8451";
     }
     else
     {
         var farenheit = (readings.temp * 1.8) + 32;
-        $("#sensorTemp").html(farenheit.toFixed(1) + "&#8457");
+        currentValue = farenheit.toFixed(1) + "&#8457";
     }
-    $("#sensorHumidity").html(readings.humidity.toFixed(1) + "%");
+    $("#sensorReadingsList").append('<li class="list-group-item mdi mdi-thermometer">' + 'Temperature: ' + currentValue + '</li>');
+    
+    currentValue = readings.humidity.toFixed(1) + "%";
+    $("#sensorReadingsList").append('<li class="list-group-item mdi mdi-water-percent">' + 'Humidity: ' + currentValue + '</li>');
 
     if(readings.metric)
     {
-        $("#sensorPressure").html(readings.pressure.toFixed(1) + " hPA");
+        currentValue = readings.pressure.toFixed(1) + " hPA";
     }
     else
     {
-        $("#sensorPressure").html(readings.pressure.toFixed(1) + " mb");
+        currentValue = readings.pressure.toFixed(1) + " mb";
     }
+    $("#sensorReadingsList").append('<li class="list-group-item mdi mdi-gauge">' + 'Pressure: ' + currentValue + '</li>');
 }
 
 function updateInternetCurrent(messageData)
