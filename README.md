@@ -93,6 +93,10 @@ Replace xxxxx with the plain text version of your MD5 hash set above.
 
 The station can publish sensor readings to a MQTT broker. Enter broker details on the MQTT settings page through the webserver. It will subscribe to the display topic, send 'on' and 'off' to control the display. Use packages such as Home Assistant, Node-Red, Influxdb and Grafana to graph local conditions.
 
+## ThingSpeak
+
+Sensor readings can be published to a ThingSpeak channel. Enable and set your ThingSpeak details in the ThingSpeak settings page.
+
 ## OctoPrint Monitor
 
 OctoPrint monitor can monitor one 3D printer. Set up your OctoPrint host and API key on the OctoPrint Monitor settings page.
