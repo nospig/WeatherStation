@@ -44,9 +44,9 @@ Big thanks to all library developers who make developing projects such as this s
 
 Built using the following hardware from AliExpress.
 
-[Wemos D1 mini ESP8266 board](https://www.aliexpress.com/item/32651747570.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
-[2.8" TFT non touch version](https://www.aliexpress.com/item/33012793224.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)  
-[BME280 sensor](https://www.aliexpress.com/item/32849462236.html?spm=a2g0s.9042311.0.0.34684c4dUx5EOb)
+[Wemos D1 mini ESP8266 board](https://www.aliexpress.com/item/32651747570.html)  
+[2.8" TFT non touch version](https://www.aliexpress.com/item/33012793224.html)  
+[BME280 sensor](https://www.aliexpress.com/item/32849462236.html)
 
 Development was done on a NodeMCU board. Any TFT with a 320x240 display that works with the TFT_eSPI library should work but has not been tested.
 
@@ -65,7 +65,20 @@ Splice some wires and connect VCC on the TFT and BME to the Mini 3V3 pin. Do the
 
 ## Note
 
-There is a setting in the TFT_eSPI library that has to be set the same as you wire the TFT to the Mini.
+There is a setting in the TFT_eSPI library that has to be set the same as you wire the TFT to the Mini. With the above wiring no changes should be required.
+Open User_Setup.h in the TFT_eSPI library folder and set the following to suit your build:
+
+    // ###### EDIT THE PIN NUMBERS IN THE LINES FOLLOWING TO SUIT YOUR ESP8266 SETUP ######
+
+    // For NodeMCU - use pin numbers in the form PIN_Dx where Dx is the NodeMCU pin designation
+    #define TFT_CS   PIN_D8  // Chip select control pin D8
+    #define TFT_DC   PIN_D3  // Data Command control pin
+    #define TFT_RST  PIN_D4  // Reset pin (could connect to NodeMCU RST, see next line)
+    //#define TFT_RST  -1    // Set TFT_RST to -1 if the display RESET is connected to NodeMCU RST or 3.3V
+
+## UserSettings.h
+
+Contains defines for MD5 password hash if you want to use OTA for future updates. The SCREEN_ROTATION define should be set depending on if you screen is pins up or pins down in it's case.
 
 ## OTA updates
 
@@ -78,7 +91,11 @@ Replace xxxxx with the plain text version of your MD5 hash set above.
 
 ## MQTT
 
-The station can publish sensor readings to a MQTT broker. Enter broker details on the MQTT settings page through the webserver. It will subscribe to the display topic, send 'on' and 'off' to control the display. Use packages such Node-Red, Influxdb and Grafana to graph local conditions.
+The station can publish sensor readings to a MQTT broker. Enter broker details on the MQTT settings page through the webserver. It will subscribe to the display topic, send 'on' and 'off' to control the display. Use packages such as Home Assistant, Node-Red, Influxdb and Grafana to graph local conditions.
+
+## ThingSpeak
+
+Sensor readings can be published to a ThingSpeak channel. Enable and set your ThingSpeak details in the ThingSpeak settings page.
 
 ## OctoPrint Monitor
 
