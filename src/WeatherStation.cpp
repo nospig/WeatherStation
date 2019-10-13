@@ -16,7 +16,6 @@
 #include "BMEReader.h"
 #include "MQTTManager.h"
 #include "OctoPrintMonitor.h"
-#include "Secrets.h"    // TODO
 #include <FS.h>
 
 // globals

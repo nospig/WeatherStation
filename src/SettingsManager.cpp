@@ -121,10 +121,12 @@ void SettingsManager::loadSettings()
 
     data.utcOffsetSeconds = doc["utcOffset"];
 
+    jsonSettings.close();
+
     // testing
-    Serial.println();
-    serializeJson(doc, Serial);
-    Serial.println();
+    //Serial.println();
+    //serializeJson(doc, Serial);
+    //Serial.println();
 }
 
 void SettingsManager::saveSettings()
