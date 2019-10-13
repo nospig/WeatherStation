@@ -57,6 +57,7 @@ Development was done on a NodeMCU board. Any TFT with a 320x240 display that wor
     Mini D5  -> TFT SCK  
     Mini D6  -> TFT MISO (only required if screen grab feature required)  
     Mini D7  -> TFT MOSI  
+    Mini D8  -> TFT CS
     Mini D1  -> BME SCL  
     Mini D2  -> BME SDA  
     Mini D3  -> TFT DC  
