@@ -289,6 +289,8 @@ void setup()
     currentWeatherClient.setLanguage("en");
     forecastWeatherClient.setLanguage("en");
 
+    WiFi.hostname("Weather-Station");
+
     taskScheduler.startNow(); 
     taskScheduler.addTask(connectWifi);
     connectWifi.enable();
