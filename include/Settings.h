@@ -19,7 +19,6 @@
 #define NUM_FORECASTS 5                             // needs to match maximum required by display modes
 
 #define WIFI_STRENGTH_INTERVAL          10 * SECONDS_MULT
-#define SETTINGS_CHANGED_INTERVAL       10 * SECONDS_MULT
 #define SCREENGRAB_INTERVAL             10 * SECONDS_MULT
 #define WIFI_CONNECTING_DELAY           2 * SECONDS_MULT
 

@@ -158,17 +158,17 @@ class SettingsManager
         int getDisplayBrightness();
         void setDisplayBrightness(int brightnessPercent);
 
-        bool getSettingsChanged();
-        void resetSettingsChanged();
+        void setSettingsChangedCallback(void(* callback)());
 
     private:
         SettingsData data;
-        bool settingsChanged;
         bool mqttReconnectRequired;
 
         void loadSettings();
         void saveSettings();
         void updateSettings();
+
+        void (* settingsChangedCallback)();
 };
 
 #endif // _settingsmanager_h

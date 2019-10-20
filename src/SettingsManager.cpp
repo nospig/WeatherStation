@@ -12,8 +12,7 @@ const int PRINT_MONITOR_INERVAL         = 30 * SECONDS_MULT;
 
 void SettingsManager::init()
 {
-    // for testing now as settings not saved to start with
-    //SPIFFS.remove(SETTINGS_FILE_NAME);
+    settingsChangedCallback = nullptr;
 
     if(!SPIFFS.exists(SETTINGS_FILE_NAME))
     {
@@ -24,7 +23,6 @@ void SettingsManager::init()
     
     loadSettings();
 
-    settingsChanged = false;
     mqttReconnectRequired = false;
 }
 
@@ -70,7 +68,6 @@ void SettingsManager::resetSettings()
     data.utcOffsetSeconds = 0;
 
     saveSettings();
-    settingsChanged = true;
 }
 
 void SettingsManager::loadSettings()
@@ -188,7 +185,10 @@ void SettingsManager::saveSettings()
 void SettingsManager::updateSettings()
 {
     saveSettings();
-    settingsChanged = true;
+    if(settingsChangedCallback != nullptr)
+    {
+        settingsChangedCallback();
+    }
 }
 
 String SettingsManager::getThingSpeakApiKey()
@@ -657,16 +657,6 @@ void SettingsManager::setDisplayBrightness(int brightnessPercent)
     }
 }
 
-bool SettingsManager::getSettingsChanged()
-{
-    return settingsChanged;
-}
-
-void SettingsManager::resetSettingsChanged()
-{
-    settingsChanged = false;
-}
-
 bool SettingsManager::getMqttReconnectRequired()
 {
     return mqttReconnectRequired;
@@ -675,4 +665,9 @@ bool SettingsManager::getMqttReconnectRequired()
 void SettingsManager::resetMqttReconnectRequired()
 {
     mqttReconnectRequired = false;
+}
+
+void SettingsManager::setSettingsChangedCallback(void (* callback)())
+{
+    settingsChangedCallback = callback;
 }

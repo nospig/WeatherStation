@@ -43,7 +43,6 @@ Task getCurrentWeather(60*SECONDS_MULT, TASK_FOREVER, &getCurrentWeatherCallback
 Task getForecastWeather(60*SECONDS_MULT, TASK_FOREVER, &getWeatherForecastCallback);
 Task updateThingSpeak(60*SECONDS_MULT, TASK_FOREVER, &updateThingSpeakCallback);
 Task updateWiFiStrength(WIFI_STRENGTH_INTERVAL, TASK_FOREVER, &updateWifiStrengthCallback);
-Task checkSettingsChanged(SETTINGS_CHANGED_INTERVAL, TASK_FOREVER, &checkSettingsChangedCallback);
 Task checkScreenGrabRequested(SCREENGRAB_INTERVAL, TASK_FOREVER, &checkScreenGrabCallback);
 Task mqttPublish(5*MINUTES_MULT, TASK_FOREVER, &mqttPublishCallback);
 Task octoPrintUpdate(5*MINUTES_MULT, TASK_FOREVER, &updatePrinterMonitorCallback);
@@ -163,6 +162,7 @@ void connectWifiCallback()
 
     currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
     forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
+    settingsManager.setSettingsChangedCallback(settingsChangedCallback);
 
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
@@ -175,7 +175,6 @@ void connectWifiCallback()
     taskScheduler.addTask(readSensors);
     taskScheduler.addTask(updateThingSpeak);
     taskScheduler.addTask(updateWiFiStrength);
-    taskScheduler.addTask(checkSettingsChanged);
     taskScheduler.addTask(checkScreenGrabRequested);
     taskScheduler.addTask(mqttPublish);
     taskScheduler.addTask(octoPrintUpdate);
@@ -195,7 +194,6 @@ void connectWifiCallback()
     getForecastWeather.enable();
     readSensors.enable();
     updateWiFiStrength.enable();
-    checkSettingsChanged.enable();
     checkScreenGrabRequested.enable();
     octoPrintUpdate.enable();
 }
@@ -208,49 +206,43 @@ void updateWifiStrengthCallback()
 
 // settings
 
-void checkSettingsChangedCallback()
+void settingsChangedCallback()
 {
-    if(settingsManager.getSettingsChanged())
+    if(settingsManager.getMqttReconnectRequired())
     {
-        //Serial.println("Settings changed.");
-        settingsManager.resetSettingsChanged();
-
-        if(settingsManager.getMqttReconnectRequired())
-        {
-            mqttManager.reconnect();
-            settingsManager.resetMqttReconnectRequired();
-        }
-
-        timeClient.setTimeOffset(settingsManager.getUtcOffset());
-
-        currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
-        forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
-
-        octoPrintMonitor.updateSettings(settingsManager.getOctoPrintAddress(), settingsManager.getOctoPrintPort(), 
-                                        settingsManager.getOctoPrintAPIKey(), settingsManager.getOctoPrintUsername(), settingsManager.getOctoPrintPassword());
-
-        // best just to force a display clear when changing settings
-        display->setDisplayMode(settingsManager.getDisplayMode());
-        display->setDisplayBrightness(settingsManager.getDisplayBrightness());
-        display->setDisplayMetric(settingsManager.getDisplayMetric());
-        display->restartMainDisplay();
-
-        getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
-        getForecastWeather.setInterval(settingsManager.getForecastWeatherInterval());
-        readSensors.setInterval(settingsManager.getSensorReadingInterval());
-        updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
-        mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
-        octoPrintUpdate.setInterval(settingsManager.getPrintMonitorInterval());
-
-        getTime.forceNextIteration();
-        getCurrentWeather.forceNextIteration();
-        getForecastWeather.forceNextIteration();
-        readSensors.forceNextIteration();
-        updateWiFiStrength.forceNextIteration();
-        updateThingSpeak.forceNextIteration();
-        mqttPublish.forceNextIteration();
-        octoPrintUpdate.forceNextIteration();
+        mqttManager.reconnect();
+        settingsManager.resetMqttReconnectRequired();
     }
+
+    timeClient.setTimeOffset(settingsManager.getUtcOffset());
+
+    currentWeatherClient.setMetric(settingsManager.getDisplayMetric());
+    forecastWeatherClient.setMetric(settingsManager.getDisplayMetric());
+
+    octoPrintMonitor.updateSettings(settingsManager.getOctoPrintAddress(), settingsManager.getOctoPrintPort(), 
+                                    settingsManager.getOctoPrintAPIKey(), settingsManager.getOctoPrintUsername(), settingsManager.getOctoPrintPassword());
+
+    // best just to force a display clear when changing settings
+    display->setDisplayMode(settingsManager.getDisplayMode());
+    display->setDisplayBrightness(settingsManager.getDisplayBrightness());
+    display->setDisplayMetric(settingsManager.getDisplayMetric());
+    display->restartMainDisplay();
+
+    getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());
+    getForecastWeather.setInterval(settingsManager.getForecastWeatherInterval());
+    readSensors.setInterval(settingsManager.getSensorReadingInterval());
+    updateThingSpeak.setInterval(settingsManager.getThingSpeakReportingInterval());
+    mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
+    octoPrintUpdate.setInterval(settingsManager.getPrintMonitorInterval());
+
+    getTime.forceNextIteration();
+    getCurrentWeather.forceNextIteration();
+    getForecastWeather.forceNextIteration();
+    readSensors.forceNextIteration();
+    updateWiFiStrength.forceNextIteration();
+    updateThingSpeak.forceNextIteration();
+    mqttPublish.forceNextIteration();
+    octoPrintUpdate.forceNextIteration();
 }
 
 // screen grabs

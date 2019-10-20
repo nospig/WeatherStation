@@ -11,12 +11,12 @@ void getWeatherForecastCallback();
 void readSensorsCallback();
 void updateThingSpeakCallback();
 void updateWifiStrengthCallback();
-void checkSettingsChangedCallback();
 void checkScreenGrabCallback();
 void mqttPublishCallback();
 void updatePrinterMonitorCallback();
 
 void mqttSubscribeCallback(const char* topic, const char *payload);
+void settingsChangedCallback();
 
 void setupOtaUpdates();
 
