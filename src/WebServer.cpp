@@ -71,8 +71,8 @@ void WebServer::init(SettingsManager* settingsManager)
 
     server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request)
     {     
-        request->send(SPIFFS, "/settings.html", String(), false, tokenProcessor);   
-        //request->send_P(200, "text/html", settings_html, tokenProcessor);
+        //request->send(SPIFFS, "/settings.html", String(), false, tokenProcessor);   
+        request->send_P(200, "text/html", settings_html, tokenProcessor);
     });
 
     server.on("/weatherSettings.html", HTTP_GET, [](AsyncWebServerRequest *request)
