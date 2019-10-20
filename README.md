@@ -57,6 +57,7 @@ Development was done on a NodeMCU board. Any TFT with a 320x240 display that wor
     Mini D5  -> TFT SCK  
     Mini D6  -> TFT MISO (only required if screen grab feature required)  
     Mini D7  -> TFT MOSI  
+    Mini D8  -> TFT CS
     Mini D1  -> BME SCL  
     Mini D2  -> BME SDA  
     Mini D3  -> TFT DC  
@@ -87,7 +88,7 @@ Password protected OTA updates enabled. Set the MD5 hash of your prefered passwo
     [password]
     upload_password = xxxxx
     
-Replace xxxxx with the plain text version of your MD5 hash set above.
+Replace xxxxx with the plain text version of your MD5 hash set above. [MD5 Generator.](https://www.miraclesalad.com/webtools/md5.php)
 
 ## MQTT
 
