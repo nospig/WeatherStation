@@ -409,6 +409,8 @@ void DisplayTFT::drawStaticElements()
 
 void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
 {
+    tft->drawLine(0, y, tft->width(), y, SECTION_HEADER_LINE_COLOUR); 
+
     tft->setTextFont(2);
     tft->setTextColor(TIME_TEXT_COLOUR, BACKGROUND_COLOUR); 
    
@@ -417,12 +419,13 @@ void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
     timeInfo = gmtime(&time);
     char buffer[16];
 
-    y += MODE_1_TIME_HEIGHT;
+    y += TIME_HEIGHT;
 
     tft->setTextDatum(BR_DATUM);
-    tft->setTextPadding(tft->textWidth("23:59"));
-    sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
-    tft->drawString(buffer, tft->width()/2-30, y); 
+   
+    formatClockString(buffer, timeInfo);
+    tft->setTextPadding(tft->textWidth("11:59pm"));
+    tft->drawString(buffer, tft->width()/2-35, y); 
 
     tft->setTextDatum(BC_DATUM);
     tft->setTextPadding(tft->textWidth(daysOfTheWeek[3]));  // Wed longest?
@@ -430,10 +433,19 @@ void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
 
     tft->setTextDatum(BL_DATUM);
     tft->setTextPadding(tft->textWidth("31/12/99"));
-    sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
-    tft->drawString(buffer, tft->width()/2+30, y); 
-}
 
+    switch(getDateFormat())
+    {
+        case DateFormat_DDMMYY:
+            sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
+            break;
+        case DateFormat_MMDDYY:
+            sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mon+1, timeInfo->tm_mday, (timeInfo->tm_year+1900) % 100);
+            break;        
+    }
+    
+    tft->drawString(buffer, tft->width()/2+35, y); 
+}
 
 /****************************************************************************************
  * 
@@ -565,7 +577,7 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
         width = tft->textWidth(buffer);
         tft->drawString(buffer, x, y);    
 
-        sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
+        formatClockString(buffer, timeInfo);
         tft->setTextColor(DETAILED_WEATHER_INFO_COLOUR); 
         tft->drawString(buffer, x + width, y);   
         y += tft->fontHeight();
@@ -579,7 +591,7 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
         width = tft->textWidth(buffer);
         tft->drawString(buffer, x, y);    
 
-        sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
+        formatClockString(buffer, timeInfo);
         tft->setTextColor(DETAILED_WEATHER_INFO_COLOUR); 
         tft->drawString(buffer, x + width, y);   
         y += tft->fontHeight();
@@ -932,6 +944,36 @@ void DisplayTFT::drawTempArc(String title, float value, float target, float max,
  * 
  * 
 ****************************************************************************************/
+
+void DisplayTFT::formatClockString(char* buffer, tm* timeInfo)
+{
+    switch(getClockFormat())
+    {
+        case ClockFormat_24h:
+            sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
+            break;
+        case ClockFormat_AmPm:
+            String termination = "am";
+            int hours;
+            hours = timeInfo->tm_hour;
+
+            if(hours == 0)
+            {
+                hours = 12;
+            }
+            else if(hours == 12)
+            {
+                termination = "pm";
+            }
+            if(hours > 12)
+            {
+                hours -= 12;
+                termination = "pm";
+            }
+            sprintf(buffer, "%d:%02d%s\n", hours, timeInfo->tm_min, termination.c_str());
+            break;
+    }
+}
 
 char* DisplayTFT::getTempPostfix()
 {

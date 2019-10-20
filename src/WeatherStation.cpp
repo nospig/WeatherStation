@@ -167,6 +167,8 @@ void connectWifiCallback()
     delay(WIFI_CONNECTING_DELAY);
     display->setDisplayMode(settingsManager.getDisplayMode());
     display->setDisplayBrightness(settingsManager.getDisplayBrightness());
+    display->setClockFormat(settingsManager.getClockFormat());
+    display->setDateFormat(settingsManager.getDateFormat());
     display->startMainDisplay();
 
     taskScheduler.addTask(getTime);
@@ -226,6 +228,8 @@ void settingsChangedCallback()
     display->setDisplayMode(settingsManager.getDisplayMode());
     display->setDisplayBrightness(settingsManager.getDisplayBrightness());
     display->setDisplayMetric(settingsManager.getDisplayMetric());
+    display->setClockFormat(settingsManager.getClockFormat());
+    display->setDateFormat(settingsManager.getDateFormat());
     display->restartMainDisplay();
 
     getCurrentWeather.setInterval(settingsManager.getCurrentWeatherInterval());

@@ -14,6 +14,9 @@ void SettingsManager::init()
 {
     settingsChangedCallback = nullptr;
 
+    data.clockFormat = ClockFormat_AmPm;
+    data.dateFormat = DateFormat_MMDDYY;
+
     if(!SPIFFS.exists(SETTINGS_FILE_NAME))
     {
         //Serial.println("No settings found, creating.");
@@ -66,6 +69,8 @@ void SettingsManager::resetSettings()
     data.octoPrintDisplayName = "";
 
     data.utcOffsetSeconds = 0;
+    data.clockFormat = ClockFormat_AmPm;
+    data.dateFormat = DateFormat_MMDDYY;
 
     saveSettings();
 }
@@ -117,6 +122,10 @@ void SettingsManager::loadSettings()
     data.octoPrintMonitorEnabled = doc["OctoPrintEnabled"];
 
     data.utcOffsetSeconds = doc["utcOffset"];
+    int clock = doc["ClockFormat"];
+    data.clockFormat = (ClockFormat)clock;
+    int date = doc["DateFormat"];
+    data.dateFormat = (DateFormat)date;
 
     jsonSettings.close();
 
@@ -156,6 +165,8 @@ void SettingsManager::saveSettings()
     doc["MqttDisplayTopic"] = data.mqttDisplayTopic;
     doc["MqttPort"] = data.mqttPort;
     doc["utcOffset"] = data.utcOffsetSeconds;
+    doc["ClockFormat"] = (int)data.clockFormat;
+    doc["DateFormat"] = (int)data.dateFormat;
 
     doc["OctoPrintAddress"] = data.octoPrintAddress;
     doc["OctoPrintPort"] = data.octoPrintPort;
@@ -665,6 +676,34 @@ bool SettingsManager::getMqttReconnectRequired()
 void SettingsManager::resetMqttReconnectRequired()
 {
     mqttReconnectRequired = false;
+}
+
+ClockFormat SettingsManager::getClockFormat()
+{
+    return data.clockFormat;
+}
+
+void SettingsManager::setClockFormat(ClockFormat clockFormat)
+{
+    if(data.clockFormat != clockFormat)
+    {
+        data.clockFormat = clockFormat;
+        updateSettings();
+    }
+}
+
+DateFormat SettingsManager::getDateFormat()
+{
+    return data.dateFormat;
+}
+
+void SettingsManager::setDateFormat(DateFormat dateFormat)
+{
+    if(data.dateFormat != dateFormat)
+    {
+        data.dateFormat = dateFormat;
+        updateSettings();
+    }
 }
 
 void SettingsManager::setSettingsChangedCallback(void (* callback)())

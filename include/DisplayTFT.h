@@ -42,7 +42,8 @@
 
 #define MODE_3_CURRENT_Y    MODE_1_CURRENT_Y
 
-#define TIME_Y              300
+#define TIME_HEIGHT 20
+#define TIME_Y      300
 
 #define TOOL_TEMP_DISPLAY_X             60
 #define TOOL_TEMP_DISPLAY_Y             90
@@ -121,6 +122,7 @@ class DisplayTFT : public DisplayBase
         void drawHorizontalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);
         void drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int y, int x);
         void drawTimeDisplay(unsigned long epochTime, int y);
+        void formatClockString(char* buffer, tm* timeInfo);
         void drawSensorReadings(float temp, float humidity, float pressure, int y);
 
         void drawVerticalForecast(bool validData, OpenWeatherMapDailyData *forecastWeather, int y, int count);

@@ -49,7 +49,9 @@ typedef struct SettingsData
     bool octoPrintMonitorEnabled;
 
     long utcOffsetSeconds;
-
+    ClockFormat clockFormat;
+    DateFormat dateFormat;
+    
 } SettingsData;
 
 class SettingsManager
@@ -157,6 +159,12 @@ class SettingsManager
 
         int getDisplayBrightness();
         void setDisplayBrightness(int brightnessPercent);
+
+        ClockFormat getClockFormat();
+        void setClockFormat(ClockFormat clockFormat);
+
+        DateFormat getDateFormat();
+        void setDateFormat(DateFormat dateFormat);
 
         void setSettingsChangedCallback(void(* callback)());
 

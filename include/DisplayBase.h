@@ -13,6 +13,18 @@ enum DisplayMode
     DisplayMode_4,  // print monitor
 };
 
+enum ClockFormat
+{
+    ClockFormat_24h,       
+    ClockFormat_AmPm,  
+};
+
+enum DateFormat
+{
+    DateFormat_DDMMYY,       
+    DateFormat_MMDDYY,  
+};
+
 class DisplayBase
 {
     public:
@@ -39,10 +51,18 @@ class DisplayBase
 
         void setDisplayMetric(bool metric) { displayMetric = metric; }
         bool getDisplayMetric() { return displayMetric; }
+        void setClockFormat(ClockFormat clockFormat) { this->clockFormat = clockFormat; }
+        void setDateFormat(DateFormat dateFormat) { this->dateFormat = dateFormat; }
+        ClockFormat getClockFormat() { return clockFormat; }
+        DateFormat getDateFormat() { return dateFormat; }
+
     private:
         DisplayMode displayMode = DisplayMode_1;
         bool displayMetric = true;
         bool displayEnabled;
+        ClockFormat clockFormat;
+        DateFormat dateFormat;
+
 };
 
 
