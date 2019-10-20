@@ -37,6 +37,8 @@ static const char NAV_BAR[] PROGMEM =
     "</li>"
     "<li class='nav-item'>"
     "<a class='nav-link' href='screenGrab.html'>Screengrab</a>"
+    "</li>"
+    "</ul>"
     "</nav>";
 
 // methods
