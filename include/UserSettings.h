@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // OTA password
-#define OTA_MD5_PASSWORD_HASH "3dd7f02976f79aaeb807bdb6dc1b9ef2"
+#define OTA_MD5_PASSWORD_HASH "5f4dcc3b5aa765d61d8327deb882cf99"
 
 // BME280 pins
 // TFT pins changed in the library
