@@ -97,8 +97,7 @@ class DisplayTFT : public DisplayBase
         DisplayTFT();
 
         void drawStartupDisplay();
-        void startMainDisplay();
-        void restartMainDisplay();
+        void clearDisplay();
 
         void drawCurrentTime(unsigned long epochTime);
 
@@ -115,7 +114,6 @@ class DisplayTFT : public DisplayBase
         void setDisplayBrightness(int percent);
         
     private:
-        void drawStaticElements();
         int drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
         void drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWeather, int y);
         const unsigned short* getIconData(String iconId);

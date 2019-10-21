@@ -62,15 +62,9 @@ void DisplayTFT::drawStartupDisplay()
     tft->drawString("Connecting.", tft->width()/2, tft->height()/2);
 }
 
-void DisplayTFT::startMainDisplay()
+void DisplayTFT::clearDisplay()
 {
     tft->fillScreen(BACKGROUND_COLOUR);
-    drawStaticElements();
-}
-
-void DisplayTFT::restartMainDisplay()
-{
-    startMainDisplay();
 }
 
 void DisplayTFT::setDisplayMode(DisplayMode mode)
@@ -80,10 +74,7 @@ void DisplayTFT::setDisplayMode(DisplayMode mode)
     showingPrintInfo = false;
     showingNoPrintInfo = false;
 
-    // do display changing logic, going to assume for now in main display mode
-    // caller responsible for updating all elements after making this call
-    tft->fillScreen(BACKGROUND_COLOUR);
-    drawStaticElements();
+    tft->fillRect(0, 0, tft->width(), TIME_Y - 1, BACKGROUND_COLOUR);
 }
 
 void DisplayTFT::drawCurrentTime(unsigned long epochTime)
@@ -256,6 +247,7 @@ void DisplayTFT::drawHorizontalForecast(bool validData, OpenWeatherMapDailyData 
     if(validData)
     {
         tft->fillRect(0, y+30, tft->width(), 90, BACKGROUND_COLOUR);
+        tft->drawLine(0, y, tft->width(), y, SECTION_HEADER_LINE_COLOUR);
 
         tft->setTextFont(2);
         tft->setTextDatum(TC_DATUM);
@@ -309,6 +301,8 @@ int DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather, in
 
     if(currentWeather->validData)
     {       
+        tft->drawLine(0, y, tft->width(), y, SECTION_HEADER_LINE_COLOUR);
+
         tft->setTextFont(2);
         tft->setTextDatum(TC_DATUM);
         tft->setTextColor(SECTION_HEADER_COLOUR); 
@@ -383,22 +377,6 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure, 
     tft->drawString(humidityString + "%", center + 40, y+26);
 }
 
-void DisplayTFT::drawStaticElements()
-{
-    switch(getDisplayMode())
-    {
-        case DisplayMode_Current:
-            tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
-            tft->drawLine(0, MODE_1_FORECAST_Y, tft->width(), MODE_1_FORECAST_Y, SECTION_HEADER_LINE_COLOUR); 
-            break;
-        case DisplayMode_Detailed:
-            tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
-            break;
-        default:
-            break;
-    }
-}
-
 void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
 {
     tft->drawLine(0, y, tft->width(), y, SECTION_HEADER_LINE_COLOUR); 
@@ -452,6 +430,8 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
     char buffer[64];
     time_t time;
     struct tm* timeInfo;
+
+    tft->drawLine(0, y, tft->width(), y, SECTION_HEADER_LINE_COLOUR);
 
     x = drawCurrentWeather(currentWeather, y);
 
