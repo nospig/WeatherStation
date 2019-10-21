@@ -1,4 +1,4 @@
-# Weather Station
+# Weather Station and OctoPrint Monitor
 
 Another version of the popular ESP2866 weather station. Built using Visual Studio Code and PlatformIO.
 
@@ -17,10 +17,13 @@ Another version of the popular ESP2866 weather station. Built using Visual Studi
 * Uses OpenWeather API for current weather and forecasts. See note below.
 * ThingSpeak integration - send sensor readings.
 * MQTT - publishes sensor readings, subscribes to a control to switch display on and off.
-* OctoPrint Monitor - monitor one 3D printer through Octoprint
+* OctoPrint Monitor - monitor one 3D printer through OctoPrint
 * Can perform screengrabs and send them to a Processing sketch over serial connection.
 * Password protected OTA updates enabled through PlatformIO (not through web interface).
 
+## OctoPrint Monitor project
+
+See [3d-print-monitor](https://github.com/nospig/3d-print-monitor) for a project based on this weather station that can display up to 10 printers. It doesn't require the weather forecast API or a BME280 sensor.
 
 ## Example screens
 
