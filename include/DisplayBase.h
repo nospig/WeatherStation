@@ -7,10 +7,10 @@
 
 enum DisplayMode
 {
-    DisplayMode_1,  // current weather
-    DisplayMode_2,  // weather forecast
-    DisplayMode_3,  // detailed current
-    DisplayMode_4,  // print monitor
+    DisplayMode_Current,        // current weather
+    DisplayMode_Forecast,       // weather forecast
+    DisplayMode_Detailed,       // detailed current
+    DisplayMode_PrintMonitor,   // print monitor
 };
 
 enum ClockFormat
@@ -57,7 +57,7 @@ class DisplayBase
         DateFormat getDateFormat() { return dateFormat; }
 
     private:
-        DisplayMode displayMode = DisplayMode_1;
+        DisplayMode displayMode = DisplayMode_Current;
         bool displayMetric = true;
         bool displayEnabled;
         ClockFormat clockFormat;

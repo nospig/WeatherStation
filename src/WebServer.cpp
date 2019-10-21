@@ -345,28 +345,28 @@ String WebServer::tokenProcessor(const String& token)
     }
     if(token == "DISPLAY1CHECKED")
     {
-        if(settingsManager->getDisplayMode() == DisplayMode_1)
+        if(settingsManager->getDisplayMode() == DisplayMode_Current)
         {
             return "Checked";
         }
     }
     if(token == "DISPLAY2CHECKED")
     {
-        if(settingsManager->getDisplayMode() == DisplayMode_2)
+        if(settingsManager->getDisplayMode() == DisplayMode_Forecast)
         {
             return "Checked";
         }
     }
     if(token == "DISPLAY3CHECKED")
     {
-        if(settingsManager->getDisplayMode() == DisplayMode_3)
+        if(settingsManager->getDisplayMode() == DisplayMode_Detailed)
         {
             return "Checked";
         }
     }
     if(token == "DISPLAY4CHECKED")
     {
-        if(settingsManager->getDisplayMode() == DisplayMode_4)
+        if(settingsManager->getDisplayMode() == DisplayMode_PrintMonitor)
         {
             return "Checked";
         }
@@ -637,19 +637,19 @@ void WebServer::handleUpdateDisplaySettings(AsyncWebServerRequest* request)
         
         if(p->value() == "display1")
         {
-            settingsManager->setDisplayMode(DisplayMode_1);
+            settingsManager->setDisplayMode(DisplayMode_Current);
         }
         if(p->value() == "display2")
         {
-            settingsManager->setDisplayMode(DisplayMode_2);
+            settingsManager->setDisplayMode(DisplayMode_Forecast);
         }
         if(p->value() == "display3")
         {
-            settingsManager->setDisplayMode(DisplayMode_3);
+            settingsManager->setDisplayMode(DisplayMode_Detailed);
         }
         if(p->value() == "display4")
         {
-            settingsManager->setDisplayMode(DisplayMode_4);
+            settingsManager->setDisplayMode(DisplayMode_PrintMonitor);
         }
 
         //Serial.println("Got display mode of: " + p->value());

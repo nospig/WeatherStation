@@ -95,8 +95,8 @@ void DisplayTFT::drawSensorReadings(float temp, float humidity, float pressure)
 {
     switch(getDisplayMode())
     {
-        case DisplayMode_1:
-        case DisplayMode_3:
+        case DisplayMode_Current:
+        case DisplayMode_Detailed:
             drawSensorReadings(temp, humidity, pressure, MODE_1_INDOOR_Y);
             break;
         default:
@@ -108,10 +108,10 @@ void DisplayTFT::drawCurrentWeather(OpenWeatherMapCurrentData* currentWeather)
 {
     switch(getDisplayMode())
     {
-        case DisplayMode_1:
+        case DisplayMode_Current:
             drawCurrentWeather(currentWeather, MODE_1_CURRENT_Y);
             break;
-        case DisplayMode_3:
+        case DisplayMode_Detailed:
             drawDetailedCurrentWeather(currentWeather, MODE_3_CURRENT_Y);
         default:
             break;
@@ -124,11 +124,11 @@ void DisplayTFT::drawForecastWeather(bool validData, OpenWeatherMapDailyData* fo
 
     switch(getDisplayMode())
     {
-        case DisplayMode_1:
+        case DisplayMode_Current:
             count = min(FORECASTS_MODE_1, forecastCount);
             drawHorizontalForecast(validData, forecastWeather, MODE_1_FORECAST_Y, count);
             break;
-        case DisplayMode_2:
+        case DisplayMode_Forecast:
             count = min(FORECASTS_MODE_2, forecastCount);
             drawVerticalForecast(validData, forecastWeather, MODE_2_FORECAST_Y, count);
             break;
@@ -387,19 +387,19 @@ void DisplayTFT::drawStaticElements()
 {
     switch(getDisplayMode())
     {
-        case DisplayMode_1:
+        case DisplayMode_Current:
             tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
             tft->drawLine(0, MODE_1_FORECAST_Y, tft->width(), MODE_1_FORECAST_Y, SECTION_HEADER_LINE_COLOUR); 
             tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
-        case DisplayMode_2:
+        case DisplayMode_Forecast:
             tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
-        case DisplayMode_3:
+        case DisplayMode_Detailed:
             tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
             tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
-        case DisplayMode_4:
+        case DisplayMode_PrintMonitor:
             tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
         default:
@@ -607,7 +607,7 @@ void DisplayTFT::drawDetailedCurrentWeather(OpenWeatherMapCurrentData* currentWe
 
 void DisplayTFT::drawOctoPrintStatus(OctoPrintMonitorData* printData, String printerName, bool enabled)
 {
-    if(getDisplayMode() != DisplayMode_4)
+    if(getDisplayMode() != DisplayMode_PrintMonitor)
     {
         return;
     }
@@ -664,7 +664,7 @@ void DisplayTFT::drawInvalidPrintData(String printerName)
 
 void DisplayTFT::drawOctoPrintNotEnabled()
 {
-    if(getDisplayMode() == DisplayMode_4)
+    if(getDisplayMode() == DisplayMode_PrintMonitor)
     {
         tft->setTextDatum(MC_DATUM);
         tft->setTextFont(2);

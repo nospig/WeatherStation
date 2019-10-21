@@ -91,7 +91,8 @@ void updateThingSpeakCallback()
 
 void getCurrentWeatherCallback()
 {
-    //Serial.println("Get current weather");
+    //Serial.println("getCurrentWeatherCallback");
+
     if(settingsManager.getOpenWeatherApiKey() != "" && settingsManager.getOpenWeatherlocationID() != "")
     {
         currentWeatherClient.updateById(settingsManager.getOpenWeatherApiKey(), settingsManager.getOpenWeatherlocationID());
@@ -124,6 +125,8 @@ void mqttPublishCallback()
 
 void updatePrinterMonitorCallback()
 {
+    //Serial.println("updatePrinterMonitorCallback");
+
     if(settingsManager.getOctoPrintEnabled())
     {
         octoPrintMonitor.update();
@@ -192,12 +195,24 @@ void connectWifiCallback()
     updateThingSpeak.disable(); 
     mqttPublish.disable();
     getTime.enable();
-    getCurrentWeather.enable();
-    getForecastWeather.enable();
     readSensors.enable();
     updateWiFiStrength.enable();
     checkScreenGrabRequested.enable();
-    octoPrintUpdate.enable();
+
+    switch(settingsManager.getDisplayMode())
+    {
+        case DisplayMode_PrintMonitor:
+            octoPrintUpdate.enable();
+            getCurrentWeather.disable();
+            getForecastWeather.disable();
+        break;
+
+        default:
+            octoPrintUpdate.disable();
+            getCurrentWeather.enable();
+            getForecastWeather.enable();
+            break;
+    }
 }
 
 void updateWifiStrengthCallback()
@@ -239,14 +254,29 @@ void settingsChangedCallback()
     mqttPublish.setInterval(settingsManager.getMqttPublishInterval());
     octoPrintUpdate.setInterval(settingsManager.getPrintMonitorInterval());
 
+    switch(settingsManager.getDisplayMode())
+    {
+        case DisplayMode_PrintMonitor:
+            octoPrintUpdate.enableIfNot();
+            getCurrentWeather.disable();
+            getForecastWeather.disable();
+            octoPrintUpdate.forceNextIteration();
+        break;
+
+        default:
+            octoPrintUpdate.disable();
+            getCurrentWeather.enableIfNot();
+            getForecastWeather.enableIfNot();
+            getCurrentWeather.forceNextIteration();
+            getForecastWeather.forceNextIteration();
+            break;
+    }
+
     getTime.forceNextIteration();
-    getCurrentWeather.forceNextIteration();
-    getForecastWeather.forceNextIteration();
     readSensors.forceNextIteration();
     updateWiFiStrength.forceNextIteration();
     updateThingSpeak.forceNextIteration();
-    mqttPublish.forceNextIteration();
-    octoPrintUpdate.forceNextIteration();
+    mqttPublish.forceNextIteration();    
 }
 
 // screen grabs

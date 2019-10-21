@@ -36,7 +36,7 @@ void SettingsManager::resetSettings()
     data.openWeatherMapAPIKey = "";
     data.openWeatherLocationID = "";
 
-    data.dispayMode = DisplayMode_1;
+    data.dispayMode = DisplayMode_Current;
     data.displayBrightness = 100;
     data.displayMetric = true;
 
