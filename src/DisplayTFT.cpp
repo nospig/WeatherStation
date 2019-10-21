@@ -917,6 +917,22 @@ void DisplayTFT::drawTempArc(String title, float value, float target, float max,
  * 
 ****************************************************************************************/
 
+void DisplayTFT::drawNotSetupDisplay()
+{
+    char buffer[64];
+    int y  = tft->height()/4;
+
+    tft->setTextDatum(MC_DATUM);
+    tft->setTextFont(2);
+    tft->setTextColor(PRINT_MONITOR_TEXT_COLOUR, BACKGROUND_COLOUR); 
+    tft->drawString("Enable weather or printer", tft->width()/2, y);   
+    y += tft->fontHeight();
+    tft->drawString("monitor using a browser", tft->width()/2, y);  
+    y += tft->fontHeight() * 2;
+    sprintf(buffer, "IP Address: %s", WiFi.localIP().toString().c_str());
+    tft->drawString(buffer, tft->width()/2, y); 
+}
+
 void DisplayTFT::formatClockString(char* buffer, tm* timeInfo)
 {
     switch(getClockFormat())

@@ -52,6 +52,7 @@ typedef struct SettingsData
     ClockFormat clockFormat;
     DateFormat dateFormat;
     
+    bool setupDone;
 } SettingsData;
 
 class SettingsManager
@@ -167,6 +168,8 @@ class SettingsManager
         void setDateFormat(DateFormat dateFormat);
 
         void setSettingsChangedCallback(void(* callback)());
+
+        bool getSetupDone();
 
     private:
         SettingsData data;

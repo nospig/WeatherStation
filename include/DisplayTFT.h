@@ -98,7 +98,8 @@ class DisplayTFT : public DisplayBase
 
         void drawStartupDisplay();
         void clearDisplay();
-
+        void drawNotSetupDisplay();
+        
         void drawCurrentTime(unsigned long epochTime);
 
         void drawSensorReadings(float temp, float humidity, float pressure);

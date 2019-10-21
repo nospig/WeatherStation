@@ -32,6 +32,7 @@ class DisplayBase
 
         virtual void drawStartupDisplay() {};
         virtual void clearDisplay() {};
+        virtual void drawNotSetupDisplay() {};
 
         virtual void drawCurrentTime(unsigned long epochTime) {};        
         virtual void drawSensorReadings(float temp, float humidity, float pressure) {};

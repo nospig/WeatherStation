@@ -174,6 +174,11 @@ void connectWifiCallback()
     display->setDateFormat(settingsManager.getDateFormat());
     display->clearDisplay();
 
+    if(!settingsManager.getSetupDone())
+    {
+        display->drawNotSetupDisplay();
+    }
+
     taskScheduler.addTask(getTime);
     taskScheduler.addTask(getCurrentWeather);
     taskScheduler.addTask(getForecastWeather);

@@ -16,6 +16,7 @@ void SettingsManager::init()
 
     data.clockFormat = ClockFormat_AmPm;
     data.dateFormat = DateFormat_MMDDYY;
+    data.setupDone = false;
 
     if(!SPIFFS.exists(SETTINGS_FILE_NAME))
     {
@@ -71,6 +72,7 @@ void SettingsManager::resetSettings()
     data.utcOffsetSeconds = 0;
     data.clockFormat = ClockFormat_AmPm;
     data.dateFormat = DateFormat_MMDDYY;
+    data.setupDone = false;
 
     saveSettings();
 }
@@ -127,6 +129,8 @@ void SettingsManager::loadSettings()
     int date = doc["DateFormat"];
     data.dateFormat = (DateFormat)date;
 
+    data.setupDone = doc["SetupDone"]; 
+    
     jsonSettings.close();
 
     // testing
@@ -176,6 +180,8 @@ void SettingsManager::saveSettings()
     doc["OctoPrintDisplayName"] = data.octoPrintDisplayName;
     doc["OctoPrintEnabled"] = data.octoPrintMonitorEnabled;
 
+    doc["SetupDone"]= data.setupDone;
+
     jsonSettings = SPIFFS.open(SETTINGS_FILE_NAME, "w");
     if(jsonSettings)
     {
@@ -195,6 +201,7 @@ void SettingsManager::saveSettings()
 
 void SettingsManager::updateSettings()
 {
+    data.setupDone = true;
     saveSettings();
     if(settingsChangedCallback != nullptr)
     {
@@ -709,4 +716,9 @@ void SettingsManager::setDateFormat(DateFormat dateFormat)
 void SettingsManager::setSettingsChangedCallback(void (* callback)())
 {
     settingsChangedCallback = callback;
+}
+
+bool SettingsManager::getSetupDone()
+{
+    return data.setupDone;
 }
