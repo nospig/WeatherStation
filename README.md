@@ -21,6 +21,14 @@ Another version of the popular ESP2866 weather station. Built using Visual Studi
 * Can perform screengrabs and send them to a Processing sketch over serial connection.
 * Password protected OTA updates enabled through PlatformIO (not through web interface).
 
+
+## Example screens
+
+![Screenshot](devdata/Screenshots/screenshot_11868.png)
+![Screenshot](devdata/Screenshots/screenshot_61458.png)
+![Screenshot](devdata/Screenshots/screenshot_91794.png)
+![Screenshot](devdata/Screenshots/screenshot_14320.png)
+
 ## API
 
 Uses the [OpenWeather](https://openweathermap.org/api) API for current conditions and daily forecast. I have access to the daily forecast call. Newly created OpenWeather accounts may not as it's now a paid feature. If there is any interest I can update the code to read the forecast from the available free API call.
