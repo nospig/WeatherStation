@@ -390,17 +390,9 @@ void DisplayTFT::drawStaticElements()
         case DisplayMode_Current:
             tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
             tft->drawLine(0, MODE_1_FORECAST_Y, tft->width(), MODE_1_FORECAST_Y, SECTION_HEADER_LINE_COLOUR); 
-            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
-            break;
-        case DisplayMode_Forecast:
-            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
         case DisplayMode_Detailed:
             tft->drawLine(0, MODE_1_CURRENT_Y, tft->width(), MODE_1_CURRENT_Y, SECTION_HEADER_LINE_COLOUR);
-            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
-            break;
-        case DisplayMode_PrintMonitor:
-            tft->drawLine(0, TIME_Y, tft->width(), TIME_Y, SECTION_HEADER_LINE_COLOUR); 
             break;
         default:
             break;
