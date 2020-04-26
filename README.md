@@ -115,7 +115,8 @@ OctoPrint monitor can monitor one 3D printer. Set up your OctoPrint host and API
 
 ## Case
 
-Custom 3D printed case currently in development. You can use any suitable 2.8" TFT D1 / NodeMCU case, many are available on ThingiVerse.
+You can use any suitable 2.8" TFT D1 / NodeMCU case, many are available on ThingiVerse.
+My case can be found [here.](https://www.thingiverse.com/thing:4279448)
 
 ## Thanks
 
