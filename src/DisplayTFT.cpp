@@ -290,7 +290,7 @@ void DisplayTFT::drawSmallForecast(OpenWeatherMapDailyData *forecastWeather, int
 
     tft->setTextDatum(TC_DATUM);
     tft->setTextColor(TEMPERATURE_COLOUR); 
-    sprintf(buffer, "%.0f | %.0f\n", forecastWeather->tempMin, forecastWeather->tempMax);
+    sprintf(buffer, "%.0f | %.0f", forecastWeather->tempMin, forecastWeather->tempMax);
     tft->drawString(buffer, x, y); 
 }
 
@@ -394,23 +394,23 @@ void DisplayTFT::drawTimeDisplay(unsigned long epochTime, int y)
     tft->setTextDatum(BR_DATUM);
    
     formatClockString(buffer, timeInfo);
-    tft->setTextPadding(tft->textWidth("11:59pm"));
+    tft->setTextPadding(tft->textWidth("WWWWWW"));
     tft->drawString(buffer, tft->width()/2-35, y); 
 
     tft->setTextDatum(BC_DATUM);
-    tft->setTextPadding(tft->textWidth(daysOfTheWeek[3]));  // Wed longest?
+    tft->setTextPadding(tft->textWidth("WWWW"));
     tft->drawString(daysOfTheWeek[timeInfo->tm_wday], tft->width()/2, y); 
 
     tft->setTextDatum(BL_DATUM);
-    tft->setTextPadding(tft->textWidth("31/12/99"));
+    tft->setTextPadding(tft->textWidth("WWWWWWW"));
 
     switch(getDateFormat())
     {
         case DateFormat_DDMMYY:
-            sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
+            sprintf(buffer, "%d/%d/%02d", timeInfo->tm_mday, timeInfo->tm_mon+1, (timeInfo->tm_year+1900) % 100);
             break;
         case DateFormat_MMDDYY:
-            sprintf(buffer, "%d/%d/%02d\n", timeInfo->tm_mon+1, timeInfo->tm_mday, (timeInfo->tm_year+1900) % 100);
+            sprintf(buffer, "%d/%d/%02d", timeInfo->tm_mon+1, timeInfo->tm_mday, (timeInfo->tm_year+1900) % 100);
             break;        
     }
     
@@ -938,7 +938,7 @@ void DisplayTFT::formatClockString(char* buffer, tm* timeInfo)
     switch(getClockFormat())
     {
         case ClockFormat_24h:
-            sprintf(buffer, "%02d:%02d\n", timeInfo->tm_hour, timeInfo->tm_min);
+            sprintf(buffer, "%02d:%02d", timeInfo->tm_hour, timeInfo->tm_min);
             break;
         case ClockFormat_AmPm:
             String termination = "am";
@@ -958,7 +958,7 @@ void DisplayTFT::formatClockString(char* buffer, tm* timeInfo)
                 hours -= 12;
                 termination = "pm";
             }
-            sprintf(buffer, "%d:%02d%s\n", hours, timeInfo->tm_min, termination.c_str());
+            sprintf(buffer, "%d:%02d%s", hours, timeInfo->tm_min, termination.c_str());
             break;
     }
 }
